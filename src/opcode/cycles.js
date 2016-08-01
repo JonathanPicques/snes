@@ -25,7 +25,7 @@ export default class OpcodeCycles {
      */
     Evaluate(cpu) {
         let cycles = this[_cycles];
-        if ((this[_modifiers] & OpcodeCycles.MIsZero) !== 0) {
+        if ((this[_modifiers] & OpcodeCycles.MIsZero1) !== 0) {
             cycles += cpu.Registers.M === 0x0 ? 1 : 0;
         }
         if ((this[_modifiers] & OpcodeCycles.LowByteDirectPageIsNonZero) !== 0) {
@@ -47,7 +47,7 @@ export default class OpcodeCycles {
      * Whether to add a cycle if CPU.Registers.M is set to zero (16-bit memory/accumulator)
      * @returns {number}
      */
-    static get MIsZero() { return 0x1; }
+    static get MIsZero1() { return 0x1; }
     /**
      * Whether to add a cycle if CPU.Registers.DP is set to non-zero
      * @returns {number}

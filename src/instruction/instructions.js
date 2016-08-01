@@ -5,18 +5,6 @@ import {P_Registers} from "../cpu";
  * @type {Object<string, Instruction>}
  */
 const InstructionsMapping = {
-    "ADC": (context) => {},
-    "RTI": (context) => {
-        if (context.snes.Cpu.Registers.E === 0x0) {
-            context.snes.Cpu.Registers.P = context.snes.Memory.PopStackUint8();
-            context.snes.Cpu.Registers.PC = context.snes.Memory.PopStackUint16();
-            context.snes.Cpu.Registers.PB = context.snes.Memory.PopStackUint8();
-        } else {
-            // TODO: X and Y not affected in emulation mode
-            context.snes.Cpu.Registers.P = context.snes.Memory.PopStackUint8();
-            context.snes.Cpu.Registers.PC = context.snes.Memory.PopStackUint16();
-        }
-    },
     "BRK": (context) => {
         if (context.snes.Cpu.Registers.E === 0x0) {
             context.snes.Memory.PushStackUint8(context.snes.Cpu.Registers.PB);
@@ -33,6 +21,20 @@ const InstructionsMapping = {
         context.snes.Cpu.Registers.P &= P_Registers.D;
         context.snes.Cpu.Registers.P |= P_Registers.I;
     },
+    "ASL": (context) => {},
+    "RTI": (context) => {
+        // TODO: PC is not incremented after being pulled from the stack
+        if (context.snes.Cpu.Registers.E === 0x0) {
+            context.snes.Cpu.Registers.P = context.snes.Memory.PopStackUint8();
+            context.snes.Cpu.Registers.PC = context.snes.Memory.PopStackUint16();
+            context.snes.Cpu.Registers.PB = context.snes.Memory.PopStackUint8();
+        } else {
+            // TODO: X and Y not affected in emulation mode
+            context.snes.Cpu.Registers.P = context.snes.Memory.PopStackUint8();
+            context.snes.Cpu.Registers.PC = context.snes.Memory.PopStackUint16();
+        }
+    },
+    "ADC": (context) => {},
     "BRA": (context) => {},
     "XCE": (context) => {
         const Carry = context.snes.Cpu.Registers.P & P_Registers.C;

@@ -82,6 +82,21 @@ export default class Memory {
         return uint16;
     }
 
+    /**
+     * Resolves the specified address corresponding to the specified addressing mode
+     * @param {number} address
+     * @param {AddressingMode} addressingMode
+     * @returns {number}
+     */
+    ResolveAddress(address, addressingMode) {
+        switch (addressingMode) {
+            case AddressingModes.Immediate:
+                return address;
+            default:
+                throw new Error(`Unable to resolve ${address} for addressing mode ${addressingMode}`);
+        }
+    }
+
 };
 
 /**
