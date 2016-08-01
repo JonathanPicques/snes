@@ -1,0 +1,19 @@
+{
+  "name": "snes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/snes.js",
+  "author": "Jonathan Picques <jonathan.picques@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "babel-node tests/snes_emulator.js"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-plugin-transform-class-properties": "^6.11.5",
+    "babel-preset-es2015": "^6.9.0"
+  }
+}
