@@ -45,6 +45,24 @@ export default class Memory {
     }
 
     /**
+     * Sets the specified uint8 at the specified address
+     * @param {number} address
+     * @param {number} uint8
+     */
+    SetUint8(address, uint8) {
+        this.View.setUint8(address, uint8);
+    }
+
+    /**
+     * Sets the specified uint16 at the specified address
+     * @param {number} address
+     * @param {number} uint16
+     */
+    SetUint16(address, uint16) {
+        this.View.setUint16(address, uint16, true); // little endian
+    }
+
+    /**
      * Pushes the specified uint8 on the stack at the specified address and moves the CPU stack pointer
      * @param {number} uint8
      */
@@ -80,26 +98,6 @@ export default class Memory {
         const uint16 = this.View.getUint16(this[_snes].Cpu.Registers.S, true);
         this[_snes].Cpu.Registers.S += 0x2;
         return uint16;
-    }
-
-    /**
-     * Resolves the specified address corresponding to the specified addressing mode
-     * @param {number} address
-     * @param {AddressingMode} addressingMode
-     * @returns {number}
-     */
-    ResolveAddress(address, addressingMode) {
-        switch (addressingMode) {
-            case AddressingModes.Absolute:
-            case AddressingModes.Immediate:
-                return address;
-            case AddressingModes.DirectPage:
-                return this[_snes].Cpu.Registers.DP + address;
-            case AddressingModes.ProgramCounterRelative:
-                return address + this[_snes].Cpu.Registers.PC;
-            default:
-                throw new Error(`Unable to resolve ${address} for addressing mode ${addressingMode}`);
-        }
     }
 
 };

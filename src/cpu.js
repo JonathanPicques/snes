@@ -82,6 +82,7 @@ export default class CPU {
                 "in", opcode.Cycles.Evaluate(this), "cycles", `(${enumeratorName(AddressingModes, opcode.AddressingMode)})`);
         }
 
+        this[_context].DecodeOpcode(opcode, this.Registers.PC);
         this.Registers.PC += opcode.Bytes.Evaluate(this);
         this.Cycles += opcode.Cycles.Evaluate(this);
         opcode.Instruction(this[_context]);

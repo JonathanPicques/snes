@@ -1,4 +1,5 @@
 import {P_Registers} from "../cpu";
+import {InstructionsType} from "./context";
 
 /**
  * This object is a mapping for instructions
@@ -21,17 +22,35 @@ const InstructionsMapping = {
         context.Cpu.Registers.P &= P_Registers.D;
         context.Cpu.Registers.P |= P_Registers.I;
     },
-    "ASL": (context) => {},
+    "ASL": (context) => {
+        // TODO: Dumb implementation (emulation mode fails)
+        // TODO: InstructionsType: Nothing (Accumulator)
+        // TODO: Update P registers: N, Z, C
+        let value = null;
+        switch (context.Type) {
+            case InstructionsType.Address:
+                value = context.Memory.GetUint16(context.Address);
+                break;
+        }
+        const result = value << 1;
+        switch (context.Type) {
+            case InstructionsType.Address:
+                context.Memory.SetUint16(context.Address, result);
+                break;
+        }
+    },
     "RTI": (context) => {
-        // TODO: PC is not incremented after being pulled from the stack
         if (context.Cpu.Registers.E === 0x0) {
             context.Cpu.Registers.P = context.Memory.PopStackUint8();
             context.Cpu.Registers.PC = context.Memory.PopStackUint16();
             context.Cpu.Registers.PB = context.Memory.PopStackUint8();
         } else {
-            // TODO: X and Y not affected in emulation mode
+            const X = context.Cpu.Registers.X;
+            const Y = context.Cpu.Registers.Y;
             context.Cpu.Registers.P = context.Memory.PopStackUint8();
             context.Cpu.Registers.PC = context.Memory.PopStackUint16();
+            context.Cpu.Registers.X = X;
+            context.Cpu.Registers.Y = Y;
         }
     },
     "ADC": (context) => {},
