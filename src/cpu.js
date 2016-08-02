@@ -1,6 +1,8 @@
 import OpcodesMapping from "./opcode/opcodes";
 import InstructionContext from "./instruction/context";
-import {AddressingModelLabel} from "./mem";
+
+import {enumeratorName} from "./utils/enum";
+import {AddressingModes} from "./mem";
 
 const _snes = Symbol("snes");
 const _context = Symbol("InstructionContext");
@@ -11,33 +13,38 @@ const _context = Symbol("InstructionContext");
 export default class CPU {
 
     /**
-     * Number of cycles elapsed
-     * @type {number}
-     */
-    Cycles = 0;
-
-    /**
-     * @type {Object}
-     */
-    Registers = {
-        "P": 0x0, // (Status) 8 bits
-        "A": 0x0, // (Accumulator) 8 bits or 16 bits
-        "X": 0x0, // (Index X) 8 bits or 16 bits
-        "Y": 0x0, // (Index Y) 8 bits or 16 bits
-        "S": 0x0, // (Stack Pointer) 8 bits
-        "DP": 0x0, // (Direct Page) 8 bits
-        "DB": 0x0, // (Data Bank) 8 bits
-        "PC": 0x0, // (Program Counter) 16 bits
-        "PB": 0x0, // (ProgramBank) 8 bits
-        "E": 0x0, // (Emulation mode) 8 bits, 0x0 = native, 0x1 = emulation
-    };
-
-    /**
      * @param {SNES} snes
      */
     constructor(snes) {
+        /**
+         * @type {SNES}
+         */
         this[_snes] = snes;
+        /**
+         * @type {InstructionContext}
+         */
         this[_context] = new InstructionContext(snes);
+        /**
+         * Number of cycles elapsed
+         * @type {number}
+         */
+        this.Cycles = 0;
+        /**
+         * CPU registers
+         * @type {Object}
+         */
+        this.Registers = {
+            "P": 0x0, // (Status) 8 bits
+            "A": 0x0, // (Accumulator) 8 bits or 16 bits
+            "X": 0x0, // (Index X) 8 bits or 16 bits
+            "Y": 0x0, // (Index Y) 8 bits or 16 bits
+            "S": 0x0, // (Stack Pointer) 8 bits
+            "DP": 0x0, // (Direct Page) 8 bits
+            "DB": 0x0, // (Data Bank) 8 bits
+            "PC": 0x0, // (Program Counter) 16 bits
+            "PB": 0x0, // (ProgramBank) 8 bits
+            "E": 0x0, // (Emulation mode) 8 bits, 0x0 = native, 0x1 = emulation
+        };
     }
 
     /**
@@ -72,7 +79,7 @@ export default class CPU {
         if (this[_snes].Debug) {
             console.log("PC", "@", `0x${this.Registers.PC.toString(16)}`);
             console.log(opcode.Instruction.name, "with", opcode.Bytes.Evaluate(this), "bytes",
-                "in", opcode.Cycles.Evaluate(this), "cycles", `(${AddressingModelLabel(opcode.AddressingMode)})`);
+                "in", opcode.Cycles.Evaluate(this), "cycles", `(${enumeratorName(AddressingModes, opcode.AddressingMode)})`);
         }
 
         this.Registers.PC += opcode.Bytes.Evaluate(this);

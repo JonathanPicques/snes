@@ -6,23 +6,23 @@ const _snes = Symbol("snes");
 export default class Memory {
 
     /**
-     * Memory map
-     * @type {Uint8Array}
-     */
-    Data = null;
-    /**
-     * Memory data view
-     * @type {DataView}
-     */
-    View = null;
-
-    /**
      * @param {SNES} snes
      * @param {ArrayBuffer} rom
      */
     constructor(snes, rom) {
+        /**
+         * @type {SNES}
+         */
         this[_snes] = snes;
+        /**
+         * Memory map
+         * @type {Uint8Array}
+         */
         this.Data = new Uint8Array(rom);
+        /**
+         * Memory data view
+         * @type {DataView}
+         */
         this.View = new DataView(rom);
     }
 
@@ -146,17 +146,3 @@ export const AddressingModes = {
 /**
  * @typedef {number} AddressingMode
  */
-
-/**
- * Returns the addressing label
- * @param {AddressingMode} addressingMode
- * @returns {string}
- */
-export const AddressingModelLabel = (addressingMode) => {
-    for (const addressingModeLabel in AddressingModes) {
-        if (AddressingModes[addressingModeLabel] === addressingMode) {
-            return addressingModeLabel;
-        }
-    }
-    throw new Error("Addressing mode unknown");
-};

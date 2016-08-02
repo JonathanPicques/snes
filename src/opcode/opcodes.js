@@ -1,6 +1,7 @@
 import OpcodeBytes from "./bytes";
 import OpcodeCycles from "./cycles";
 import Instructions from "../instruction/instructions";
+
 import {AddressingModes} from "../mem";
 
 /**

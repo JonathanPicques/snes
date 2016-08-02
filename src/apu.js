@@ -9,6 +9,9 @@ export default class APU {
      * @param {SNES} snes
      */
     constructor(snes) {
+        /**
+         * @type {SNES}
+         */
         this[_snes] = snes;
     }
 
