@@ -12,6 +12,12 @@ const _apu = Symbol("Apu");
 export default class SNES {
 
     /**
+     * Debug mode
+     * @type {boolean}
+     */
+    Debug = false;
+
+    /**
      * Parsed header
      * @type {Object}
      */

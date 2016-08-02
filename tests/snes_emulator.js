@@ -1,6 +1,5 @@
 import {readFileSync} from "fs";
 import SNES from "../src/snes";
-import {debugOpcodes} from "../src/utils/bytes";
 
 const bufferize = (buffer) => {
     const arrayBuffer = new ArrayBuffer(buffer.length);
@@ -12,10 +11,8 @@ const bufferize = (buffer) => {
 };
 
 const snes = new SNES(bufferize(readFileSync("./tests/rom.sfc")));
+snes.Debug = true;
 
 for (let i = 0; i < 128; i++) {
-    console.log(`Executing opcode 0x${snes.Memory.GetUint8(snes.Cpu.Registers.PC).toString(16)}`);
-
     snes.Cpu.Tick();
-    console.log(snes.Cpu.Registers.PC);
 }

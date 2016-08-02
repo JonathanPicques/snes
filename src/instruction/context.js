@@ -3,8 +3,14 @@
  */
 export default class InstructionContext {
 
+    /**
+     * @type {SNES}
+     */
     snes;
 
+    /**
+     * @param {SNES} snes
+     */
     constructor(snes) {
         this.snes = snes;
     }

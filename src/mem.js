@@ -90,8 +90,13 @@ export default class Memory {
      */
     ResolveAddress(address, addressingMode) {
         switch (addressingMode) {
+            case AddressingModes.Absolute:
             case AddressingModes.Immediate:
                 return address;
+            case AddressingModes.DirectPage:
+                return this[_snes].Cpu.Registers.DP + address;
+            case AddressingModes.ProgramCounterRelative:
+                return address + this[_snes].Cpu.Registers.PC;
             default:
                 throw new Error(`Unable to resolve ${address} for addressing mode ${addressingMode}`);
         }
@@ -141,3 +146,17 @@ export const AddressingModes = {
 /**
  * @typedef {number} AddressingMode
  */
+
+/**
+ * Returns the addressing label
+ * @param {AddressingMode} addressingMode
+ * @returns {string}
+ */
+export const AddressingModelLabel = (addressingMode) => {
+    for (const addressingModeLabel in AddressingModes) {
+        if (AddressingModes[addressingModeLabel] === addressingMode) {
+            return addressingModeLabel;
+        }
+    }
+    throw new Error("Addressing mode unknown");
+};

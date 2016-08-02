@@ -1,5 +1,6 @@
 import OpcodesMapping from "./opcode/opcodes";
 import InstructionContext from "./instruction/context";
+import {AddressingModelLabel} from "./mem";
 
 const _snes = Symbol("snes");
 const _context = Symbol("InstructionContext");
@@ -67,6 +68,13 @@ export default class CPU {
         if (typeof opcode === "undefined") {
             throw new Error(`${this[_snes].Memory.GetUint8(this.Registers.PC)} is not a valid opcode`);
         }
+
+        if (this[_snes].Debug) {
+            console.log("PC", "@", `0x${this.Registers.PC.toString(16)}`);
+            console.log(opcode.Instruction.name, "with", opcode.Bytes.Evaluate(this), "bytes",
+                "in", opcode.Cycles.Evaluate(this), "cycles", `(${AddressingModelLabel(opcode.AddressingMode)})`);
+        }
+
         this.Registers.PC += opcode.Bytes.Evaluate(this);
         this.Cycles += opcode.Cycles.Evaluate(this);
         opcode.Instruction(this[_context]);
