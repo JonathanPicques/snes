@@ -1,5 +1,6 @@
-import {readFileSync} from "fs";
 import SNES from "../src/snes";
+
+import {readFileSync} from "fs";
 
 const bufferize = (buffer) => {
     const arrayBuffer = new ArrayBuffer(buffer.length);

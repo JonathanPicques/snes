@@ -19,7 +19,7 @@ export const uint16ToBinary = (uint8) => {
 };
 
 /**
- * Returns the printable character or .
+ * Returns the printable character for the specified byte or a dot (.)
  * @param {number} byte
  * @returns {string}
  */
@@ -65,4 +65,31 @@ export const debugOpcodes = (buffer, from, to) => {
         debug += "|" + asciiBuffer.join("") + "|\n";
     }
     console.log(debug);
+};
+
+/**
+ * @param {Object<string, number>} registers
+ * @param {number} [padding=0]
+ * @returns {string}
+ */
+export const debugRegisters = (registers, padding) => {
+    let debug = "";
+    if (typeof padding === "undefined") {
+        padding = 0;
+    }
+    for (const register in registers) {
+        if (registers.hasOwnProperty(register)) {
+            debug += `${`\t`.repeat(padding)}`;
+            debug += `${register}: `;
+            if (typeof registers[register] === "number") {
+                debug += `0x${registers[register].toString(16)}\n`;
+            } else if (typeof registers[register] === "string") {
+                debug += `${registers[register]}\n`;
+            } else {
+                debug += `\n`;
+                debug += `${debugRegisters(registers[register], padding + 1)}`;
+            }
+        }
+    }
+    return debug;
 };

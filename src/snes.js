@@ -87,13 +87,10 @@ export default class SNES {
 
     /** @returns {Memory} */
     get Memory() { return this[_mem]; }
-
     /** @returns {CPU} */
     get Cpu() { return this[_cpu]; }
-
     /** @returns {PPU} */
     get Ppu() { return this[_ppu]; }
-
     /** @returns {APU} */
     get Apu() { return this[_apu]; }
 

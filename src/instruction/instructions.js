@@ -1,5 +1,6 @@
 import {P_Registers} from "../cpu";
 import {InstructionsType} from "./context";
+import {AddressingModeNotHandledError} from "../errors/errors";
 
 /**
  * This object is a mapping for instructions
@@ -31,6 +32,8 @@ const InstructionsMapping = {
             case InstructionsType.Address:
                 value = context.Memory.GetUint16(context.Address);
                 break;
+            default:
+                throw new AddressingModeNotHandledError();
         }
         const result = value << 1;
         switch (context.Type) {

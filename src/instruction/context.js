@@ -69,7 +69,6 @@ export default class InstructionContext {
 
     /** @returns {Memory} */
     get Memory() { return this[_snes].Memory; }
-
     /** @returns {CPU} */
     get Cpu() { return this[_snes].Cpu; }
 
@@ -80,7 +79,6 @@ export default class InstructionContext {
         if (this[_byteMoved] !== null) return InstructionsType.ByteMove;
         return InstructionsType.Nothing;
     }
-
     /** @returns {number} */
     get Value() {
         if (this[_value] === null) {
@@ -88,7 +86,6 @@ export default class InstructionContext {
         }
         return this[_value];
     }
-
     /** @returns {number} */
     get Address() {
         if (this[_address] === null) {
@@ -96,7 +93,6 @@ export default class InstructionContext {
         }
         return this[_address];
     }
-
     /** @returns {ByteMoved} */
     get ByteMoved() {
         if (this[_byteMoved] === null) {
@@ -111,11 +107,10 @@ export default class InstructionContext {
  * @enum {InstructionType}
  */
 export const InstructionsType = {
-    // TODO: Document
-    "Value": 0,
-    "Address": 1,
-    "ByteMove": 2,
-    "Nothing": 3,
+    "Value": 0, // The opcode addressing mode resulted in a value
+    "Address": 1, // The opcode addressing mode resulted in an address
+    "ByteMove": 2, // The opcode addressing mode resulted in a byte move
+    "Nothing": 3, // The opcode addressing mode did not expect a result
 };
 
 /**

@@ -103,6 +103,7 @@ export default class Memory {
 };
 
 /**
+ * This enumeration lists all the different addressing modes
  * @enum {AddressingMode}
  */
 export const AddressingModes = {

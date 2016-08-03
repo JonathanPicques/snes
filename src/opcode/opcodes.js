@@ -5,6 +5,19 @@ import Instructions from "../instruction/instructions";
 import {AddressingModes} from "../mem";
 
 /**
+ * An opcode is the combination of:
+ *  - An instruction set, aka the routine to execute
+ *  - An addressing mode, aka where the instruction will find its arguments
+ *  - A number of bytes, aka from how many the program counter will be incremented
+ *  - A number of cycles, aka the number of cycles it will take to run the instruction on the CPU
+ * @typedef {Object} Opcode
+ * @property {function} Instruction
+ * @property {AddressingMode} AddressingMode
+ * @property {OpcodeBytes} Bytes
+ * @property {OpcodeCycles} Cycles
+ */
+
+/**
  * This map holds the opcode definitions
  * @type {Map<number, Opcode>}
  */
@@ -52,11 +65,3 @@ OpcodesMapping.set(0xff, {
     "Cycles": new OpcodeCycles(5)
 });
 export default OpcodesMapping;
-
-/**
- * @typedef {Object} Opcode
- * @property {function} Instruction
- * @property {AddressingMode} AddressingMode
- * @property {OpcodeBytes} Bytes
- * @property {OpcodeCycles} Cycles
- */
