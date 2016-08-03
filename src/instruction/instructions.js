@@ -35,10 +35,9 @@ const InstructionsMapping = {
             default:
                 throw new AddressingModeNotHandledError();
         }
-        const result = value << 1;
         switch (context.Type) {
             case InstructionsType.Address:
-                context.Memory.SetUint16(context.Address, result);
+                context.Memory.SetUint16(context.Address, value << 1);
                 break;
         }
     },
