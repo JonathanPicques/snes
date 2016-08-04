@@ -1,4 +1,4 @@
-import SNES from "../src/snes";
+import SNES from "./src/snes";
 
 import {readFileSync} from "fs";
 
@@ -11,7 +11,7 @@ const bufferize = (buffer) => {
     return arrayBuffer;
 };
 
-const snes = new SNES(bufferize(readFileSync("./tests/rom.sfc")));
+const snes = new SNES(bufferize(readFileSync("./test/rom.sfc")));
 snes.Debug = true;
 
 for (let i = 0; i < 128; i++) {
