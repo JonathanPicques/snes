@@ -2,7 +2,8 @@ import {expect} from "chai";
 
 import SNES from "../src/snes";
 
-import {P_Registers} from "../src/cpu";
+import {StatusRegisters} from "../src/cpu";
+import {GetStatusRegister} from "../src/utils/bitwise";
 
 const resetVectorAddress = 0x7ffc;
 const instructionAddress = 0x841c;
@@ -16,16 +17,57 @@ describe("CPU Instructions", () => {
         view = new DataView(data);
         view.setUint16(resetVectorAddress, instructionAddress, true); // reset vector points to our first test instruction
     });
-    it("XCE (0xfb)", () => {
-        view.setUint8(instructionAddress, 0xfb); // XCE
+    it("Should test CPU default registers", () => {
         const snes = new SNES(data);
 
-        expect(snes.Cpu.Registers.E).to.be.equal(1);
-        // expect(snes.Cpu.Registers.P & P_Registers.C).to.be.equal(0);
+        // CPU registers
+        expect(snes.Cpu.Registers.A).to.be.equal(0x0);
+        expect(snes.Cpu.Registers.X).to.be.equal(0x0);
+        expect(snes.Cpu.Registers.Y).to.be.equal(0x0);
+        expect(snes.Cpu.Registers.S).to.be.equal(0x100);
+        expect(snes.Cpu.Registers.DP).to.be.equal(0x0);
+        expect(snes.Cpu.Registers.DB).to.be.equal(0x0);
+        expect(snes.Cpu.Registers.PC).to.be.equal(instructionAddress);
+        expect(snes.Cpu.Registers.E).to.be.equal(0x1);
+
+        // CPU Status register (P)
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.C)).to.be.equal(0x0);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.Z)).to.be.equal(0x0);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.I)).to.be.equal(0x1);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.D)).to.be.equal(0x0);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.X)).to.be.equal(0x1);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.M)).to.be.equal(0x1);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.V)).to.be.equal(0x0);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.N)).to.be.equal(0x0);
+    });
+    it("Should test opcode XCE (0xfb)", () => {
+        view.setUint8(instructionAddress, 0xfb); // XCE
+        view.setUint8(instructionAddress + 1, 0xfb); // XCE
+        const snes = new SNES(data);
+
+        expect(snes.Cpu.Cycles).to.be.equal(0);
+        expect(snes.Cpu.Registers.PC).to.be.equal(instructionAddress);
+        expect(snes.Cpu.Registers.E).to.be.equal(0x1);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.C)).to.be.equal(0x0);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.M)).to.be.equal(0x1);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.X)).to.be.equal(0x1);
 
         snes.Cpu.Tick();
 
-        expect(snes.Cpu.Registers.E).to.be.equal(0);
-        // expect(snes.Cpu.Registers.P & P_Registers.C).to.be.equal(1);
+        expect(snes.Cpu.Cycles).to.be.equal(2);
+        expect(snes.Cpu.Registers.PC).to.be.equal(instructionAddress + 1);
+        expect(snes.Cpu.Registers.E).to.be.equal(0x0);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.C)).to.be.equal(0x1);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.M)).to.be.equal(0x0);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.X)).to.be.equal(0x0);
+
+        snes.Cpu.Tick();
+
+        expect(snes.Cpu.Cycles).to.be.equal(4);
+        expect(snes.Cpu.Registers.PC).to.be.equal(instructionAddress + 2);
+        expect(snes.Cpu.Registers.E).to.be.equal(0x1);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.C)).to.be.equal(0x0);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.M)).to.be.equal(0x1);
+        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.X)).to.be.equal(0x1);
     });
 });

@@ -35,7 +35,7 @@ export default class CPU {
          */
         this.Registers = {
             "P": 0x0, // (Status) 8 bits
-            "A": 0x0, // (Accumulator )8 bits if P.M == 0, 16 bits if P.M == 1
+            "A": 0x0, // (Accumulator ) 8 bits if P.M == 0, 16 bits if P.M == 1
             "X": 0x0, // (Index X) 8 bits if P.X == 0, 16 bits if P.X == 1
             "Y": 0x0, // (Index Y) 8 bits if P.X == 0, 16 bits if P.X == 1
             "S": 0x0, // (Stack Pointer) 8 bits
@@ -62,7 +62,7 @@ export default class CPU {
         this.Registers.PB = 0x0;
         this.Registers.E = 0x1;
 
-        this.Registers.P = P_Registers.I | P_Registers.X | P_Registers.M;
+        this.Registers.P = StatusRegisters.I | StatusRegisters.X | StatusRegisters.M;
         this.Registers.S = 0x100;
         this.Registers.PC = this[_snes].Header.InterruptVectors.EmulationMode.RES;
     }
@@ -91,16 +91,16 @@ export default class CPU {
 }
 
 /**
- * Enumerates the bitfields of the P (Status) register
+ * Enumerates the bitfields of the Status register (P)
  * @enum {number}
  */
-export const P_Registers = {
+export const StatusRegisters = {
     "C": 0x80, // Carry (native)
     "Z": 0x40, // Zero
     "I": 0x20, // IRQ Disable
     "D": 0x10, // Decimal
-    "X": 0x8, // Index register size: 0x0 = 8 bits, 0x1 = 16 bits
-    "M": 0x4, // Accumulator register size: 0x0 = 8 bits, 0x1 = 16 bits
+    "X": 0x8, // Index register size: 0x0 = 16 bits, 0x1 = 8 bits
+    "M": 0x4, // Accumulator register size: 0x0 = 16 bits, 0x1 = 8 bits
     "V": 0x2, // Overflow
     "N": 0x1, // Negative
 };

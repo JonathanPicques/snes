@@ -1,4 +1,5 @@
-import {P_Registers} from "../cpu";
+import {GetStatusRegister, SetStatusRegister} from "../utils/bitwise";
+import {StatusRegisters} from "../cpu";
 import {InstructionsType} from "./context";
 
 /**
@@ -19,8 +20,8 @@ const InstructionsMapping = {
             context.Memory.PushStackUint8(context.Cpu.Registers.P);
             context.Cpu.Registers.PC = context.Header.InterruptVectors.EmulationMode.BRK;
         }
-        context.Cpu.Registers.P &= P_Registers.D;
-        context.Cpu.Registers.P |= P_Registers.I;
+        context.Cpu.Registers.P &= StatusRegisters.D;
+        context.Cpu.Registers.P |= StatusRegisters.I;
     },
     "ASL": (context) => {
         // TODO: Dumb implementation (emulation mode fails)
@@ -57,14 +58,18 @@ const InstructionsMapping = {
     "ADC": (context) => {},
     "BRA": (context) => {},
     "XCE": (context) => {
-        const Carry = context.Cpu.Registers.P & P_Registers.C;
+        const Carry = GetStatusRegister(context.Cpu.Registers.P, StatusRegisters.C);
         const Emulation = context.Cpu.Registers.E;
+
+        // Exchanges the Carry Bit with the Emulation bit
+        context.Cpu.Registers.P = SetStatusRegister(context.Cpu.Registers.P, StatusRegisters.C, Emulation);
         context.Cpu.Registers.E = Carry;
-        context.Cpu.Registers.P = Emulation === 0x1 ? context.Cpu.Registers.P | P_Registers.C : context.Cpu.Registers.P & ~P_Registers.C;
-        if (context.Cpu.Registers.E === 0x1) {
-            context.Cpu.Registers.X = 0x1;
-            context.Cpu.Registers.M = 0x1;
-        }
+
+        // In Native mode, Status register (P) bits M and X are forced to 0x0 (16 bits)
+        // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8 bits)
+        // But the accumulator and indexes high bytes are kept in place (no truncating)
+        context.Cpu.Registers.P = SetStatusRegister(context.Cpu.Registers.P, StatusRegisters.M, context.Cpu.Registers.E);
+        context.Cpu.Registers.P = SetStatusRegister(context.Cpu.Registers.P, StatusRegisters.X, context.Cpu.Registers.E);
     },
     "SBC": (context) => {}
 };
