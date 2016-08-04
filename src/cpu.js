@@ -1,7 +1,7 @@
 import OpcodesMapping from "./opcode/opcodes";
 import InstructionContext from "./instruction/context";
 
-import {enumeratorName} from "./utils/enum";
+import {EnumeratorName} from "./utils/enum";
 import {AddressingModes} from "./mem";
 
 const _snes = Symbol("snes");
@@ -78,8 +78,8 @@ export default class CPU {
 
         if (this[_snes].Debug) {
             console.log("PC", "@", `0x${this.Registers.PC.toString(16)}`);
-            console.log(opcode.Instruction.name, "with", opcode.Bytes.Evaluate(this), "bytes",
-                "in", opcode.Cycles.Evaluate(this), "cycles", `(${enumeratorName(AddressingModes, opcode.AddressingMode)})`);
+            console.log(opcode.Instruction.name, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
+                opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
         }
 
         this[_context].DecodeOpcode(opcode, this.Registers.PC);

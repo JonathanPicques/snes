@@ -1,4 +1,4 @@
-import {stringRange} from "../utils/bytes";
+import {GetStringFromMemory} from "../utils/format";
 
 /**
  * Parses the ROM information from the memory
@@ -29,7 +29,7 @@ const parseHeaderOffset = (snes) => {
  * @private
  */
 const parseHeader = (snes) => {
-    snes.Header.ROM.name = stringRange(snes.Memory.Data, snes.Header.Offset, snes.Header.Offset + 0x15);
+    snes.Header.ROM.name = GetStringFromMemory(snes.Memory.Data, snes.Header.Offset, snes.Header.Offset + 0x15);
     snes.Header.ROM.mapMode = snes.Memory.GetUint8(snes.Header.Offset + 0x16);
     snes.Header.ROM.romType = snes.Memory.GetUint8(snes.Header.Offset + 0x17);
     snes.Header.ROM.romSize = snes.Memory.GetUint8(snes.Header.Offset + 0x18);

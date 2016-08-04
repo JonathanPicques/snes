@@ -4,7 +4,7 @@
  * @param {number} index - specifies the index
  * @returns {string}
  */
-export const enumeratorName = (enumeration, index) => {
+export const EnumeratorName = (enumeration, index) => {
     for (const enumerator in enumeration) {
         if (enumeration.hasOwnProperty(enumerator)) {
             if (enumeration[enumerator] === index) {

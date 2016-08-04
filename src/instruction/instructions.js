@@ -1,6 +1,5 @@
 import {P_Registers} from "../cpu";
 import {InstructionsType} from "./context";
-import {AddressingModeNotHandledError} from "../errors/errors";
 
 /**
  * This object is a mapping for instructions
@@ -75,3 +74,8 @@ export default InstructionsMapping;
  * @typedef {function} Instruction
  * @param {InstructionContext} context
  */
+
+/**
+ * This error represents an addressing mode not handled by an instruction
+ */
+export class AddressingModeNotHandledError extends Error {}
