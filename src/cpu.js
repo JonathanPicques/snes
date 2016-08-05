@@ -90,6 +90,24 @@ export default class CPU {
         opcode.Instruction(this[_context]);
     }
 
+    /**
+     * Returns the state of the specified bit in the status register
+     * @param {number} bit
+     * @returns {number}
+     */
+    GetStatusRegister(bit) {
+        return (this.Registers.P & bit) === bit ? 0x1 : 0x0;
+    };
+
+    /**
+     * Sets the state of the specified bit in the status register
+     * @param {number} bit
+     * @param {number} value
+     */
+    SetStatusRegister(bit, value) {
+        this.Registers.P = value == 0x1 ? this.Registers.P | bit : this.Registers.P & ~bit;
+    };
+
 }
 
 /**

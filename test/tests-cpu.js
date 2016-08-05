@@ -3,7 +3,6 @@ import {expect} from "chai";
 import SNES from "../src/snes";
 
 import {StatusRegisters} from "../src/cpu";
-import {GetStatusRegister} from "../src/utils/bitwise";
 
 const resetVectorAddress = 0x7ffc;
 const instructionAddress = 0x841c;
@@ -31,14 +30,14 @@ describe("CPU Instructions", () => {
         expect(snes.Cpu.Registers.E).to.be.equal(0x1);
 
         // CPU Status register (P)
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.C)).to.be.equal(0x0);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.Z)).to.be.equal(0x0);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.I)).to.be.equal(0x1);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.D)).to.be.equal(0x0);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.X)).to.be.equal(0x1);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.M)).to.be.equal(0x1);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.V)).to.be.equal(0x0);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.N)).to.be.equal(0x0);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x0);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.Z)).to.be.equal(0x0);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.I)).to.be.equal(0x1);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.D)).to.be.equal(0x0);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.X)).to.be.equal(0x1);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.M)).to.be.equal(0x1);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.V)).to.be.equal(0x0);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.N)).to.be.equal(0x0);
     });
     it("Should test opcode XCE (0xfb)", () => {
         view.setUint8(instructionAddress, 0xfb); // XCE
@@ -48,26 +47,26 @@ describe("CPU Instructions", () => {
         expect(snes.Cpu.Cycles).to.be.equal(0);
         expect(snes.Cpu.Registers.PC).to.be.equal(instructionAddress);
         expect(snes.Cpu.Registers.E).to.be.equal(0x1);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.C)).to.be.equal(0x0);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.M)).to.be.equal(0x1);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.X)).to.be.equal(0x1);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x0);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.M)).to.be.equal(0x1);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.X)).to.be.equal(0x1);
 
         snes.Cpu.Tick();
 
         expect(snes.Cpu.Cycles).to.be.equal(2);
         expect(snes.Cpu.Registers.PC).to.be.equal(instructionAddress + 1);
         expect(snes.Cpu.Registers.E).to.be.equal(0x0);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.C)).to.be.equal(0x1);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.M)).to.be.equal(0x0);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.X)).to.be.equal(0x0);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x1);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.M)).to.be.equal(0x0);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.X)).to.be.equal(0x0);
 
         snes.Cpu.Tick();
 
         expect(snes.Cpu.Cycles).to.be.equal(4);
         expect(snes.Cpu.Registers.PC).to.be.equal(instructionAddress + 2);
         expect(snes.Cpu.Registers.E).to.be.equal(0x1);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.C)).to.be.equal(0x0);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.M)).to.be.equal(0x1);
-        expect(GetStatusRegister(snes.Cpu.Registers.P, StatusRegisters.X)).to.be.equal(0x1);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x0);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.M)).to.be.equal(0x1);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.X)).to.be.equal(0x1);
     });
 });
