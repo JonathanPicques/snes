@@ -24,7 +24,7 @@ describe("CPU Instructions", () => {
         expect(snes.Cpu.Registers.A).to.be.equal(0x0);
         expect(snes.Cpu.Registers.X).to.be.equal(0x0);
         expect(snes.Cpu.Registers.Y).to.be.equal(0x0);
-        expect(snes.Cpu.Registers.S).to.be.equal(0x100);
+        expect(snes.Cpu.Registers.SP).to.be.equal(0x100);
         expect(snes.Cpu.Registers.DP).to.be.equal(0x0);
         expect(snes.Cpu.Registers.DB).to.be.equal(0x0);
         expect(snes.Cpu.Registers.PC).to.be.equal(instructionAddress);

@@ -67,8 +67,8 @@ export default class Memory {
      * @param {number} uint8
      */
     PushStackUint8(uint8) {
-        this.View.setUint8(this[_snes].Cpu.Registers.S, uint8);
-        this[_snes].Cpu.Registers.S -= 0x1;
+        this.View.setUint8(this[_snes].Cpu.Registers.SP, uint8);
+        this[_snes].Cpu.Registers.SP -= 0x1;
     }
 
     /**
@@ -76,8 +76,8 @@ export default class Memory {
      * @param {number} uint16
      */
     PushStackUint16(uint16) {
-        this.View.setUint16(this[_snes].Cpu.Registers.S, uint16, true); // little endian
-        this[_snes].Cpu.Registers.S -= 0x2;
+        this.View.setUint16(this[_snes].Cpu.Registers.SP, uint16, true); // little endian
+        this[_snes].Cpu.Registers.SP -= 0x2;
     }
 
     /**
@@ -85,8 +85,8 @@ export default class Memory {
      * @returns {number}
      */
     PopStackUint8() {
-        const uint8 = this.View.getUint8(this[_snes].Cpu.Registers.S);
-        this[_snes].Cpu.Registers.S += 0x1;
+        const uint8 = this.View.getUint8(this[_snes].Cpu.Registers.SP);
+        this[_snes].Cpu.Registers.SP += 0x1;
         return uint8;
     }
 
@@ -95,8 +95,8 @@ export default class Memory {
      * @returns {number}
      */
     PopStackUint16() {
-        const uint16 = this.View.getUint16(this[_snes].Cpu.Registers.S, true);
-        this[_snes].Cpu.Registers.S += 0x2;
+        const uint16 = this.View.getUint16(this[_snes].Cpu.Registers.SP, true);
+        this[_snes].Cpu.Registers.SP += 0x2;
         return uint16;
     }
 

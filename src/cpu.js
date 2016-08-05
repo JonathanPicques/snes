@@ -38,11 +38,13 @@ export default class CPU {
             "A": 0x0, // (Accumulator ) 8 bits if P.M == 0, 16 bits if P.M == 1
             "X": 0x0, // (Index X) 8 bits if P.X == 0, 16 bits if P.X == 1
             "Y": 0x0, // (Index Y) 8 bits if P.X == 0, 16 bits if P.X == 1
-            "S": 0x0, // (Stack Pointer) 8 bits
+
+            "SP": 0x0, // (Stack Pointer) 8 bits
             "DP": 0x0, // (Direct Page) 8 bits
             "DB": 0x0, // (Data Bank) 8 bits
             "PC": 0x0, // (Program Counter) 16 bits
             "PB": 0x0, // (Program Bank) 8 bits
+
             "E": 0x0, // (Emulation mode) 8 bits: 0x0 = native, 0x1 = emulation
         };
     }
@@ -55,7 +57,7 @@ export default class CPU {
         this.Registers.A = 0x0;
         this.Registers.X = 0x0;
         this.Registers.Y = 0x0;
-        this.Registers.S = 0x0;
+        this.Registers.SP = 0x0;
         this.Registers.DP = 0x0;
         this.Registers.DB = 0x0;
         this.Registers.PC = 0x0;
@@ -63,7 +65,7 @@ export default class CPU {
         this.Registers.E = 0x1;
 
         this.Registers.P = StatusRegisters.I | StatusRegisters.X | StatusRegisters.M;
-        this.Registers.S = 0x100;
+        this.Registers.SP = 0x100;
         this.Registers.PC = this[_snes].Header.InterruptVectors.EmulationMode.RES;
     }
 
