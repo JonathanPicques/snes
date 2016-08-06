@@ -6,7 +6,7 @@
   "author": "Jonathan Picques <jonathan.picques@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "babel-node main.js",
+    "start": "babel-node $NODE_DEBUG_OPTION main.js",
     "test": "mocha --compilers js:babel-core/register test/tests-*.js"
   },
   "directories": {

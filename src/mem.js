@@ -7,23 +7,19 @@ export default class Memory {
 
     /**
      * @param {SNES} snes
-     * @param {ArrayBuffer} rom
      */
-    constructor(snes, rom) {
+    constructor(snes) {
         /**
          * @type {SNES}
          */
         this[_snes] = snes;
-        /**
-         * Memory map
-         * @type {Uint8Array}
-         */
-        this.Data = new Uint8Array(rom);
-        /**
-         * Memory data view
-         * @type {DataView}
-         */
-        this.View = new DataView(rom);
+    }
+
+    /**
+     * Initializes the memory
+     */
+    Initialize() {
+        const mapping = this[_snes].Cart.GenerateMemoryMap();
     }
 
     /**
@@ -32,7 +28,7 @@ export default class Memory {
      * @returns {number}
      */
     GetUint8(address) {
-        return this.View.getUint8(address);
+        throw new Error("not yet implemented", address);
     }
 
     /**
@@ -41,7 +37,7 @@ export default class Memory {
      * @returns {number}
      */
     GetUint16(address) {
-        return this.View.getUint16(address, true); // little endian
+        throw new Error("not yet implemented", address);
     }
 
     /**
@@ -50,7 +46,7 @@ export default class Memory {
      * @param {number} uint8
      */
     SetUint8(address, uint8) {
-        this.View.setUint8(address, uint8);
+        throw new Error("not yet implemented", address, uint8);
     }
 
     /**
@@ -59,7 +55,7 @@ export default class Memory {
      * @param {number} uint16
      */
     SetUint16(address, uint16) {
-        this.View.setUint16(address, uint16, true); // little endian
+        throw new Error("not yet implemented", address, uint16);
     }
 
     /**
@@ -67,8 +63,8 @@ export default class Memory {
      * @param {number} uint8
      */
     PushStackUint8(uint8) {
-        this.View.setUint8(this[_snes].Cpu.Registers.SP, uint8);
-        this[_snes].Cpu.Registers.SP -= 0x1;
+        throw new Error("not yet implemented", uint8);
+        // this[_snes].Cpu.Registers.SP -= 0x1;
     }
 
     /**
@@ -76,8 +72,8 @@ export default class Memory {
      * @param {number} uint16
      */
     PushStackUint16(uint16) {
-        this.View.setUint16(this[_snes].Cpu.Registers.SP, uint16, true); // little endian
-        this[_snes].Cpu.Registers.SP -= 0x2;
+        throw new Error("not yet implemented", uint16);
+        // this[_snes].Cpu.Registers.SP -= 0x2;
     }
 
     /**
@@ -85,9 +81,8 @@ export default class Memory {
      * @returns {number}
      */
     PopStackUint8() {
-        const uint8 = this.View.getUint8(this[_snes].Cpu.Registers.SP);
-        this[_snes].Cpu.Registers.SP += 0x1;
-        return uint8;
+        throw new Error("not yet implemented");
+        // this[_snes].Cpu.Registers.SP += 0x1;
     }
 
     /**
@@ -95,9 +90,8 @@ export default class Memory {
      * @returns {number}
      */
     PopStackUint16() {
-        const uint16 = this.View.getUint16(this[_snes].Cpu.Registers.SP, true);
-        this[_snes].Cpu.Registers.SP += 0x2;
-        return uint16;
+        throw new Error("not yet implemented");
+        // this[_snes].Cpu.Registers.SP += 0x2;
     }
 
 };
