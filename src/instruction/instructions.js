@@ -9,13 +9,13 @@ const InstructionsMapping = {
     "BRK": (context) => {
         if (context.Cpu.Registers.E === 0x0) {
             context.Memory.PushStackUint8(context.Cpu.Registers.PB);
-            context.Memory.PushStackUint16(context.Cpu.Registers.PC);
+            context.Memory.PushStackUint16(context.Cpu.Registers.PC + 2);
             context.Memory.PushStackUint8(context.Cpu.Registers.P);
             context.Cpu.Registers.PC = context.Header.InterruptVectors.NativeMode.BRK;
             // TODO: select the good PB bank
             context.Cpu.Registers.PB = context.Header.InterruptVectors.NativeMode.BRK;
         } else {
-            context.Memory.PushStackUint16(context.Cpu.Registers.PC);
+            context.Memory.PushStackUint16(context.Cpu.Registers.PC + 2);
             context.Memory.PushStackUint8(context.Cpu.Registers.P);
             context.Cpu.Registers.PC = context.Header.InterruptVectors.EmulationMode.BRK;
         }
