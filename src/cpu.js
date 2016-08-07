@@ -3,6 +3,7 @@ import InstructionContext from "./instruction/context";
 
 import {EnumeratorName} from "./utils/enum";
 import {AddressingModes} from "./mem";
+import {HumanReadableMemory} from "./utils/format";
 
 const _snes = Symbol("snes");
 const _context = Symbol("InstructionContext");
@@ -65,7 +66,7 @@ export default class CPU {
         this.Registers.E = 0x1;
 
         this.Registers.P = StatusRegisters.I | StatusRegisters.X | StatusRegisters.M;
-        this.Registers.SP = 0x100;
+        this.Registers.SP = 0x1ff;
         this.Registers.PC = this[_snes].Cart.Header.InterruptVectors.EmulationMode.RES;
     }
 
@@ -73,16 +74,16 @@ export default class CPU {
      * Makes this CPU tick
      */
     Tick() {
-        const op = this[_snes].Cart.RomView.getUint8(this.Registers.PC);
+        const op = this[_snes].Cart.RomView.getUint8(this.Registers.PC - 0x8000);
         const opcode = OpcodesMapping.get(op);
         if (typeof opcode === "undefined") {
-            throw new Error(`${op} is not a valid opcode`);
+            throw new Error(`${op.toString(16)} is not a valid opcode`);
         }
-        if (this[_snes].Debug) {
-            console.log("PC", "@", `0x${this.Registers.PC.toString(16)}`);
-            console.log(opcode.Instruction.name, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
-                opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
-        }
+
+        console.log("PC", "@", `0x${this.Registers.PC.toString(16)}`);
+        console.log(opcode.Instruction.name, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
+            opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
+
         this[_context].DecodeOpcode(opcode, this.Registers.PC);
         this.Registers.PC += opcode.Bytes.Evaluate(this);
         this.Cycles += opcode.Cycles.Evaluate(this);

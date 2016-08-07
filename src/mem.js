@@ -19,7 +19,7 @@ export default class Memory {
      * Initializes the memory
      */
     Initialize() {
-        const mapping = this[_snes].Cart.GenerateMemoryMap();
+        // TODO: Get the memory mapping
     }
 
     /**

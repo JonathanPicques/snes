@@ -3,6 +3,9 @@ import PPU from "./ppu";
 import APU from "./apu";
 import Memory from "./mem";
 import Cartridge from "./cart";
+import MemoryRegion from "./memory/region";
+
+import {MemoryRegionTypes} from "./memory/region";
 
 const _cpu = Symbol("Cpu");
 const _ppu = Symbol("Ppu");
@@ -35,12 +38,7 @@ export default class SNES {
         /**
          * @type {Cartridge}
          */
-        this[_cart] = Cartridge.CreateFromRom(rom);
-        /**
-         * Debug mode
-         * @type {boolean}
-         */
-        this.Debug = false;
+        this[_cart] = Cartridge.CreateFromRom(this, rom);
 
         this.initialize();
     }

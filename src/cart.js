@@ -66,14 +66,6 @@ export default class Cartridge {
     }
 
     /**
-     * Generates the memory map
-     * @abstract
-     */
-    GenerateMemoryMap() {
-        throw new Error("abstract method" || this);
-    }
-
-    /**
      * Parses the ROM header
      * @private
      */
@@ -131,7 +123,10 @@ export default class Cartridge {
  */
 export class CartridgeLoROM extends Cartridge {
 
-    // TODO: Document
+    /**
+     * @param {SNES} snes
+     * @param {ArrayBuffer} rom
+     */
     constructor(snes, rom) {
         super(snes, rom, 0x7fc0);
     }
@@ -143,7 +138,10 @@ export class CartridgeLoROM extends Cartridge {
  */
 export class CartridgeHiROM extends Cartridge {
 
-    // TODO: Document
+    /**
+     * @param {SNES} snes
+     * @param {ArrayBuffer} rom
+     */
     constructor(snes, rom) {
         super(snes, rom, 0x00ffc0);
     }
