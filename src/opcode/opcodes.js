@@ -34,6 +34,12 @@ OpcodesMapping.set(0x06, {
     "Bytes": new OpcodeBytes(2),
     "Cycles": new OpcodeCycles(5, OpcodeCycles.LowByteDirectPageIsNonZero, OpcodeCycles.MIsZero2)
 });
+OpcodesMapping.set(0x18, {
+    "Instruction": Instructions.CLC,
+    "AddressingMode": AddressingModes.Implied,
+    "Bytes": new OpcodeBytes(1),
+    "Cycles": new OpcodeCycles(2)
+});
 OpcodesMapping.set(0x40, {
     "Instruction": Instructions.RTI,
     "AddressingMode": AddressingModes.StackReturnFromInterrupt,
@@ -45,6 +51,12 @@ OpcodesMapping.set(0x61, {
     "AddressingMode": AddressingModes.DirectPageIndexedIndirectX,
     "Bytes": new OpcodeBytes(2),
     "Cycles": new OpcodeCycles(6, OpcodeCycles.MIsZero1, OpcodeCycles.LowByteDirectPageIsNonZero)
+});
+OpcodesMapping.set(0x78, {
+    "Instruction": Instructions.SEI,
+    "AddressingMode": AddressingModes.Implied,
+    "Bytes": new OpcodeBytes(1),
+    "Cycles": new OpcodeCycles(2)
 });
 OpcodesMapping.set(0x80, {
     "Instruction": Instructions.BRA,

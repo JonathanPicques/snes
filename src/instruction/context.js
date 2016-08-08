@@ -2,10 +2,9 @@ import {AddressingModes} from "../mem";
 
 const _snes = Symbol("snes");
 const _opcode = Symbol("snes");
-
 const _value = Symbol("value");
-const _address = Symbol("value");
-const _byteMoved = Symbol("value");
+const _address = Symbol("address");
+const _byteMoved = Symbol("byteMoved");
 
 /**
  * This class holds the context for a specified instruction resulting of the execution of a specified opcode

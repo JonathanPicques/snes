@@ -40,6 +40,9 @@ const InstructionsMapping = {
                 break;
         }
     },
+    "CLC": (context) => {
+        context.Cpu.SetStatusRegister(StatusRegisters.C, 0x0);
+    },
     "RTI": (context) => {
         if (context.Cpu.Registers.E === 0x0) {
             context.Cpu.Registers.P = context.Memory.PopStackUint8();
@@ -55,6 +58,9 @@ const InstructionsMapping = {
         }
     },
     "ADC": (context) => {},
+    "SEI": (context) => {
+        context.Cpu.SetStatusRegister(StatusRegisters.I, 0x1);
+    },
     "BRA": (context) => {},
     "XCE": (context) => {
         const Carry = context.Cpu.GetStatusRegister(StatusRegisters.C);

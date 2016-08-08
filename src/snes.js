@@ -3,9 +3,6 @@ import PPU from "./ppu";
 import APU from "./apu";
 import Memory from "./mem";
 import Cartridge from "./cart";
-import MemoryRegion from "./memory/region";
-
-import {MemoryRegionTypes} from "./memory/region";
 
 const _cpu = Symbol("Cpu");
 const _ppu = Symbol("Ppu");
@@ -48,7 +45,6 @@ export default class SNES {
      * @private
      */
     initialize() {
-        this[_mem].Initialize();
         this[_cpu].Reset();
     }
 
