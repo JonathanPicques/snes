@@ -73,7 +73,7 @@ export default class CPU {
      * Makes this CPU tick
      */
     Tick() {
-        const op = this[_snes].Cart.RomView.getUint8(this.Registers.PC - 0x8000);
+        const op = this[_snes].Memory.ReadUint8(this.Registers.PC);
         const opcode = OpcodesMapping.get(op);
         if (typeof opcode === "undefined") {
             throw new Error(`${op.toString(16)} is not a valid opcode`);

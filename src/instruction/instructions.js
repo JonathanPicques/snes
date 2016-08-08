@@ -6,57 +6,12 @@ import {InstructionsType} from "./context";
  * @type {Object<string, Instruction>}
  */
 const InstructionsMapping = {
-    "BRK": (context) => {
-        if (context.Cpu.Registers.E === 0x0) {
-            context.Memory.PushStackUint8(context.Cpu.Registers.PB);
-            context.Memory.PushStackUint16(context.Cpu.Registers.PC + 2);
-            context.Memory.PushStackUint8(context.Cpu.Registers.P);
-            context.Cpu.Registers.PC = context.Header.InterruptVectors.NativeMode.BRK;
-            // TODO: select the good PB bank
-            context.Cpu.Registers.PB = context.Header.InterruptVectors.NativeMode.BRK;
-        } else {
-            context.Memory.PushStackUint16(context.Cpu.Registers.PC + 2);
-            context.Memory.PushStackUint8(context.Cpu.Registers.P);
-            context.Cpu.Registers.PC = context.Header.InterruptVectors.EmulationMode.BRK;
-        }
-        context.Cpu.SetStatusRegister(StatusRegisters.I, 0x1);
-        context.Cpu.SetStatusRegister(StatusRegisters.D, 0x0);
-    },
-    "ASL": (context) => {
-        // TODO: Dumb implementation (emulation mode fails)
-        // TODO: InstructionsType: Nothing (Accumulator)
-        // TODO: Update P registers: N, Z, C
-        let value = null;
-        switch (context.Type) {
-            case InstructionsType.Address:
-                value = context.Memory.GetUint16(context.Address);
-                break;
-            default:
-                throw new AddressingModeNotHandledError();
-        }
-        switch (context.Type) {
-            case InstructionsType.Address:
-                context.Memory.SetUint16(context.Address, value << 1);
-                break;
-        }
-    },
+    "BRK": (context) => {},
+    "ASL": (context) => {},
     "CLC": (context) => {
         context.Cpu.SetStatusRegister(StatusRegisters.C, 0x0);
     },
-    "RTI": (context) => {
-        if (context.Cpu.Registers.E === 0x0) {
-            context.Cpu.Registers.P = context.Memory.PopStackUint8();
-            context.Cpu.Registers.PC = context.Memory.PopStackUint16();
-            context.Cpu.Registers.PB = context.Memory.PopStackUint8();
-        } else {
-            const X = context.Cpu.Registers.X;
-            const Y = context.Cpu.Registers.Y;
-            context.Cpu.Registers.P = context.Memory.PopStackUint8();
-            context.Cpu.Registers.PC = context.Memory.PopStackUint16();
-            context.Cpu.Registers.X = X;
-            context.Cpu.Registers.Y = Y;
-        }
-    },
+    "RTI": (context) => {},
     "ADC": (context) => {},
     "SEI": (context) => {
         context.Cpu.SetStatusRegister(StatusRegisters.I, 0x1);

@@ -16,10 +16,23 @@ export default class Memory {
     }
 
     /**
-     * Initializes the memory
+     * @param {number} address
+     * @param {number} length
+     * @returns {number}
      */
-    Initialize() {
-        // TODO: Get the memory mapping
+    Read(address, length) {
+        if (length < 0 || length > 3) {
+            throw new RangeError();
+        }
+        let result = 0;
+        for (let i = 0; i < length; i++) {
+            const [dataView, offsetAddress] = this[_snes].Cart.DecodeAddress(address + i);
+            if (dataView === null) {
+                throw new Error(`Cannot read at address: $${(address + i).toString(16)}`);
+            }
+            result |= dataView.getUint8(offsetAddress) << (i * 8);
+        }
+        return result;
     }
 
     /**
@@ -27,8 +40,8 @@ export default class Memory {
      * @param {number} address
      * @returns {number}
      */
-    GetUint8(address) {
-        throw new Error("not yet implemented", address);
+    ReadUint8(address) {
+        return this.Read(address, 1);
     }
 
     /**
@@ -36,7 +49,7 @@ export default class Memory {
      * @param {number} address
      * @returns {number}
      */
-    GetUint16(address) {
+    ReadUint16(address) {
         throw new Error("not yet implemented", address);
     }
 
@@ -45,7 +58,7 @@ export default class Memory {
      * @param {number} address
      * @param {number} uint8
      */
-    SetUint8(address, uint8) {
+    WriteUint8(address, uint8) {
         throw new Error("not yet implemented", address, uint8);
     }
 
@@ -54,7 +67,7 @@ export default class Memory {
      * @param {number} address
      * @param {number} uint16
      */
-    SetUint16(address, uint16) {
+    WriteUint16(address, uint16) {
         throw new Error("not yet implemented", address, uint16);
     }
 
