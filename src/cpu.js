@@ -3,7 +3,6 @@ import InstructionContext from "./instruction/context";
 
 import {EnumeratorName} from "./utils/enum";
 import {AddressingModes} from "./mem";
-import {HumanReadableMemory} from "./utils/format";
 
 const _snes = Symbol("snes");
 const _context = Symbol("InstructionContext");
