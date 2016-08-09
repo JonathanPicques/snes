@@ -71,9 +71,10 @@ export default class Cartridge {
      * Decodes the specified address and returns the data buffer and the offset address
      * @param {number} address
      * @returns {[DataView, number]}
-     * @abstract
      */
-    DecodeAddress(address) {}
+    DecodeAddress(address) {
+        return [null, address];
+    }
 
     /**
      * Parses the ROM header
@@ -104,7 +105,7 @@ export default class Cartridge {
         this.Header.InterruptVectors.EmulationMode.RES = this.RomView.getUint16(this.Header.Offset + 0x3c, true); // 0x?ffc
         this.Header.InterruptVectors.EmulationMode.BRK = this.RomView.getUint16(this.Header.Offset + 0x3e, true); // 0x?ffe
         this.Header.InterruptVectors.EmulationMode.IRQ = this.RomView.getUint16(this.Header.Offset + 0x3e, true); // 0x?ffe
-    };
+    }
 
     /**
      * Creates a cartridge from the specified rom

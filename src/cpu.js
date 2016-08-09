@@ -101,8 +101,10 @@ export default class CPU {
 
     /**
      * Debugs the given opcode
+     * @param {Opcode} opcode
      */
     DebugOpcode(opcode) {
+        /*eslint-disable no-console */
         console.log("--- Current state ---");
         console.log("PC", HumanReadableAddress(this.Registers.PC));
         console.log("Status", HumanReadableStatusRegister(this));
@@ -119,6 +121,7 @@ export default class CPU {
         }
         console.log("---");
         console.log("");
+        /*eslint-enable no-console */
     }
 
     /**
@@ -128,7 +131,7 @@ export default class CPU {
      */
     GetStatusRegister(bit) {
         return (this.Registers.P & bit) === bit ? 0x1 : 0x0;
-    };
+    }
 
     /**
      * Sets the state of the specified bit in the status register
@@ -136,8 +139,8 @@ export default class CPU {
      * @param {number} value
      */
     SetStatusRegister(bit, value) {
-        this.Registers.P = value == 0x1 ? this.Registers.P | bit : this.Registers.P & ~bit;
-    };
+        this.Registers.P = value === 0x1 ? this.Registers.P | bit : this.Registers.P & ~bit;
+    }
 
 }
 

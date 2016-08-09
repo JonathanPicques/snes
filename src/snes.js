@@ -36,6 +36,14 @@ export default class SNES {
          * @type {Cartridge}
          */
         this[_cart] = Cartridge.CreateFromRom(this, rom);
+        /**
+         * @type {ArrayBuffer}
+         */
+        this.WRAM = new ArrayBuffer(0x1f400);
+        /**
+         * @type {DataView}
+         */
+        this.WRAMView = new DataView(this.WRAM);
 
         this.initialize();
     }

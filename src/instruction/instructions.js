@@ -23,7 +23,7 @@ const InstructionsMapping = {
         context.Cpu.SetStatusRegister(StatusRegisters.I, 0x1);
         context.Cpu.SetStatusRegister(StatusRegisters.D, 0x0);
     },
-    "ASL": (context) => {},
+    "ASL": () => {},
     "CLC": (context) => {
         // CLear Carry bit
         context.Cpu.SetStatusRegister(StatusRegisters.C, 0x0);
@@ -47,14 +47,12 @@ const InstructionsMapping = {
         // JuMP
         context.Cpu.Registers.PC = context.Address;
     },
-    "ADC": (context) => {},
+    "ADC": () => {},
     "SEI": (context) => {
         // SEts Interrupt disable
         context.Cpu.SetStatusRegister(StatusRegisters.I, 0x1);
     },
-    "BRA": (context) => {
-        // BRanch Always
-    },
+    "BRA": () => {},
     "STA": (context) => {
         // STore Accumulator
         switch (context.Type) {
@@ -107,7 +105,7 @@ const InstructionsMapping = {
 
         // TODO: verify: Stack pointer highest bytes sets to $1?
     },
-    "SBC": (context) => {}
+    "SBC": () => {}
 };
 export default InstructionsMapping;
 

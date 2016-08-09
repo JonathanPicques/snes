@@ -181,7 +181,7 @@ export default class Memory {
         return [0x0, address];
     }
 
-};
+}
 
 /**
  * This enumeration lists all the different addressing modes

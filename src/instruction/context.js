@@ -42,7 +42,7 @@ export default class InstructionContext {
      * Decodes the specified opcode and sets the instruction context
      * @param {Opcode} opcode
      * @param {number} address
-     * @return {Opcode}
+     * @returns {Opcode}
      */
     DecodeOpcode(opcode, address) {
         this[_opcode] = opcode;

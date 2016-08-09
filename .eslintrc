@@ -1,0 +1,96 @@
+{
+  "extends": "eslint:recommended",
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "impliedStrict": true
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true,
+    "mocha": true
+  },
+  "rules": {
+    "yoda": 2,
+    "semi": 2,
+    "eqeqeq": 2,
+    "no-var": 2,
+    "eol-last": 2,
+    "no-empty": 2,
+    "camelcase": 2,
+    "no-console": 1,
+    "quote-props": 2,
+    "prefer-const": 2,
+    "keyword-spacing": 2,
+    "space-infix-ops": 2,
+    "consistent-return": 2,
+    "no-trailing-spaces": 2,
+    "no-implicit-globals": 2,
+    "prefer-arrow-callback": 2,
+    "quotes": [
+      "error",
+      "double",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ],
+    "complexity": [
+      "error",
+      {
+        "max": 18
+      }
+    ],
+    "valid-jsdoc": [
+      "error",
+      {
+        "prefer": {
+          "return": "returns"
+        },
+        "preferType": {
+          "String": "string",
+          "Number": "number",
+          "Boolean": "boolean",
+          "object": "Object"
+        },
+        "requireReturn": false,
+        "requireParamDescription": false, // Will be true
+        "requireReturnDescription": false
+      }
+    ],
+    "dot-location": [
+      "error",
+      "property"
+    ],
+    "require-jsdoc": [
+      "error",
+      {
+        "require": {
+          "FunctionDeclaration": false, // Will be true
+          "MethodDefinition": false, // Will be true
+          "ClassDeclaration": false // Will be true
+        }
+      }
+    ],
+    "space-in-parens": [
+      "error",
+      "never"
+    ],
+    "space-before-blocks": [
+      "error",
+      {
+        "functions": "always",
+        "keywords": "always",
+        "classes": "always"
+      }
+    ],
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 1
+      }
+    ]
+  }
+}
