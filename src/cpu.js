@@ -93,7 +93,7 @@ export default class CPU {
             throw new Error(`${op.toString(16)} is not a valid opcode`);
         }
         this[_context].DecodeOpcode(opcode, this.Registers.PC);
-        this.DebugOpcode(opcode);
+        this.DebugOpcode(op, opcode);
         this.Registers.PC += opcode.Bytes.Evaluate(this);
         this.Cycles += opcode.Cycles.Evaluate(this);
         opcode.Instruction(this[_context]);
@@ -101,15 +101,16 @@ export default class CPU {
 
     /**
      * Debugs the given opcode
+     * @param {number} op
      * @param {Opcode} opcode
      */
-    DebugOpcode(opcode) {
+    DebugOpcode(op, opcode) {
         /*eslint-disable no-console */
         console.log("--- Current state ---");
         console.log("PC", HumanReadableAddress(this.Registers.PC));
         console.log("Status", HumanReadableStatusRegister(this));
         console.log("--- Instruction ---");
-        console.log(opcode.Instruction.name, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
+        console.log(opcode.Instruction.name, `(${op.toString(16)})`, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
             opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
         switch (this[_context].Type) {
             case ContextTypes.Value:
@@ -126,7 +127,7 @@ export default class CPU {
 
     /**
      * Returns the state of the specified bit in the status register
-     * @param {number} bit
+     * @param {StatusRegister} bit
      * @returns {number}
      */
     GetStatusRegister(bit) {
@@ -135,7 +136,7 @@ export default class CPU {
 
     /**
      * Sets the state of the specified bit in the status register
-     * @param {number} bit
+     * @param {StatusRegister} bit
      * @param {number} value
      */
     SetStatusRegister(bit, value) {
@@ -146,7 +147,7 @@ export default class CPU {
 
 /**
  * Enumerates the bitfields of the Status register (P)
- * @enum {number}
+ * @enum {StatusRegister}
  */
 export const StatusRegisters = {
     "C": 0x80, // Carry (native)
@@ -158,3 +159,6 @@ export const StatusRegisters = {
     "V": 0x2, // Overflow
     "N": 0x1, // Negative
 };
+/**
+ * @typedef {number} StatusRegister
+ */

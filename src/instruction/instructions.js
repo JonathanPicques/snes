@@ -2,10 +2,10 @@ import {StatusRegisters} from "../cpu";
 import {ContextTypes} from "./context";
 
 /**
- * This object is a mapping for instructions
- * @type {Object<string, Instruction>}
+ * This enumeration lists all the different instructions
+ * @enum {Instruction}
  */
-const InstructionsMapping = {
+const Instructions = {
     "BRK": (context) => {
         // BReaK
         if (context.Cpu.Registers.E === 0x0) {
@@ -57,10 +57,39 @@ const InstructionsMapping = {
         // STore Accumulator
         switch (context.Type) {
             case ContextTypes.Address:
-                if (context.Cpu.Registers.M === 0x0) {
-                    context.Memory.WriteUint16(context.Address, context.Cpu.Registers.A);
+                if (context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) {
+                    context.Memory.WriteUint16(context.Address, context.Cpu.Registers.A); // 16-bit
                 } else {
-                    context.Memory.WriteUint8(context.Address, context.Cpu.Registers.A);
+                    context.Memory.WriteUint8(context.Address, context.Cpu.Registers.A); // 8-bit
+                }
+                break;
+            default:
+                throw new Error("Invalid context type"); // TODO: replace by error class
+        }
+    },
+    "TXS": (context) => {
+        // Transfer X to Stack pointer
+        switch (context.Type) {
+            case ContextTypes.Nothing:
+                // TODO: verify: Stack pointer highest bytes sets to $0 in emulation mode?
+                if (context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0) {
+                    context.Memory.PushStackUint16(context.Cpu.Registers.X); // 16-bit
+                } else {
+                    context.Memory.PushStackUint8(context.Cpu.Registers.X); // 8-bit
+                }
+                break;
+            default:
+                throw new Error("Invalid context type"); // TODO: replace by error class
+        }
+    },
+    "LDX": (context) => {
+        // LoaD X
+        switch (context.Type) {
+            case ContextTypes.Value:
+                if (context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0) {
+                    context.Cpu.Registers.X = context.Value; // 16-bit
+                } else {
+                    context.Cpu.Registers.X = context.Value & 0xf; // 8-bit
                 }
                 break;
             default:
@@ -71,7 +100,11 @@ const InstructionsMapping = {
         // LoaD Accumulator
         switch (context.Type) {
             case ContextTypes.Value:
-                context.Cpu.Registers.A = context.Value;
+                if (context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) {
+                    context.Cpu.Registers.A = context.Value; // 16-bit
+                } else {
+                    context.Cpu.Registers.A = context.Value & 0xf; // 8-bit
+                }
                 break;
             default:
                 throw new Error("Invalid context type"); // TODO: replace by error class
@@ -129,14 +162,8 @@ const InstructionsMapping = {
     },
     "SBC": () => {}
 };
-export default InstructionsMapping;
-
+export default Instructions;
 /**
  * @typedef {function} Instruction
  * @param {InstructionContext} context
  */
-
-/**
- * This error represents an addressing mode not handled by an instruction
- */
-export class AddressingModeNotHandledError extends Error {}

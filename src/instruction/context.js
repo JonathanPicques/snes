@@ -72,6 +72,8 @@ export default class InstructionContext {
             case AddressingModes.Accumulator:
             case AddressingModes.Implied:
                 break;
+            default:
+                throw new UnknownAddressingModeError(opcode.AddressingMode);
         }
         return opcode;
     }
@@ -121,7 +123,6 @@ export const ContextTypes = {
     "ByteMove": 2, // The opcode addressing mode resulted in a byte move
     "Nothing": 3, // The opcode addressing mode did not expect a result
 };
-
 /**
  * @typedef {number} ContextType
  */
@@ -132,3 +133,8 @@ export const ContextTypes = {
  * @property {number} to
  * @property {number} size
  */
+
+/**
+ * This class represents an unknown addressing mode error
+ */
+export class UnknownAddressingModeError extends Error {}

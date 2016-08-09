@@ -1,3 +1,5 @@
+import {StatusRegisters} from "../cpu";
+
 const _bytes = Symbol("bytes");
 const _modifiers = Symbol("modifiers");
 
@@ -25,24 +27,25 @@ export default class OpcodeBytes {
      */
     Evaluate(cpu) {
         let bytes = this[_bytes];
-        if ((this[_modifiers] & OpcodeBytes.MIsZero) !== 0) {
-            bytes += cpu.Registers.M === 0x0 ? 1 : 0;
+        if ((this[_modifiers] & ByteModifiers.MIsZero) !== 0) {
+            bytes += cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 1 : 0;
         }
-        if ((this[_modifiers] & OpcodeBytes.XIsZero) !== 0) {
-            bytes += cpu.Registers.X === 0x0 ? 1 : 0;
+        if ((this[_modifiers] & ByteModifiers.XIsZero) !== 0) {
+            bytes += cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 1 : 0;
         }
         return bytes;
     }
 
-    /**
-     * Whether to add a byte if CPU.Registers.M is set to 0 (16-bit memory/accumulator)
-     * @returns {number}
-     */
-    static get MIsZero() { return 0x1; }
-    /**
-     * Whether to add a byte if CPU.Registers.X is set to 0 (16-bit index)
-     * @returns {number}
-     */
-    static get XIsZero() { return 0x2; }
-
 }
+
+/**
+ * This enumeration lists all the modifiers for the number of bytes
+ * @enum {ByteModifier}
+ */
+export const ByteModifiers = {
+    "MIsZero": 0x1, // Whether to add a byte if CPU.Registers.M is set to 0 (16-bit memory/accumulator)
+    "XIsZero": 0x2, // Whether to add a byte if CPU.Registers.X is set to 0 (16-bit index)
+};
+/**
+ * @typedef {number} ByteModifier
+ */

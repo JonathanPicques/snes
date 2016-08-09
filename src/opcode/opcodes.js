@@ -2,6 +2,8 @@ import OpcodeBytes from "./bytes";
 import OpcodeCycles from "./cycles";
 import Instructions from "../instruction/instructions";
 
+import {ByteModifiers} from "./bytes";
+import {CycleModifiers} from "./cycles";
 import {AddressingModes} from "../mem";
 
 /**
@@ -21,95 +23,107 @@ import {AddressingModes} from "../mem";
  * This map holds the opcode definitions
  * @type {Map<number, Opcode>}
  */
-const OpcodesMapping = new Map();
-OpcodesMapping.set(0x00, {
+const Opcodes = new Map();
+Opcodes.set(0x00, {
     "Instruction": Instructions.BRK,
     "AddressingMode": AddressingModes.StackInterrupt,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(7, OpcodeCycles.NativeMode)
+    "Cycles": new OpcodeCycles(7, CycleModifiers.NativeMode)
 });
-OpcodesMapping.set(0x06, {
+Opcodes.set(0x06, {
     "Instruction": Instructions.ASL,
     "AddressingMode": AddressingModes.DirectPage,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(5, OpcodeCycles.DirectPageLowIsNonZero, OpcodeCycles.MIsZero2)
+    "Cycles": new OpcodeCycles(5, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.MIsZero2)
 });
-OpcodesMapping.set(0x18, {
+Opcodes.set(0x18, {
     "Instruction": Instructions.CLC,
     "AddressingMode": AddressingModes.Implied,
     "Bytes": new OpcodeBytes(1),
     "Cycles": new OpcodeCycles(2)
 });
-OpcodesMapping.set(0x40, {
+Opcodes.set(0x40, {
     "Instruction": Instructions.RTI,
     "AddressingMode": AddressingModes.StackReturnFromInterrupt,
     "Bytes": new OpcodeBytes(1),
     "Cycles": new OpcodeCycles(6)
 });
-OpcodesMapping.set(0x5c, {
+Opcodes.set(0x5c, {
     "Instruction": Instructions.JMP,
     "AddressingMode": AddressingModes.AbsoluteLong,
     "Bytes": new OpcodeBytes(4),
     "Cycles": new OpcodeCycles(4)
 });
-OpcodesMapping.set(0x61, {
+Opcodes.set(0x61, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.DirectPageIndexedIndirectX,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(6, OpcodeCycles.MIsZero1, OpcodeCycles.DirectPageLowIsNonZero)
+    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZero1, CycleModifiers.DirectPageLowIsNonZero)
 });
-OpcodesMapping.set(0x78, {
+Opcodes.set(0x78, {
     "Instruction": Instructions.SEI,
     "AddressingMode": AddressingModes.Implied,
     "Bytes": new OpcodeBytes(1),
     "Cycles": new OpcodeCycles(2)
 });
-OpcodesMapping.set(0x80, {
+Opcodes.set(0x80, {
     "Instruction": Instructions.BRA,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
     "Cycles": new OpcodeCycles(3)
 });
-OpcodesMapping.set(0x85, {
+Opcodes.set(0x85, {
     "Instruction": Instructions.STA,
     "AddressingMode": AddressingModes.DirectPage,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(3, OpcodeCycles.MIsZero1, OpcodeCycles.DirectPageLowIsNonZero)
+    "Cycles": new OpcodeCycles(3, CycleModifiers.MIsZero1, CycleModifiers.DirectPageLowIsNonZero)
 });
-OpcodesMapping.set(0x8d, {
+Opcodes.set(0x8d, {
     "Instruction": Instructions.STA,
     "AddressingMode": AddressingModes.Absolute,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(4, OpcodeCycles.MIsZero1)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZero1)
 });
-OpcodesMapping.set(0xa9, {
+Opcodes.set(0x9a, {
+    "Instruction": Instructions.TXS,
+    "AddressingMode": AddressingModes.Implied,
+    "Bytes": new OpcodeBytes(1),
+    "Cycles": new OpcodeCycles(2)
+});
+Opcodes.set(0xa2, {
+    "Instruction": Instructions.LDX,
+    "AddressingMode": AddressingModes.Immediate,
+    "Bytes": new OpcodeBytes(2, ByteModifiers.XIsZero),
+    "Cycles": new OpcodeCycles(2)
+});
+Opcodes.set(0xa9, {
     "Instruction": Instructions.LDA,
     "AddressingMode": AddressingModes.Immediate,
-    "Bytes": new OpcodeBytes(2, OpcodeBytes.MIsZero),
-    "Cycles": new OpcodeCycles(2, OpcodeCycles.MIsZero1)
+    "Bytes": new OpcodeBytes(2, ByteModifiers.MIsZero),
+    "Cycles": new OpcodeCycles(2, CycleModifiers.MIsZero1)
 });
-OpcodesMapping.set(0xc2, {
+Opcodes.set(0xc2, {
     "Instruction": Instructions.REP,
     "AddressingMode": AddressingModes.Immediate,
     "Bytes": new OpcodeBytes(2),
     "Cycles": new OpcodeCycles(3)
 });
-OpcodesMapping.set(0xe2, {
+Opcodes.set(0xe2, {
     "Instruction": Instructions.SEP,
     "AddressingMode": AddressingModes.Immediate,
     "Bytes": new OpcodeBytes(2),
     "Cycles": new OpcodeCycles(3)
 });
-OpcodesMapping.set(0xfb, {
+Opcodes.set(0xfb, {
     "Instruction": Instructions.XCE,
     "AddressingMode": AddressingModes.Implied,
     "Bytes": new OpcodeBytes(1),
     "Cycles": new OpcodeCycles(2)
 });
-OpcodesMapping.set(0xff, {
+Opcodes.set(0xff, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.AbsoluteLongIndexedX,
     "Bytes": new OpcodeBytes(4),
     "Cycles": new OpcodeCycles(5)
 });
-export default OpcodesMapping;
+export default Opcodes;
