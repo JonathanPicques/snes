@@ -4,6 +4,8 @@ import InstructionContext from "./instruction/context";
 import {EnumeratorName} from "./utils/enum";
 import {AddressingModes} from "./mem";
 import {InstructionsType} from "./instruction/context";
+import {HumanReadableValue} from "./utils/format";
+import {HumanReadableAddress} from "./utils/format";
 import {HumanReadableStatusRegister} from "./utils/format";
 
 const _snes = Symbol("snes");
@@ -92,17 +94,17 @@ export default class CPU {
      */
     DebugOpcode(opcode) {
         console.log("--- Current state ---");
-        console.log(HumanReadableStatusRegister(this));
-        console.log("PC", "@", `0x${this.Registers.PC.toString(16)}`);
+        console.log("PC", HumanReadableAddress(this.Registers.PC));
+        console.log("Status", HumanReadableStatusRegister(this));
         console.log("--- Instruction ---");
         console.log(opcode.Instruction.name, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
             opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
         switch (this[_context].Type) {
             case InstructionsType.Value:
-                console.log(`Value: #$${this[_context].Value.toString(16)}`);
+                console.log("Value", HumanReadableValue(this[_context].Value));
                 break;
             case InstructionsType.Address:
-                console.log(`Address: $${this[_context].Address.toString(16)}`);
+                console.log("Address", HumanReadableAddress(this[_context].Address));
                 break;
         }
         console.log("---");

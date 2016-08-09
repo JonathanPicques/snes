@@ -1,3 +1,5 @@
+import Memory from "./mem";
+
 import {GetStringFromMemory} from "./utils/format";
 
 const _snes = Symbol("snes");
@@ -146,14 +148,7 @@ export class CartridgeLoROM extends Cartridge {
      * @override
      */
     DecodeAddress(address) {
-        let bank = 0x0;
-        let effectiveAddress = 0x0;
-        if ((address & 0xffff0000) !== 0) {
-            bank = (address >> 16) & 0xff;
-            effectiveAddress = address & 0x00ffff; // address is 24-bit wide
-        } else {
-            effectiveAddress = address; // address is 16-bit wide
-        }
+        const [bank, effectiveAddress] = Memory.DecomposeAddress(address);
         if (bank >= 0x0 && bank < 0x40) {
             if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {
                 return [this.RomView, effectiveAddress - (bank + 1) * 0x8000];

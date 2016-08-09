@@ -1,3 +1,5 @@
+import {HumanReadableAddress} from "./utils/format";
+
 const _snes = Symbol("snes");
 
 /**
@@ -35,7 +37,6 @@ export default class Memory {
         }
         return result;
     }
-
     /**
      * Returns the uint8 at the specified address
      * @param {number} address
@@ -44,7 +45,6 @@ export default class Memory {
     ReadUint8(address) {
         return this.Read(address, 1);
     }
-
     /**
      * Returns the uint16 at the specified address
      * @param {number} address
@@ -53,7 +53,6 @@ export default class Memory {
     ReadUint16(address) {
         return this.Read(address, 2);
     }
-
     /**
      * Returns the uint24 at the specified address
      * @param {number} address
@@ -76,12 +75,11 @@ export default class Memory {
         for (let i = 0; i < byteLength; i++) {
             const [dataView, offsetAddress] = this[_snes].Cart.DecodeAddress(address + i);
             if (dataView === null) {
-                throw new Error(`Cannot write at address: $${(address + i).toString(16)}`);
+                throw new Error(`Cannot write at address: ${HumanReadableAddress(address + i)}`);
             }
             dataView.setUint8(offsetAddress, (value >> (i * 8)) & 0xff);
         }
     }
-
     /**
      * Sets the specified uint8 at the specified address
      * @param {number} address
@@ -90,7 +88,6 @@ export default class Memory {
     WriteUint8(address, uint8) {
         this.Write(address, 1, uint8);
     }
-
     /**
      * Sets the specified uint16 at the specified address
      * @param {number} address
@@ -99,7 +96,6 @@ export default class Memory {
     WriteUint16(address, uint16) {
         this.Write(address, 2, uint16);
     }
-
     /**
      * Sets the specified uint24 at the specified address
      * @param {number} address
@@ -121,7 +117,6 @@ export default class Memory {
         this.Write(this[_snes].Cpu.Registers.SP, byteLength, value);
         this[_snes].Cpu.Registers.SP -= byteLength;
     }
-
     /**
      * Pushes the specified uint8 on the stack and moves the CPU stack pointer
      * @param {number} uint8
@@ -129,7 +124,6 @@ export default class Memory {
     PushStackUint8(uint8) {
         this.PushStack(1, uint8);
     }
-
     /**
      * Pushes the specified uint8 on the stack and moves the CPU stack pointer
      * @param {number} uint16
@@ -151,7 +145,6 @@ export default class Memory {
         this[_snes].Cpu.Registers.SP += byteLength;
         return value;
     }
-
     /**
      * Pops the uint8 from the stack and moves the CPU stack pointer
      * @returns {number}
@@ -159,13 +152,33 @@ export default class Memory {
     PopStackUint8() {
         return this.PopStack(1);
     }
-
     /**
      * Pops the uint16 from the stack and moves the CPU stack pointer
      * @returns {number}
      */
     PopStackUint16() {
         return this.PopStack(2);
+    }
+
+    /**
+     * Composes the address from the specified bank and effective address
+     * @param {number} bank
+     * @param {number} effectiveAddress
+     * @returns {number}
+     */
+    static ComposeAddress(bank, effectiveAddress) {
+        return effectiveAddress | (bank << 0xf);
+    }
+    /**
+     * Decomposes the specified address in bank and effective address
+     * @param {number} address
+     * @returns {Array<number>}
+     */
+    static DecomposeAddress(address) {
+        if ((address & 0xffff0000) !== 0) {
+            return [(address >> 16) & 0xff, address & 0x00ffff];
+        }
+        return [0x0, address];
     }
 
 };

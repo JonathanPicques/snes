@@ -1,3 +1,5 @@
+import Memory from "../mem";
+
 import {StatusRegisters as SR} from "../cpu";
 
 /**
@@ -46,4 +48,23 @@ export const HumanReadableRegisters = (registers, padding) => {
  */
 export const HumanReadableStatusRegister = (cpu) => {
     return Object.keys(SR).reverse().map(bit => `${bit}: ${cpu.GetStatusRegister(SR[bit])}`).join(", ");
+};
+
+/**
+ * Returns an human readable string for the specified value
+ * @param {number} value
+ * @returns {string}
+ */
+export const HumanReadableValue = (value) => {
+    return `#$${value.toString(16)}`;
+};
+
+/**
+ * Returns an human readable string for the specified address
+  * @param {number} address
+ * @returns {string}
+ */
+export const HumanReadableAddress = (address) => {
+    const [bank, effectiveAddress] = Memory.DecomposeAddress(address);
+    return `$${("00" + bank.toString(16)).slice(-2)}:${("0000" + effectiveAddress.toString(16)).slice(-4)}`;
 };

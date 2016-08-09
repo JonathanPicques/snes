@@ -1,3 +1,5 @@
+import Memory from "../mem";
+
 import {AddressingModes} from "../mem";
 
 const _snes = Symbol("snes");
@@ -54,7 +56,7 @@ export default class InstructionContext {
                 this[_value] = this.Memory.ReadUint8(address + 1); // TODO: ReadUint16 if bytes == 2?
                 break;
             case AddressingModes.Absolute:
-                this[_address] = this.Memory.ReadUint24(address + 1) & 0xffff; // TODO: really remove bank byte?
+                this[_address] = Memory.ComposeAddress(this.Cpu.Registers.DB, this.Memory.ReadUint16(address + 1));
                 break;
             case AddressingModes.AbsoluteLong:
                 this[_address] = this.Memory.ReadUint24(address + 1);

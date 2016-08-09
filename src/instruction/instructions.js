@@ -59,7 +59,11 @@ const InstructionsMapping = {
         // STore Accumulator
         switch (context.Type) {
             case InstructionsType.Address:
-                console.log(context.Address.toString(16));
+                if (context.Cpu.Registers.M === 0x0) {
+                    context.Memory.WriteUint16(context.Address, context.Cpu.Registers.A);
+                } else {
+                    context.Memory.WriteUint8(context.Address, context.Cpu.Registers.A);
+                }
                 break;
             default:
                 throw new Error("Invalid context type"); // TODO: replace by error class
