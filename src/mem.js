@@ -16,17 +16,17 @@ export default class Memory {
     }
 
     /**
-     * Reads the specified length of bytes from the specified address
+     * Reads the specified byte length from the specified address
      * @param {number} address
-     * @param {number} length
+     * @param {number} byteLength
      * @returns {number}
      */
-    Read(address, length) {
-        if (length < 0 || length > 3) {
+    Read(address, byteLength) {
+        if (byteLength < 0 || byteLength > 3) {
             throw new RangeError();
         }
         let result = 0;
-        for (let i = 0; i < length; i++) {
+        for (let i = 0; i < byteLength; i++) {
             const [dataView, offsetAddress] = this[_snes].Cart.DecodeAddress(address + i);
             if (dataView === null) {
                 throw new Error(`Cannot read at address: $${(address + i).toString(16)}`);
@@ -64,16 +64,16 @@ export default class Memory {
     }
 
     /**
-     * Writes the value of the specified length of bytes to the specified address
+     * Writes the value of the specified byte length to the specified address
      * @param {number} address
-     * @param {number} length
+     * @param {number} byteLength
      * @param {number} value
      */
-    Write(address, length, value) {
-        if (length < 0 || length > 3) {
+    Write(address, byteLength, value) {
+        if (byteLength < 0 || byteLength > 3) {
             throw new RangeError();
         }
-        for (let i = 0; i < length; i++) {
+        for (let i = 0; i < byteLength; i++) {
             const [dataView, offsetAddress] = this[_snes].Cart.DecodeAddress(address + i);
             if (dataView === null) {
                 throw new Error(`Cannot write at address: $${(address + i).toString(16)}`);
@@ -110,41 +110,62 @@ export default class Memory {
     }
 
     /**
-     * Pushes the specified uint8 on the stack at the specified address and moves the CPU stack pointer
+     * Pushes the value of the specified byte length onto the stack and moves the CPU stack pointer
+     * @param {number} byteLength
+     * @param {number} value
+     */
+    PushStack(byteLength, value) {
+        if (byteLength < 0 || byteLength > 2) {
+            throw new RangeError();
+        }
+        this.Write(this[_snes].Cpu.Registers.SP, byteLength, value);
+        this[_snes].Cpu.Registers.SP -= byteLength;
+    }
+
+    /**
+     * Pushes the specified uint8 on the stack and moves the CPU stack pointer
      * @param {number} uint8
      */
     PushStackUint8(uint8) {
-        this.WriteUint8(this[_snes].Cpu.Registers.SP, uint8);
-        this[_snes].Cpu.Registers.SP -= 0x1;
+        this.PushStack(1, uint8);
     }
 
     /**
-     * Pushes the specified uint8 on the stack at the specified address and moves the CPU stack pointer
+     * Pushes the specified uint8 on the stack and moves the CPU stack pointer
      * @param {number} uint16
      */
     PushStackUint16(uint16) {
-        this.WriteUint16(this[_snes].Cpu.Registers.SP, uint16);
-        this[_snes].Cpu.Registers.SP -= 0x2;
+        this.PushStack(2, uint16);
     }
 
     /**
-     * Pops the uint8 on the stack from the specified address and moves the CPU stack pointer
+     * Pops the value of the specified byte length from the stack and moves the CPU stack pointer
+     * @param {number} byteLength
+     * @returns {number}
+     */
+    PopStack(byteLength) {
+        if (byteLength < 0 || byteLength > 2) {
+            throw new RangeError();
+        }
+        const value = this.Read(this[_snes].Cpu.Registers.SP, byteLength);
+        this[_snes].Cpu.Registers.SP += byteLength;
+        return value;
+    }
+
+    /**
+     * Pops the uint8 from the stack and moves the CPU stack pointer
      * @returns {number}
      */
     PopStackUint8() {
-        const result = this.ReadUint8(this[_snes].Cpu.Registers.SP);
-        this[_snes].Cpu.Registers.SP += 0x1;
-        return result;
+        return this.PopStack(1);
     }
 
     /**
-     * Pops the uint16 on the stack from the specified address and moves the CPU stack pointer
+     * Pops the uint16 from the stack and moves the CPU stack pointer
      * @returns {number}
      */
     PopStackUint16() {
-        const result = this.ReadUint16(this[_snes].Cpu.Registers.SP);
-        this[_snes].Cpu.Registers.SP += 0x2;
-        return result;
+        return this.PopStack(2);
     }
 
 };
