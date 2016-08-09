@@ -149,8 +149,8 @@ export class CartridgeLoROM extends Cartridge {
         let bank = 0x0;
         let effectiveAddress = 0x0;
         if ((address & 0xffff0000) !== 0) {
-            bank = address & 0xf;
-            effectiveAddress = address & 0xff0; // address is 24-bit wide
+            bank = (address >> 16) & 0xff;
+            effectiveAddress = address & 0x00ffff; // address is 24-bit wide
         } else {
             effectiveAddress = address; // address is 16-bit wide
         }
@@ -161,6 +161,10 @@ export class CartridgeLoROM extends Cartridge {
         } else if (bank >= 0x40 && bank < 0x6f) {
             if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {
                 return [this.RomView, effectiveAddress - (bank + 1) * 0x8000];
+            }
+        } else if (bank >= 0x80 && bank < 0xff) {
+            if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {
+                return [this.RomView, effectiveAddress - ((bank - 0x80) + 1) * 0x8000];
             }
         }
         return [null, 0x0];

@@ -3,6 +3,8 @@ import InstructionContext from "./instruction/context";
 
 import {EnumeratorName} from "./utils/enum";
 import {AddressingModes} from "./mem";
+import {InstructionsType} from "./instruction/context";
+import {HumanReadableStatusRegister} from "./utils/format";
 
 const _snes = Symbol("snes");
 const _context = Symbol("InstructionContext");
@@ -78,15 +80,33 @@ export default class CPU {
         if (typeof opcode === "undefined") {
             throw new Error(`${op.toString(16)} is not a valid opcode`);
         }
-
-        console.log("PC", "@", `0x${this.Registers.PC.toString(16)}`);
-        console.log(opcode.Instruction.name, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
-            opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
-
         this[_context].DecodeOpcode(opcode, this.Registers.PC);
+        this.DebugOpcode(opcode);
         this.Registers.PC += opcode.Bytes.Evaluate(this);
         this.Cycles += opcode.Cycles.Evaluate(this);
         opcode.Instruction(this[_context]);
+    }
+
+    /**
+     * Debugs the given opcode
+     */
+    DebugOpcode(opcode) {
+        console.log("--- Current state ---");
+        console.log(HumanReadableStatusRegister(this));
+        console.log("PC", "@", `0x${this.Registers.PC.toString(16)}`);
+        console.log("--- Instruction ---");
+        console.log(opcode.Instruction.name, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
+            opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
+        switch (this[_context].Type) {
+            case InstructionsType.Value:
+                console.log(`Value: #$${this[_context].Value.toString(16)}`);
+                break;
+            case InstructionsType.Address:
+                console.log(`Address: $${this[_context].Address.toString(16)}`);
+                break;
+        }
+        console.log("---");
+        console.log("");
     }
 
     /**

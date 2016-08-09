@@ -16,6 +16,7 @@ export default class Memory {
     }
 
     /**
+     * Reads the specified length of bytes from the specified address
      * @param {number} address
      * @param {number} length
      * @returns {number}
@@ -50,7 +51,35 @@ export default class Memory {
      * @returns {number}
      */
     ReadUint16(address) {
-        throw new Error("not yet implemented", address);
+        return this.Read(address, 2);
+    }
+
+    /**
+     * Returns the uint24 at the specified address
+     * @param {number} address
+     * @returns {number}
+     */
+    ReadUint24(address) {
+        return this.Read(address, 3);
+    }
+
+    /**
+     * Writes the value of the specified length of bytes to the specified address
+     * @param {number} address
+     * @param {number} length
+     * @param {number} value
+     */
+    Write(address, length, value) {
+        if (length < 0 || length > 3) {
+            throw new RangeError();
+        }
+        for (let i = 0; i < length; i++) {
+            const [dataView, offsetAddress] = this[_snes].Cart.DecodeAddress(address + i);
+            if (dataView === null) {
+                throw new Error(`Cannot write at address: $${(address + i).toString(16)}`);
+            }
+            dataView.setUint8(offsetAddress, (value >> (i * 8)) & 0xff);
+        }
     }
 
     /**
@@ -59,7 +88,7 @@ export default class Memory {
      * @param {number} uint8
      */
     WriteUint8(address, uint8) {
-        throw new Error("not yet implemented", address, uint8);
+        this.Write(address, 1, uint8);
     }
 
     /**
@@ -68,7 +97,16 @@ export default class Memory {
      * @param {number} uint16
      */
     WriteUint16(address, uint16) {
-        throw new Error("not yet implemented", address, uint16);
+        this.Write(address, 2, uint16);
+    }
+
+    /**
+     * Sets the specified uint24 at the specified address
+     * @param {number} address
+     * @param {number} uint24
+     */
+    WriteUint24(address, uint24) {
+        this.Write(address, 3, uint24);
     }
 
     /**
@@ -76,8 +114,8 @@ export default class Memory {
      * @param {number} uint8
      */
     PushStackUint8(uint8) {
-        throw new Error("not yet implemented", uint8);
-        // this[_snes].Cpu.Registers.SP -= 0x1;
+        this.WriteUint8(this[_snes].Cpu.Registers.SP, uint8);
+        this[_snes].Cpu.Registers.SP -= 0x1;
     }
 
     /**
@@ -85,8 +123,8 @@ export default class Memory {
      * @param {number} uint16
      */
     PushStackUint16(uint16) {
-        throw new Error("not yet implemented", uint16);
-        // this[_snes].Cpu.Registers.SP -= 0x2;
+        this.WriteUint16(this[_snes].Cpu.Registers.SP, uint16);
+        this[_snes].Cpu.Registers.SP -= 0x2;
     }
 
     /**
@@ -94,8 +132,9 @@ export default class Memory {
      * @returns {number}
      */
     PopStackUint8() {
-        throw new Error("not yet implemented");
-        // this[_snes].Cpu.Registers.SP += 0x1;
+        const result = this.ReadUint8(this[_snes].Cpu.Registers.SP);
+        this[_snes].Cpu.Registers.SP += 0x1;
+        return result;
     }
 
     /**
@@ -103,8 +142,9 @@ export default class Memory {
      * @returns {number}
      */
     PopStackUint16() {
-        throw new Error("not yet implemented");
-        // this[_snes].Cpu.Registers.SP += 0x2;
+        const result = this.ReadUint16(this[_snes].Cpu.Registers.SP);
+        this[_snes].Cpu.Registers.SP += 0x2;
+        return result;
     }
 
 };

@@ -46,6 +46,12 @@ OpcodesMapping.set(0x40, {
     "Bytes": new OpcodeBytes(1),
     "Cycles": new OpcodeCycles(6)
 });
+OpcodesMapping.set(0x5c, {
+    "Instruction": Instructions.JMP,
+    "AddressingMode": AddressingModes.AbsoluteLong,
+    "Bytes": new OpcodeBytes(4),
+    "Cycles": new OpcodeCycles(4)
+});
 OpcodesMapping.set(0x61, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.DirectPageIndexedIndirectX,
@@ -61,6 +67,24 @@ OpcodesMapping.set(0x78, {
 OpcodesMapping.set(0x80, {
     "Instruction": Instructions.BRA,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
+    "Bytes": new OpcodeBytes(2),
+    "Cycles": new OpcodeCycles(3)
+});
+OpcodesMapping.set(0x8d, {
+    "Instruction": Instructions.STA,
+    "AddressingMode": AddressingModes.Absolute,
+    "Bytes": new OpcodeBytes(3),
+    "Cycles": new OpcodeCycles(4, OpcodeCycles.MIsZero1)
+});
+OpcodesMapping.set(0xa9, {
+    "Instruction": Instructions.LDA,
+    "AddressingMode": AddressingModes.Immediate,
+    "Bytes": new OpcodeBytes(2, OpcodeBytes.MIsZero),
+    "Cycles": new OpcodeCycles(2, OpcodeCycles.MIsZero1)
+});
+OpcodesMapping.set(0xe2, {
+    "Instruction": Instructions.SEP,
+    "AddressingMode": AddressingModes.Immediate,
     "Bytes": new OpcodeBytes(2),
     "Cycles": new OpcodeCycles(3)
 });

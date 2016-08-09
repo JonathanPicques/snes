@@ -51,13 +51,13 @@ export default class InstructionContext {
 
         switch (opcode.AddressingMode) {
             case AddressingModes.Immediate:
-                this[_value] = address;
+                this[_value] = this.Memory.ReadUint8(address + 1); // TODO: ReadUint16 if bytes == 2?
                 break;
             case AddressingModes.Absolute:
-                this[_address] = address;
+                this[_address] = this.Memory.ReadUint24(address + 1) & 0xffff; // TODO: really remove bank byte?
                 break;
-            case AddressingModes.DirectPage:
-                this[_address] = this.Cpu.Registers.DP + address;
+            case AddressingModes.AbsoluteLong:
+                this[_address] = this.Memory.ReadUint24(address + 1);
                 break;
             case AddressingModes.Accumulator:
             case AddressingModes.Implied:

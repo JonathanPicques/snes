@@ -1,44 +1,4 @@
-/**
- * Regex to filter printable characters
- * @type {RegExp}
- */
-const printableCharacters = /^[\u0020-\u007e\u00a0-\u00ff]*$/;
-
-/**
- * Returns the specified uint8 in its binary representation
- * @param {number} uint8
- * @returns {string}
- */
-export const GetUint8AsBinaryString = (uint8) => {
-    return "0b" + ("00000000" + (uint8 >>> 0).toString(2)).slice(-8);
-};
-
-/**
- * Returns the specified uint16 in its binary representation
- * @param {number} uint8
- * @returns {string}
- */
-export const GetUint16AsBinaryString = (uint8) => {
-    return "0b" + ("0000000000000000" + (uint8 >>> 0).toString(2)).slice(-16);
-};
-
-/**
- * Returns the specified uint32 in its binary representation
- * @param {number} uint32
- * @returns {string}
- */
-export const GetUint32AsBinaryString = (uint32) => {
-    return "0b" + ("00000000000000000000000000000000" + (uint32 >>> 0).toString(2)).slice(-32);
-};
-
-/**
- * Returns the printable character for the specified byte or a dot (.)
- * @param {number} byte
- * @returns {string}
- */
-export const GetByteAsPrintableCharacter = (byte) => {
-   return printableCharacters.test(String.fromCharCode(byte)) ? String.fromCharCode(byte) : "."
-};
+import {StatusRegisters as SR} from "../cpu";
 
 /**
  * Returns the characters read from the memory into a string
@@ -49,38 +9,6 @@ export const GetByteAsPrintableCharacter = (byte) => {
  */
 export const GetStringFromMemory = (memory, from, to) => {
     return Array.prototype.map.call(memory.slice(from, to), byte => String.fromCharCode(byte)).join("");
-};
-
-/**
- * Returns an human readable string for the specified memory fragment
- * @param {Uint8Array} memory
- * @param {number} from
- * @param {number} [to=from + 0x40]
- * @returns {string}
- */
-export const HumanReadableMemory = (memory, from, to) => {
-    let humanReadableString = "";
-    if (typeof to == "undefined") {
-        to = Math.min(from + 0x40, memory.length);
-    }
-    if (to < from || to > memory.length) {
-        throw new Error("to out of bounds");
-    }
-    const rows = (to - from) / 16;
-    for (let row = 0; row < rows; row++) {
-        const subBuffer = memory.slice(from + row * 16, from + row * 16 + 16);
-        const asciiBuffer = Array.prototype.map.call(subBuffer, GetByteAsPrintableCharacter);
-        humanReadableString += ("00000000" + (from + row * 16).toString(16)).slice(-8) + ": ";
-        for (let col = 0; col < 16; col++) {
-            const byte = subBuffer[col];
-            humanReadableString += ("00" + byte.toString(16)).slice(-2) + " ";
-            if (col === 7) {
-                humanReadableString += " ";
-            }
-        }
-        humanReadableString += "|" + asciiBuffer.join("") + "|\n";
-    }
-    return humanReadableString;
 };
 
 /**
@@ -109,4 +37,13 @@ export const HumanReadableRegisters = (registers, padding) => {
         }
     }
     return humanReadableString;
+};
+
+/**
+ * Returns an human readable string for the specified cpu status register
+ * @param {CPU} cpu
+ * @returns {string}
+ */
+export const HumanReadableStatusRegister = (cpu) => {
+    return Object.keys(SR).reverse().map(bit => `${bit}: ${cpu.GetStatusRegister(SR[bit])}`).join(", ");
 };
