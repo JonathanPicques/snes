@@ -51,6 +51,16 @@ export default class CPU {
 
             "E": 0x0, // (Emulation mode) 8 bits: 0x0 = native, 0x1 = emulation
         };
+        /**
+         * Internal CPU registers
+         * @type {ArrayBuffer}
+         */
+        this.InternalRegisters = new ArrayBuffer(0x3ff);
+        /**
+         * Internal CPU registers view
+         * @type {DataView}
+         */
+        this.InternalRegistersView = new DataView(this.InternalRegisters);
     }
 
     /**

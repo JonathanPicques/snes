@@ -28,7 +28,7 @@ export default class OpcodeCycles {
         if ((this[_modifiers] & OpcodeCycles.MIsZero1) !== 0) {
             cycles += cpu.Registers.M === 0x0 ? 1 : 0;
         }
-        if ((this[_modifiers] & OpcodeCycles.LowByteDirectPageIsNonZero) !== 0) {
+        if ((this[_modifiers] & OpcodeCycles.DirectPageLowIsNonZero) !== 0) {
             cycles += ((cpu.Registers.DP & 0xf0) !== 0x0) ? 1 : 0;
         }
         if ((this[_modifiers] & OpcodeCycles.MIsZero2) !== 0) {
@@ -38,7 +38,7 @@ export default class OpcodeCycles {
             cycles += cpu.Registers.X === 0x0 ? 1 : 0;
         }
         if ((this[_modifiers] & OpcodeCycles.NativeMode) !== 0) {
-            cycles += cpu.Registers.E === 0 ? 1 : 0;
+            cycles += cpu.Registers.E === 0x0 ? 1 : 0;
         }
         return cycles;
     }
@@ -49,10 +49,10 @@ export default class OpcodeCycles {
      */
     static get MIsZero1() { return 0x1; }
     /**
-     * Whether to add a cycle if CPU.Registers.DP is set to non-zero
+     * Whether to add a cycle if the lowest bits of CPU.Registers.DP are non-zero
      * @returns {number}
      */
-    static get LowByteDirectPageIsNonZero() { return 0x2; }
+    static get DirectPageLowIsNonZero() { return 0x2; }
     /**
      * Whether to add a cycle if the index crosses a page boundary
      * @returns {number}
@@ -67,7 +67,7 @@ export default class OpcodeCycles {
      * Whether to remove a cycle if no page boundary are crossed
      * @returns {number}
      */
-    static get NoPageBoundaryCrossed() { return 0x10; }
+    static get PageBoundaryNotCrossed() { return 0x10; }
     /**
      * Whether to add a cycle if a branch was took
      * @returns {number}
@@ -92,6 +92,6 @@ export default class OpcodeCycles {
      * Whether to add seven cycles per byte moved
      * @returns {number}
      */
-    static get SeventCyclesPerByteMoved() { return 0x200; }
+    static get SevenCyclesPerByteMoved() { return 0x200; }
 
 }

@@ -32,7 +32,7 @@ OpcodesMapping.set(0x06, {
     "Instruction": Instructions.ASL,
     "AddressingMode": AddressingModes.DirectPage,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(5, OpcodeCycles.LowByteDirectPageIsNonZero, OpcodeCycles.MIsZero2)
+    "Cycles": new OpcodeCycles(5, OpcodeCycles.DirectPageLowIsNonZero, OpcodeCycles.MIsZero2)
 });
 OpcodesMapping.set(0x18, {
     "Instruction": Instructions.CLC,
@@ -56,7 +56,7 @@ OpcodesMapping.set(0x61, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.DirectPageIndexedIndirectX,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(6, OpcodeCycles.MIsZero1, OpcodeCycles.LowByteDirectPageIsNonZero)
+    "Cycles": new OpcodeCycles(6, OpcodeCycles.MIsZero1, OpcodeCycles.DirectPageLowIsNonZero)
 });
 OpcodesMapping.set(0x78, {
     "Instruction": Instructions.SEI,
@@ -69,6 +69,12 @@ OpcodesMapping.set(0x80, {
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
     "Cycles": new OpcodeCycles(3)
+});
+OpcodesMapping.set(0x85, {
+    "Instruction": Instructions.STA,
+    "AddressingMode": AddressingModes.DirectPage,
+    "Bytes": new OpcodeBytes(2),
+    "Cycles": new OpcodeCycles(3, OpcodeCycles.MIsZero1, OpcodeCycles.DirectPageLowIsNonZero)
 });
 OpcodesMapping.set(0x8d, {
     "Instruction": Instructions.STA,

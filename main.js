@@ -14,5 +14,10 @@ const bufferize = (buffer) => {
 const snes = new SNES(bufferize(readFileSync("./test/rom.sfc")));
 
 for (let i = 0; i < 128; i++) {
-    snes.Cpu.Tick();
+   try {
+       snes.Cpu.Tick();
+   } catch (ex) {
+       console.log("Emulation stopped after", i, "instructions");
+       throw ex;
+   }
 }

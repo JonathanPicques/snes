@@ -99,13 +99,13 @@ const InstructionsMapping = {
         context.Cpu.Registers.E = Carry;
 
         // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8 bits)
-        // TODO: verify: The accumulator and indexes high bytes are kept in place (no truncating)
+        // TODO: verify: The accumulator and indexes high bytes are kept (no truncating) ?
         if (context.Cpu.Registers.E === 0x1) {
             context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
             context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
         }
 
-        // TODO: Stack pointer highest bytes sets to $1?
+        // TODO: verify: Stack pointer highest bytes sets to $1?
     },
     "SBC": (context) => {}
 };
