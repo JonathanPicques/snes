@@ -8,6 +8,9 @@ import {ContextTypes} from "./context";
 const Instructions = {
     "BRK": (context) => {
         // BReaK
+        if (context.Type !== ContextTypes.Nothing) {
+            throw new UnhandledContextTypeError();
+        }
         if (context.Cpu.Registers.E === 0x0) {
             context.Memory.PushStackUint8(context.Cpu.Registers.PB);
             context.Memory.PushStackUint16(context.Cpu.Registers.PC + 2);
@@ -26,10 +29,16 @@ const Instructions = {
     "ASL": () => {},
     "CLC": (context) => {
         // CLear Carry bit
+        if (context.Type !== ContextTypes.Nothing) {
+            throw new UnhandledContextTypeError();
+        }
         context.Cpu.SetStatusRegister(StatusRegisters.C, 0x0);
     },
     "RTI": (context) => {
         // ReTurn from Interrupt
+        if (context.Type !== ContextTypes.Nothing) {
+            throw new UnhandledContextTypeError();
+        }
         if (context.Cpu.Registers.E === 0x0) {
             context.Cpu.Registers.P = context.Memory.PopStackUint8();
             context.Cpu.Registers.PC = context.Memory.PopStackUint16();
@@ -45,11 +54,17 @@ const Instructions = {
     },
     "JMP": (context) => {
         // JuMP
+        if (context.Type !== ContextTypes.Address) {
+            throw new UnhandledContextTypeError();
+        }
         context.Cpu.Registers.PC = context.Address;
     },
     "ADC": () => {},
     "SEI": (context) => {
         // SEts Interrupt disable
+        if (context.Type !== ContextTypes.Nothing) {
+            throw new UnhandledContextTypeError();
+        }
         context.Cpu.SetStatusRegister(StatusRegisters.I, 0x1);
     },
     "BRA": () => {},
@@ -64,22 +79,19 @@ const Instructions = {
                 }
                 break;
             default:
-                throw new Error("Invalid context type"); // TODO: replace by error class
+                throw new UnhandledContextTypeError();
         }
     },
     "TXS": (context) => {
         // Transfer X to Stack pointer
-        switch (context.Type) {
-            case ContextTypes.Nothing:
-                // TODO: verify: Stack pointer highest bytes sets to $0 in emulation mode?
-                if (context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0) {
-                    context.Memory.PushStackUint16(context.Cpu.Registers.X); // 16-bit
-                } else {
-                    context.Memory.PushStackUint8(context.Cpu.Registers.X); // 8-bit
-                }
-                break;
-            default:
-                throw new Error("Invalid context type"); // TODO: replace by error class
+        if (context.Type !== ContextTypes.Nothing) {
+            throw new UnhandledContextTypeError();
+        }
+        // TODO: verify: Stack pointer highest bytes sets to $0 in emulation mode?
+        if (context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0) {
+            context.Memory.PushStackUint16(context.Cpu.Registers.X); // 16-bit
+        } else {
+            context.Memory.PushStackUint8(context.Cpu.Registers.X); // 8-bit
         }
     },
     "LDX": (context) => {
@@ -93,7 +105,7 @@ const Instructions = {
                 }
                 break;
             default:
-                throw new Error("Invalid context type"); // TODO: replace by error class
+                throw new UnhandledContextTypeError();
         }
     },
     "LDA": (context) => {
@@ -107,7 +119,7 @@ const Instructions = {
                 }
                 break;
             default:
-                throw new Error("Invalid context type"); // TODO: replace by error class
+                throw new UnhandledContextTypeError();
         }
     },
     "REP": (context) => {
@@ -123,7 +135,7 @@ const Instructions = {
                 }
                 break;
             default:
-                throw new Error("Invalid context type"); // TODO: replace by error class
+                throw new UnhandledContextTypeError();
         }
     },
     "SEP": (context) => {
@@ -139,11 +151,14 @@ const Instructions = {
                 }
                 break;
             default:
-                throw new Error("Invalid context type"); // TODO: replace by error class
+                throw new UnhandledContextTypeError();
         }
     },
     "XCE": (context) => {
         // eXchange Carry bit and Emulation bit
+        if (context.Type !== ContextTypes.Nothing) {
+            throw new UnhandledContextTypeError();
+        }
         const Carry = context.Cpu.GetStatusRegister(StatusRegisters.C);
         const Emulation = context.Cpu.Registers.E;
 
@@ -167,3 +182,8 @@ export default Instructions;
  * @typedef {function} Instruction
  * @param {InstructionContext} context
  */
+
+/**
+ * This class represents an unhandled context type error
+ */
+export class UnhandledContextTypeError extends Error {}
