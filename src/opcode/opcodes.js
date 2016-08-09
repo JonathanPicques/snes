@@ -5,12 +5,12 @@ import Instructions from "../instruction/instructions";
 import {AddressingModes} from "../mem";
 
 /**
+ * @typedef {Object} Opcode
  * An opcode is the combination of:
  *  - An instruction set, aka the routine to execute
  *  - An addressing mode, aka where the instruction will find its arguments
  *  - A number of bytes, aka from how many the program counter will be incremented
  *  - A number of cycles, aka the number of cycles it will take to run the instruction on the CPU
- * @typedef {Object} Opcode
  * @property {function} Instruction
  * @property {AddressingMode} AddressingMode
  * @property {OpcodeBytes} Bytes
@@ -87,6 +87,12 @@ OpcodesMapping.set(0xa9, {
     "AddressingMode": AddressingModes.Immediate,
     "Bytes": new OpcodeBytes(2, OpcodeBytes.MIsZero),
     "Cycles": new OpcodeCycles(2, OpcodeCycles.MIsZero1)
+});
+OpcodesMapping.set(0xc2, {
+    "Instruction": Instructions.REP,
+    "AddressingMode": AddressingModes.Immediate,
+    "Bytes": new OpcodeBytes(2),
+    "Cycles": new OpcodeCycles(3)
 });
 OpcodesMapping.set(0xe2, {
     "Instruction": Instructions.SEP,

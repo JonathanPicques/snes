@@ -151,6 +151,9 @@ export class CartridgeLoROM extends Cartridge {
     DecodeAddress(address) {
         const [bank, effectiveAddress] = Memory.DecomposeAddress(address);
         if (bank >= 0x0 && bank < 0x40) {
+            if (effectiveAddress >= 0x0 && effectiveAddress < 0x2000) {
+                return [this[_snes].WRAMView, effectiveAddress];
+            }
             if (effectiveAddress >= 0x4000 && effectiveAddress < 0x4400) {
                 return [this[_snes].Cpu.InternalRegistersView, effectiveAddress - 0x4000];
             } else if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {

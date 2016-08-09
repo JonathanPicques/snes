@@ -162,11 +162,14 @@ export default class Memory {
 
     /**
      * Composes the address from the specified bank and effective address
-     * @param {number} bank
-     * @param {number} effectiveAddress
+     * @param {number} bank - 8-bit
+     * @param {number} effectiveAddress - 16-bit
      * @returns {number}
      */
     static ComposeAddress(bank, effectiveAddress) {
+        if (bank < 0x0 || bank > 0xff || effectiveAddress < 0 || effectiveAddress > 0xffff) {
+            throw new RangeError();
+        }
         return effectiveAddress | (bank << 0xf);
     }
     /**
@@ -175,6 +178,9 @@ export default class Memory {
      * @returns {Array<number>}
      */
     static DecomposeAddress(address) {
+        if (address < 0 || address > 0xffffff) {
+            throw new RangeError();
+        }
         if ((address & 0xffff0000) !== 0) {
             return [(address >> 16) & 0xff, address & 0x00ffff];
         }

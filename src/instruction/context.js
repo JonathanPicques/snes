@@ -9,7 +9,12 @@ const _address = Symbol("address");
 const _byteMoved = Symbol("byteMoved");
 
 /**
- * This class holds the context for a specified instruction resulting of the execution of a specified opcode
+ * This class holds the context for a specified opcode
+ * Depending on the addressing mode of the opcode, the context will provide one of the following:
+ * - Value (eg. if addressing mode is Immediate)
+ * - Address (eg. if addressing mode is Absolute, AbsoluteLong, DirectPage, ...)
+ * - ByteMove (eg. if addressing mode is BlockMove, for opcodes MVP and MVN)
+ * - Nothing (eg. if addressing mode is Implied, Accumulator, ... for opcodes like XCE, BRK, RTI, ...)
  */
 export default class InstructionContext {
     /**
@@ -61,6 +66,9 @@ export default class InstructionContext {
             case AddressingModes.AbsoluteLong:
                 this[_address] = this.Memory.ReadUint24(address + 1);
                 break;
+            case AddressingModes.DirectPage:
+                this[_address] = Memory.ComposeAddress(0x0, this.Cpu.Registers.DP + this.Memory.ReadUint8(address + 1));
+                break;
             case AddressingModes.Accumulator:
             case AddressingModes.Implied:
                 break;
@@ -73,12 +81,12 @@ export default class InstructionContext {
     /** @returns {CPU} */
     get Cpu() { return this[_snes].Cpu; }
 
-    /** @returns {InstructionsType} */
+    /** @returns {ContextTypes} */
     get Type() {
-        if (this[_value] !== null) return InstructionsType.Value;
-        if (this[_address] !== null) return InstructionsType.Address;
-        if (this[_byteMoved] !== null) return InstructionsType.ByteMove;
-        return InstructionsType.Nothing;
+        if (this[_value] !== null) return ContextTypes.Value;
+        if (this[_address] !== null) return ContextTypes.Address;
+        if (this[_byteMoved] !== null) return ContextTypes.ByteMove;
+        return ContextTypes.Nothing;
     }
     /** @returns {number} */
     get Value() {
@@ -105,9 +113,9 @@ export default class InstructionContext {
 }
 
 /**
- * @enum {InstructionType}
+ * @enum {ContextType}
  */
-export const InstructionsType = {
+export const ContextTypes = {
     "Value": 0, // The opcode addressing mode resulted in a value
     "Address": 1, // The opcode addressing mode resulted in an address
     "ByteMove": 2, // The opcode addressing mode resulted in a byte move
@@ -115,7 +123,7 @@ export const InstructionsType = {
 };
 
 /**
- * @typedef {number} InstructionType
+ * @typedef {number} ContextType
  */
 
 /**

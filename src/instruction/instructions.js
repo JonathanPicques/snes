@@ -1,5 +1,5 @@
 import {StatusRegisters} from "../cpu";
-import {InstructionsType} from "./context";
+import {ContextTypes} from "./context";
 
 /**
  * This object is a mapping for instructions
@@ -56,7 +56,7 @@ const InstructionsMapping = {
     "STA": (context) => {
         // STore Accumulator
         switch (context.Type) {
-            case InstructionsType.Address:
+            case ContextTypes.Address:
                 if (context.Cpu.Registers.M === 0x0) {
                     context.Memory.WriteUint16(context.Address, context.Cpu.Registers.A);
                 } else {
@@ -70,8 +70,24 @@ const InstructionsMapping = {
     "LDA": (context) => {
         // LoaD Accumulator
         switch (context.Type) {
-            case InstructionsType.Value:
+            case ContextTypes.Value:
                 context.Cpu.Registers.A = context.Value;
+                break;
+            default:
+                throw new Error("Invalid context type"); // TODO: replace by error class
+        }
+    },
+    "REP": (context) => {
+        // REset Processor status bits
+        switch (context.Type) {
+            case ContextTypes.Value:
+                context.Cpu.Registers.P &= context.Value;
+
+                // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
+                if (context.Cpu.Registers.E === 0x1) {
+                    context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
+                    context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
+                }
                 break;
             default:
                 throw new Error("Invalid context type"); // TODO: replace by error class
@@ -79,12 +95,18 @@ const InstructionsMapping = {
     },
     "SEP": (context) => {
         // SEt Processor status bits
-        context.Cpu.Registers.P |= context.Value;
+        switch (context.Type) {
+            case ContextTypes.Value:
+                context.Cpu.Registers.P |= context.Value;
 
-        // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
-        if (context.Cpu.Registers.E === 0x1) {
-            context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
-            context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
+                // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
+                if (context.Cpu.Registers.E === 0x1) {
+                    context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
+                    context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
+                }
+                break;
+            default:
+                throw new Error("Invalid context type"); // TODO: replace by error class
         }
     },
     "XCE": (context) => {
