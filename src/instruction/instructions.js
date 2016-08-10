@@ -27,6 +27,15 @@ const Instructions = {
         context.Cpu.SetStatusRegister(StatusRegisters.D, 0x0);
     },
     "ASL": () => {},
+    "BPL": (context) => {
+        // Branch on PLus
+        if (context.Type !== ContextTypes.Address) {
+            throw new UnhandledContextTypeError();
+        }
+        if (context.Cpu.GetStatusRegister(StatusRegisters.N) === 0x0) {
+            context.Cpu.Registers.PC = context.Address;
+        }
+    },
     "CLC": (context) => {
         // CLear Carry bit
         if (context.Type !== ContextTypes.Nothing) {

@@ -112,13 +112,13 @@ export default class CPU {
                 console.log("Address", HumanReadableAddress(this[_context].Address));
                 break;
         }
+        this.Registers.PC += bytes;
+        this.Registers.PB = BankFromAddress(this.Registers.PC); // TODO: Should PB be always in sync with PC?
+        this.Cycles += opcode.Cycles.Evaluate(this);
         opcode.Instruction(this[_context]);
         console.log("---");
         console.log("");
         /* eslint-enable no-console */
-        this.Registers.PC += bytes;
-        this.Registers.PB = BankFromAddress(this.Registers.PC); // TODO: Should PB be always in sync with PC?
-        this.Cycles += opcode.Cycles.Evaluate(this);
     }
 
     /**

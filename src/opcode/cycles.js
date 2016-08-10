@@ -27,20 +27,23 @@ export default class OpcodeCycles {
      */
     Evaluate(cpu) {
         let cycles = this[_cycles];
-        if ((this[_modifiers] & CycleModifiers.MIsZero1) !== 0) {
-            cycles += cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 1 : 0;
+        if ((this[_modifiers] & CycleModifiers.MIsZero1) !== 0x0) {
+            cycles += cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x1 : 0x0;
         }
-        if ((this[_modifiers] & CycleModifiers.DirectPageLowIsNonZero) !== 0) {
-            cycles += ((cpu.Registers.DP & 0xf) !== 0x0) ? 1 : 0;
+        if ((this[_modifiers] & CycleModifiers.DirectPageLowIsNonZero) !== 0x0) {
+            cycles += ((cpu.Registers.DP & 0xf) !== 0x0) ? 0x1 : 0x0;
         }
-        if ((this[_modifiers] & CycleModifiers.MIsZero2) !== 0) {
-            cycles += cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 2 : 0;
+        if ((this[_modifiers] & CycleModifiers.MIsZero2) !== 0x0) {
+            cycles += cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x2 : 0x0;
         }
-        if ((this[_modifiers] & CycleModifiers.XIsZero) !== 0) {
-            cycles += cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 1 : 0;
+        if ((this[_modifiers] & CycleModifiers.XIsZero) !== 0x0) {
+            cycles += cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 0x1 : 0x0;
         }
-        if ((this[_modifiers] & CycleModifiers.NativeMode) !== 0) {
-            cycles += cpu.Registers.E === 0x0 ? 1 : 0;
+        if ((this[_modifiers] & CycleModifiers.NativeMode) !== 0x0) {
+            cycles += cpu.Registers.E === 0x0 ? 0x1 : 0x0;
+        }
+        if ((this[_modifiers] & CycleModifiers.EmulationMode) !== 0x0) {
+            cycles += cpu.Registers.E === 0x1 ? 0x1 : 0x0;
         }
         return cycles;
     }
@@ -59,9 +62,10 @@ export const CycleModifiers = {
     "PageBoundaryNotCrossed": 0x10, // Whether to remove a cycle if no page boundary are crossed
     "BranchTaken": 0x20, // Whether to add a cycle if a branch was took
     "BranchTakenCrossesPageBoundary": 0x40, // Whether to add a cycle if the branch taken crosses page boundary
-    "NativeMode": 0x80, // Whether to add a cycle if CPU is in native mode
-    "XIsZero": 0x100, // Whether to add a cycle if CPU.Status.X is set to zero (16-bit index)
-    "SevenCyclesPerByteMoved": 0x200, // Whether to add seven cycles per byte moved
+    "NativeMode": 0x80, // Whether to add a cycle if CPU is in native mode,
+    "EmulationMode": 0x100, // Whether to add a cycle if CPU is in emulation mode,
+    "XIsZero": 0x200, // Whether to add a cycle if CPU.Status.X is set to zero (16-bit index)
+    "SevenCyclesPerByteMoved": 0x400, // Whether to add seven cycles per byte moved
 };
 /**
  * @typedef {number} CycleModifier

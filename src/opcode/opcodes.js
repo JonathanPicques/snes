@@ -36,6 +36,12 @@ Opcodes.set(0x06, {
     "Bytes": new OpcodeBytes(2),
     "Cycles": new OpcodeCycles(5, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.MIsZero2)
 });
+Opcodes.set(0x10, {
+    "Instruction": Instructions.BPL,
+    "AddressingMode": AddressingModes.ProgramCounterRelative,
+    "Bytes": new OpcodeBytes(2),
+    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.EmulationMode)
+});
 Opcodes.set(0x18, {
     "Instruction": Instructions.CLC,
     "AddressingMode": AddressingModes.Implied,

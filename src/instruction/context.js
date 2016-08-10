@@ -56,6 +56,8 @@ export default class InstructionContext {
         this[_address] = null;
         this[_byteMoved] = null;
 
+        // TODO: While most of them seems to work, pages boundaries and bank boundaries are not handled...
+        // TODO: ... and will fail at some point
         switch (opcode.AddressingMode) {
             case AddressingModes.Immediate:
                 this[_value] = this.Memory.Read(address + 1, bytes - 0x1);
@@ -75,7 +77,7 @@ export default class InstructionContext {
             case AddressingModes.Implied:
                 break;
             default:
-                throw new UnknownAddressingModeError(opcode.AddressingMode);
+                throw new UnimplementedAddressingModeError(opcode.AddressingMode);
         }
         return opcode;
     }
@@ -137,6 +139,6 @@ export const ContextTypes = {
  */
 
 /**
- * This class represents an unknown addressing mode error
+ * This class represents an unimplemented addressing mode error
  */
-export class UnknownAddressingModeError extends Error {}
+export class UnimplementedAddressingModeError extends Error {}
