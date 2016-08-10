@@ -91,11 +91,7 @@ const Instructions = {
         // STore Accumulator
         switch (context.Type) {
             case ContextTypes.Address:
-                if (context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) {
-                    context.Memory.WriteUint16(context.Address, context.Cpu.Registers.A); // 16-bit
-                } else {
-                    context.Memory.WriteUint8(context.Address, context.Cpu.Registers.A); // 8-bit
-                }
+                context.Memory.WriteAccumulator(context.Address);
                 break;
             default:
                 throw new UnhandledContextTypeError();
@@ -129,16 +125,22 @@ const Instructions = {
     },
     "LDA": (context) => {
         // LoaD Accumulator
+        let value = 0;
         switch (context.Type) {
             case ContextTypes.Value:
-                if (context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) {
-                    context.Cpu.Registers.A = context.Value; // 16-bit
-                } else {
-                    context.Cpu.Registers.A = context.Value & 0xf; // 8-bit
-                }
+                value = context.Value;
+                break;
+            case ContextTypes.Address:
+                value = context.Memory.ReadAccumulator(context.Address);
                 break;
             default:
                 throw new UnhandledContextTypeError();
+
+        }
+        if (context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) { // TODO: Add helper to write accumulator
+            context.Cpu.Registers.A = value; // 16-bit
+        } else {
+            context.Cpu.Registers.A = value; // 8-bit
         }
         // Checks if the accumulator is negative (aka. most significant bit is set)
         context.Cpu.SetStatusRegister(StatusRegisters.N, (context.Cpu.Registers.A & 0x8000) === 0x0 ? 0x0 : 0x1);

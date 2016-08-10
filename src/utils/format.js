@@ -42,11 +42,20 @@ export const HumanReadableRegisters = (registers, padding) => {
 };
 
 /**
- * Returns an human readable string for the specified cpu status register
+ * Returns an human readable string for the cpu registers
  * @param {CPU} cpu
  * @returns {string}
  */
-export const HumanReadableStatusRegister = (cpu) => {
+export const HumanReadableCpuRegister = (cpu) => {
+    return Object.keys(cpu.Registers).reverse().map(bit => `${bit}: $${cpu.Registers[bit].toString(16)}`).join(", ");
+};
+
+/**
+ * Returns an human readable string for the cpu status register bits
+ * @param {CPU} cpu
+ * @returns {string}
+ */
+export const HumanReadableCpuStatusRegister = (cpu) => {
     return Object.keys(SR).reverse().map(bit => `${bit}: ${cpu.GetStatusRegister(SR[bit])}`).join(", ");
 };
 

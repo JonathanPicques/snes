@@ -6,7 +6,8 @@ import {AddressingModes} from "./mem";
 import {ContextTypes} from "./instruction/context";
 import {HumanReadableValue} from "./utils/format";
 import {HumanReadableAddress} from "./utils/format";
-import {HumanReadableStatusRegister} from "./utils/format";
+import {HumanReadableCpuRegister} from "./utils/format";
+import {HumanReadableCpuStatusRegister} from "./utils/format";
 
 const _snes = Symbol("snes");
 const _context = Symbol("InstructionContext");
@@ -108,8 +109,8 @@ export default class CPU {
     DebugOpcode(op, opcode) {
         /*eslint-disable no-console */
         console.log("--- Current state ---");
-        console.log("PC", HumanReadableAddress(this.Registers.PC));
-        console.log("Status", HumanReadableStatusRegister(this));
+        console.log("Cpu", HumanReadableCpuRegister(this));
+        console.log("Status", HumanReadableCpuStatusRegister(this));
         console.log("--- Instruction ---");
         console.log(opcode.Instruction.name, `(${op.toString(16)})`, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
             opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);

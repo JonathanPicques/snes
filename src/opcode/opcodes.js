@@ -120,6 +120,12 @@ Opcodes.set(0xab, {
     "Bytes": new OpcodeBytes(1),
     "Cycles": new OpcodeCycles(4)
 });
+Opcodes.set(0xad, {
+    "Instruction": Instructions.LDA,
+    "AddressingMode": AddressingModes.Absolute,
+    "Bytes": new OpcodeBytes(3),
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZero1)
+});
 Opcodes.set(0xc2, {
     "Instruction": Instructions.REP,
     "AddressingMode": AddressingModes.Immediate,

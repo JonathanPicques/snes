@@ -1,3 +1,4 @@
+import {StatusRegisters} from "./cpu";
 import {HumanReadableAddress} from "./utils/format";
 
 const _snes = Symbol("snes");
@@ -38,7 +39,7 @@ export default class Memory {
         return result;
     }
     /**
-     * Returns the uint8 at the specified address
+     * Reads the uint8 at the specified address
      * @param {number} address
      * @returns {number}
      */
@@ -46,7 +47,7 @@ export default class Memory {
         return this.Read(address, 1);
     }
     /**
-     * Returns the uint16 at the specified address
+     * Reads the uint16 at the specified address
      * @param {number} address
      * @returns {number}
      */
@@ -54,12 +55,22 @@ export default class Memory {
         return this.Read(address, 2);
     }
     /**
-     * Returns the uint24 at the specified address
+     * Reads the uint24 at the specified address
      * @param {number} address
      * @returns {number}
      */
     ReadUint24(address) {
         return this.Read(address, 3);
+    }
+    /**
+     * Reads the accumulator depending on the accumulator size (8-bit or 16-bit) at the specified address
+     * @returns {number}
+     */
+    ReadAccumulator(address) {
+        if (this[_snes].Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) {
+            return this.ReadUint16(address); // 16-bit
+        }
+        return this.ReadUint8(address); // 8-bit
     }
 
     /**
@@ -81,7 +92,7 @@ export default class Memory {
         }
     }
     /**
-     * Sets the specified uint8 at the specified address
+     * Writes the specified uint8 at the specified address
      * @param {number} address
      * @param {number} uint8
      */
@@ -89,7 +100,7 @@ export default class Memory {
         this.Write(address, 1, uint8);
     }
     /**
-     * Sets the specified uint16 at the specified address
+     * Writes the specified uint16 at the specified address
      * @param {number} address
      * @param {number} uint16
      */
@@ -97,12 +108,22 @@ export default class Memory {
         this.Write(address, 2, uint16);
     }
     /**
-     * Sets the specified uint24 at the specified address
+     * Writes the specified uint24 at the specified address
      * @param {number} address
      * @param {number} uint24
      */
     WriteUint24(address, uint24) {
         this.Write(address, 3, uint24);
+    }
+    /**
+     * Writes the accumulator depending on the accumulator size (8-bit or 16-bit) at the specified address
+     * @returns {number}
+     */
+    WriteAccumulator(address) {
+        if (this[_snes].Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) {
+            return this.WriteUint16(address, this[_snes].Cpu.Registers.A); // 16-bit
+        }
+        return this.WriteUint8(address, this[_snes].Cpu.Registers.A); // 8-bit
     }
 
     /**
