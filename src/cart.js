@@ -140,6 +140,11 @@ export class CartridgeLoROM extends Cartridge {
      */
     constructor(snes, rom) {
         super(snes, rom, 0x7fc0);
+
+        // TODO: not all LoROM cartridges has SRAM
+        // TODO: this should be in superclass
+        this.SRAM = new ArrayBuffer(0x7fff);
+        this.SRAMView = new DataView(this.SRAM);
     }
 
     /**
@@ -165,6 +170,9 @@ export class CartridgeLoROM extends Cartridge {
                 return [this.RomView, effectiveAddress - (bank + 1) * 0x8000, "ROM"];
             }
         } else if (bank >= 0x80 && bank < 0xff) {
+            if (effectiveAddress > 0x0 && effectiveAddress <= 0x7fff) {
+                return [this.SRAMView, effectiveAddress, "SRAM"];
+            }
             if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {
                 return [this.RomView, effectiveAddress - ((bank - 0x80) + 1) * 0x8000, "ROM"];
             }
