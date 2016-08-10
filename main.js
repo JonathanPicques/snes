@@ -1,23 +1,18 @@
 import SNES from "./src/snes";
-
+import Readline from "readline";
 import {readFileSync} from "fs";
 
-const bufferize = (buffer) => {
-    const arrayBuffer = new ArrayBuffer(buffer.length);
-    const view = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < buffer.length; i++) {
-        view[i] = buffer[i];
-    }
-    return arrayBuffer;
-};
+const snes = new SNES(readFileSync("./test/rom.sfc").buffer);
+const reader = Readline.createInterface({"input": process.stdin, "output": process.stdout, "prompt": "snes$ "});
+let instructions = 0;
 
-const snes = new SNES(bufferize(readFileSync("./test/rom.sfc")));
-
-for (let i = 0; i < 128; i++) {
-   try {
-       snes.Cpu.Tick();
-   } catch (ex) {
-       console.log("Emulation stopped after", i, "instructions");
-       throw ex;
-   }
-}
+reader.prompt();
+reader.on("line", () => {
+    try { snes.Cpu.Tick(); } catch (e) { console.error(e); reader.close(); }
+    instructions += 1;
+    reader.prompt();
+});
+reader.on("close", () => {
+    console.log(`Emulation ended after ${instructions} instructions`);
+    process.exit(0);
+});
