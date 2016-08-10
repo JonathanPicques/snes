@@ -71,6 +71,8 @@ export default class InstructionContext {
                 this[_address] = Memory.ComposeAddress(0x0, this.Cpu.Registers.DP + this.Memory.ReadUint8(address + 1));
                 break;
             case AddressingModes.Accumulator:
+            case AddressingModes.StackPush:
+            case AddressingModes.StackPull:
             case AddressingModes.Implied:
                 break;
             default:

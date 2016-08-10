@@ -151,14 +151,14 @@ export default class CPU {
  * @enum {StatusRegister}
  */
 export const StatusRegisters = {
-    "C": 0x80, // Carry (native)
-    "Z": 0x40, // Zero
-    "I": 0x20, // IRQ Disable
-    "D": 0x10, // Decimal
-    "X": 0x8, // Index register size: 0x0 = 16 bits, 0x1 = 8 bits
-    "M": 0x4, // Accumulator register size: 0x0 = 16 bits, 0x1 = 8 bits
-    "V": 0x2, // Overflow
-    "N": 0x1, // Negative
+    "C": 0x1, // Carry (native)
+    "Z": 0x2, // Zero
+    "I": 0x4, // IRQ Disable
+    "D": 0x8, // Decimal
+    "X": 0x10, // Index register size: 0x0 = 16 bits, 0x1 = 8 bits
+    "M": 0x20, // Accumulator register size: 0x0 = 16 bits, 0x1 = 8 bits
+    "V": 0x40, // Overflow
+    "N": 0x80, // Negative
 };
 /**
  * @typedef {number} StatusRegister

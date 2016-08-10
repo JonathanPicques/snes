@@ -52,6 +52,13 @@ const Instructions = {
             context.Cpu.Registers.Y = Y;
         }
     },
+    "PHK": (context) => {
+        // PusH the program banK on the stacK
+        if (context.Type !== ContextTypes.Nothing) {
+            throw new UnhandledContextTypeError();
+        }
+        context.Memory.PushStackUint8(context.Cpu.Registers.PB);
+    },
     "TCD": (context) => {
         // Transfer Accumulator C to Direct page
         if (context.Type !== ContextTypes.Nothing) {
@@ -138,36 +145,39 @@ const Instructions = {
         // Checks if the accumulator is zero
         context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.A) === 0x0 ? 0x1 : 0x0);
     },
+    "PLB": (context) => {
+        // PuLL data Bank register
+        if (context.Type !== ContextTypes.Nothing) {
+            throw new UnhandledContextTypeError();
+        }
+        context.Cpu.Registers.DB = context.Memory.PopStackUint8();
+        // Checks if the data bank is negative (aka. most significant bit is set)
+        context.Cpu.SetStatusRegister(StatusRegisters.N, (context.Cpu.Registers.DB & 0x80) === 0x0 ? 0x0 : 0x1);
+        // Checks if the data bank is zero
+        context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.DB) === 0x0 ? 0x1 : 0x0);
+    },
     "REP": (context) => {
         // REset Processor status bits
-        switch (context.Type) {
-            case ContextTypes.Value:
-                context.Cpu.Registers.P &= context.Value;
-
-                // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
-                if (context.Cpu.Registers.E === 0x1) {
-                    context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
-                    context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
-                }
-                break;
-            default:
-                throw new UnhandledContextTypeError();
+        if (context.Type !== ContextTypes.Value) {
+            throw new UnhandledContextTypeError();
+        }
+        context.Cpu.Registers.P &= ~context.Value;
+        // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
+        if (context.Cpu.Registers.E === 0x1) {
+            context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
+            context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
         }
     },
     "SEP": (context) => {
         // SEt Processor status bits
-        switch (context.Type) {
-            case ContextTypes.Value:
-                context.Cpu.Registers.P |= context.Value;
-
-                // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
-                if (context.Cpu.Registers.E === 0x1) {
-                    context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
-                    context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
-                }
-                break;
-            default:
-                throw new UnhandledContextTypeError();
+        if (context.Type !== ContextTypes.Value) {
+            throw new UnhandledContextTypeError();
+        }
+        context.Cpu.Registers.P |= context.Value;
+        // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
+        if (context.Cpu.Registers.E === 0x1) {
+            context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
+            context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
         }
     },
     "XCE": (context) => {

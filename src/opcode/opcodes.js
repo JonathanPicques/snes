@@ -48,6 +48,12 @@ Opcodes.set(0x40, {
     "Bytes": new OpcodeBytes(1),
     "Cycles": new OpcodeCycles(6)
 });
+Opcodes.set(0x4b, {
+    "Instruction": Instructions.PHK,
+    "AddressingMode": AddressingModes.StackPush,
+    "Bytes": new OpcodeBytes(1),
+    "Cycles": new OpcodeCycles(3)
+});
 Opcodes.set(0x5b, {
     "Instruction": Instructions.TCD,
     "AddressingMode": AddressingModes.Implied,
@@ -107,6 +113,12 @@ Opcodes.set(0xa9, {
     "AddressingMode": AddressingModes.Immediate,
     "Bytes": new OpcodeBytes(2, ByteModifiers.MIsZero),
     "Cycles": new OpcodeCycles(2, CycleModifiers.MIsZero1)
+});
+Opcodes.set(0xab, {
+    "Instruction": Instructions.PLB,
+    "AddressingMode": AddressingModes.StackPull,
+    "Bytes": new OpcodeBytes(1),
+    "Cycles": new OpcodeCycles(4)
 });
 Opcodes.set(0xc2, {
     "Instruction": Instructions.REP,

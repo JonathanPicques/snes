@@ -28,10 +28,10 @@ export default class OpcodeBytes {
     Evaluate(cpu) {
         let bytes = this[_bytes];
         if ((this[_modifiers] & ByteModifiers.MIsZero) !== 0) {
-            bytes += cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 1 : 0;
+            bytes += cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x1 : 0x0;
         }
         if ((this[_modifiers] & ByteModifiers.XIsZero) !== 0) {
-            bytes += cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 1 : 0;
+            bytes += cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 0x1 : 0x0;
         }
         return bytes;
     }
@@ -43,8 +43,8 @@ export default class OpcodeBytes {
  * @enum {ByteModifier}
  */
 export const ByteModifiers = {
-    "MIsZero": 0x1, // Whether to add a byte if CPU.Registers.M is set to 0 (16-bit memory/accumulator)
-    "XIsZero": 0x2, // Whether to add a byte if CPU.Registers.X is set to 0 (16-bit index)
+    "MIsZero": 0x1, // Whether to add a byte if CPU.Status.M is set to zero (16-bit memory/accumulator)
+    "XIsZero": 0x2, // Whether to add a byte if CPU.Status.X is set to zero (16-bit index)
 };
 /**
  * @typedef {number} ByteModifier
