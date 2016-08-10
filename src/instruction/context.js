@@ -1,6 +1,5 @@
-import Memory from "../mem";
-
 import {AddressingModes} from "../mem";
+import {AbsoluteAddress} from "../addr";
 
 const _snes = Symbol("snes");
 const _opcode = Symbol("snes");
@@ -62,13 +61,13 @@ export default class InstructionContext {
                 this[_value] = this.Memory.Read(address + 1, bytes - 0x1);
                 break;
             case AddressingModes.Absolute:
-                this[_address] = Memory.ComposeAddress(this.Cpu.Registers.DB, this.Memory.ReadUint16(address + 1));
+                this[_address] = AbsoluteAddress(this.Cpu.Registers.DB, this.Memory.ReadUint16(address + 1));
                 break;
             case AddressingModes.AbsoluteLong:
                 this[_address] = this.Memory.ReadUint24(address + 1);
                 break;
             case AddressingModes.DirectPage:
-                this[_address] = Memory.ComposeAddress(0x0, this.Cpu.Registers.DP + this.Memory.ReadUint8(address + 1));
+                this[_address] = AbsoluteAddress(0x0, this.Cpu.Registers.DP + this.Memory.ReadUint8(address + 1));
                 break;
             case AddressingModes.Accumulator:
             case AddressingModes.StackPush:

@@ -30,10 +30,11 @@ export default class Memory {
         }
         let result = 0;
         for (let i = 0; i < byteLength; i++) {
-            const [dataView, offsetAddress] = this[_snes].Cart.DecodeAddress(address + i);
+            const [dataView, offsetAddress, type] = this[_snes].Cart.DecodeAddress(address + i);
             if (dataView === null) {
-                throw new Error(`Cannot read at address: $${(address + i).toString(16)}`);
+                throw new Error(`Cannot read at address: ${HumanReadableAddress(address + i)}`);
             }
+            console.log(`Reading from ${type}`);
             result |= dataView.getUint8(offsetAddress) << (i * 8);
         }
         return result;
@@ -84,10 +85,11 @@ export default class Memory {
             throw new RangeError();
         }
         for (let i = 0; i < byteLength; i++) {
-            const [dataView, offsetAddress] = this[_snes].Cart.DecodeAddress(address + i);
+            const [dataView, offsetAddress, type] = this[_snes].Cart.DecodeAddress(address + i);
             if (dataView === null) {
                 throw new Error(`Cannot write at address: ${HumanReadableAddress(address + i)}`);
             }
+            console.log(`Writing on ${type}`);
             dataView.setUint8(offsetAddress, (value >> (i * 8)) & 0xff);
         }
     }
@@ -135,8 +137,8 @@ export default class Memory {
         if (byteLength < 0 || byteLength > 2) {
             throw new RangeError();
         }
-        this.Write(this[_snes].Cpu.Registers.SP, byteLength, value);
         this[_snes].Cpu.Registers.SP -= byteLength;
+        this.Write(this[_snes].Cpu.Registers.SP, byteLength, value);
     }
     /**
      * Pushes the specified uint8 on the stack and moves the CPU stack pointer
@@ -179,33 +181,6 @@ export default class Memory {
      */
     PopStackUint16() {
         return this.PopStack(2);
-    }
-
-    /**
-     * Composes the address from the specified bank and effective address
-     * @param {number} bank - 8-bit
-     * @param {number} effectiveAddress - 16-bit
-     * @returns {number}
-     */
-    static ComposeAddress(bank, effectiveAddress) {
-        if (bank < 0x0 || bank > 0xff || effectiveAddress < 0 || effectiveAddress > 0xffff) {
-            throw new RangeError();
-        }
-        return effectiveAddress | (bank << 0xf);
-    }
-    /**
-     * Decomposes the specified address in bank and effective address
-     * @param {number} address
-     * @returns {Array<number>}
-     */
-    static DecomposeAddress(address) {
-        if (address < 0 || address > 0xffffff) {
-            throw new RangeError();
-        }
-        if ((address & 0xffff0000) !== 0) {
-            return [(address >> 16) & 0xff, address & 0x00ffff];
-        }
-        return [0x0, address];
     }
 
 }

@@ -1,6 +1,6 @@
-import Memory from "./mem";
-
+import {BankFromAddress} from "./addr";
 import {GetStringFromMemory} from "./utils/format";
+import {EffectiveAddressFromAddress} from "./addr";
 
 const _snes = Symbol("snes");
 
@@ -70,10 +70,10 @@ export default class Cartridge {
     /**
      * Decodes the specified address and returns the data buffer and the offset address
      * @param {number} address
-     * @returns {[DataView, number]}
+     * @returns {[DataView, number, string]}
      */
     DecodeAddress(address) {
-        return [null, address];
+        return [null, address, ""];
     }
 
     /**
@@ -145,27 +145,28 @@ export class CartridgeLoROM extends Cartridge {
     /**
      * Decodes the specified address and returns the data buffer and the offset address
      * @param {number} address
-     * @returns {[DataView, number]}
+     * @returns {[DataView, number, string]}
      * @override
      */
     DecodeAddress(address) {
-        const [bank, effectiveAddress] = Memory.DecomposeAddress(address);
+        const bank = BankFromAddress(address);
+        const effectiveAddress = EffectiveAddressFromAddress(address);
         if (bank >= 0x0 && bank < 0x40) {
             if (effectiveAddress >= 0x0 && effectiveAddress < 0x2000) {
-                return [this[_snes].WRAMView, effectiveAddress];
+                return [this[_snes].WRAMView, effectiveAddress, "WRAM"];
             }
             if (effectiveAddress >= 0x4000 && effectiveAddress < 0x4400) {
-                return [this[_snes].Cpu.InternalRegistersView, effectiveAddress - 0x4000];
+                return [this[_snes].Cpu.InternalRegistersView, effectiveAddress - 0x4000, "CPU Internal"];
             } else if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {
-                return [this.RomView, effectiveAddress - (bank + 1) * 0x8000];
+                return [this.RomView, effectiveAddress - (bank + 1) * 0x8000, "ROM"];
             }
         } else if (bank >= 0x40 && bank < 0x6f) {
             if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {
-                return [this.RomView, effectiveAddress - (bank + 1) * 0x8000];
+                return [this.RomView, effectiveAddress - (bank + 1) * 0x8000, "ROM"];
             }
         } else if (bank >= 0x80 && bank < 0xff) {
             if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {
-                return [this.RomView, effectiveAddress - ((bank - 0x80) + 1) * 0x8000];
+                return [this.RomView, effectiveAddress - ((bank - 0x80) + 1) * 0x8000, "ROM"];
             }
         }
         return [null, 0x0];

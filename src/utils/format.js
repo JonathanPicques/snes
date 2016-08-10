@@ -1,6 +1,21 @@
-import Memory from "../mem";
-
+import {BankFromAddress} from "../addr";
 import {StatusRegisters as SR} from "../cpu";
+import {EffectiveAddressFromAddress} from "../addr";
+
+/**
+ * Regex to filter human readable characters
+ * @type {RegExp}
+ */
+const humanReadableCharacters = /^[\u0020-\u007e\u00a0-\u00ff]*$/;
+
+/**
+ * Returns the printable character for the specified byte or a dot (.)
+ * @param {number} byte
+ * @returns {string}
+ */
+export const HumanReadableByte = (byte) => {
+    return humanReadableCharacters.test(String.fromCharCode(byte)) ? String.fromCharCode(byte) : ".";
+};
 
 /**
  * Returns the characters read from the memory into a string
@@ -74,6 +89,34 @@ export const HumanReadableValue = (value) => {
  * @returns {string}
  */
 export const HumanReadableAddress = (address) => {
-    const [bank, effectiveAddress] = Memory.DecomposeAddress(address);
+    const bank = BankFromAddress(address);
+    const effectiveAddress = EffectiveAddressFromAddress(address);
     return `$${("00" + bank.toString(16)).slice(-2)}:${("0000" + effectiveAddress.toString(16)).slice(-4)}`;
+};
+
+/**
+ *
+ * @param {Memory} memory
+ * @param {number} [from=0]
+ * @param {number} [to=from+0x80}
+ * @return {string}
+ */
+export const HumanReadableMemory = (memory, from, to) => {
+    let humanReadableString = "";
+    const rows = (to - from) / 0x10;
+    const hexa = (v, l) => {  return ("0".repeat(l) + v.toString(16)).slice(-l); };
+    const read = (a) => { try { return memory.ReadUint8(a); } catch (e) { return null; } };
+    for (let row = 0x0; row < rows; row++) {
+        let bytes = [];
+        let chars = [];
+        for (let col = 0x0; col < 0x10; col++) {
+            if (row + col > to) break;
+            const byte = read(from + row * 0x10 + col);
+            const char = HumanReadableByte(byte);
+            bytes.push(byte === null ? "??" : hexa(byte, 2));
+            chars.push(char);
+        }
+        humanReadableString += `${hexa(from + row * 0x10, 6)} ${bytes.join(" ")} ${chars.join("")}\n`;
+    }
+    return humanReadableString;
 };

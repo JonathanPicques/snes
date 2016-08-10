@@ -1,5 +1,5 @@
-import {StatusRegisters} from "../cpu";
 import {ContextTypes} from "./context";
+import {StatusRegisters} from "../cpu";
 
 /**
  * This enumeration lists all the different instructions
@@ -102,11 +102,13 @@ const Instructions = {
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
         }
-        // TODO: verify: Stack pointer highest bytes sets to $0 in emulation mode?
-        if (context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0) {
-            context.Memory.PushStackUint16(context.Cpu.Registers.X); // 16-bit
+        if (context.Cpu.Registers.E === 0x0) {
+            // In Native mode, the whole X index is transferred to the stack pointer
+            context.Cpu.Registers.SP = context.Cpu.Registers.X;
         } else {
-            context.Memory.PushStackUint8(context.Cpu.Registers.X); // 8-bit
+            // In Emulation mode, the high bytes are set
+            // TODO: Implementation?
+            context.Cpu.Registers.SP |= context.Cpu.Registers.X << 0x8;
         }
     },
     "LDX": (context) => {

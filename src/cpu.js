@@ -1,9 +1,10 @@
 import OpcodesMapping from "./opcode/opcodes";
 import InstructionContext from "./instruction/context";
 
-import {EnumeratorName} from "./utils/enum";
-import {AddressingModes} from "./mem";
 import {ContextTypes} from "./instruction/context";
+import {EnumeratorName} from "./utils/enum";
+import {BankFromAddress} from "./addr";
+import {AddressingModes} from "./mem";
 import {HumanReadableValue} from "./utils/format";
 import {HumanReadableAddress} from "./utils/format";
 import {HumanReadableCpuRegister} from "./utils/format";
@@ -88,6 +89,7 @@ export default class CPU {
      * Makes this CPU tick
      */
     Tick() {
+        console.log("--- Decode opcode ---");
         const op = this[_snes].Memory.ReadUint8(this.Registers.PC);
         const opcode = OpcodesMapping.get(op);
         if (typeof opcode === "undefined") {
@@ -95,19 +97,7 @@ export default class CPU {
         }
         const bytes = opcode.Bytes.Evaluate(this);
         this[_context].DecodeOpcode(opcode, bytes, this.Registers.PC);
-        this.DebugOpcode(op, opcode);
-        this.Registers.PC += bytes;
-        this.Cycles += opcode.Cycles.Evaluate(this);
-        opcode.Instruction(this[_context]);
-    }
-
-    /**
-     * Debugs the given opcode
-     * @param {number} op
-     * @param {Opcode} opcode
-     */
-    DebugOpcode(op, opcode) {
-        /*eslint-disable no-console */
+        /* eslint-disable no-console */
         console.log("--- Current state ---");
         console.log("Cpu", HumanReadableCpuRegister(this));
         console.log("Status", HumanReadableCpuStatusRegister(this));
@@ -122,9 +112,13 @@ export default class CPU {
                 console.log("Address", HumanReadableAddress(this[_context].Address));
                 break;
         }
+        opcode.Instruction(this[_context]);
         console.log("---");
         console.log("");
-        /*eslint-enable no-console */
+        /* eslint-enable no-console */
+        this.Registers.PC += bytes;
+        this.Registers.PB = BankFromAddress(this.Registers.PC); // TODO: Should PB be always in sync with PC?
+        this.Cycles += opcode.Cycles.Evaluate(this);
     }
 
     /**
