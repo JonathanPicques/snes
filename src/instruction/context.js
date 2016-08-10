@@ -46,10 +46,11 @@ export default class InstructionContext {
     /**
      * Decodes the specified opcode and sets the instruction context
      * @param {Opcode} opcode
+     * @param {number} bytes
      * @param {number} address
      * @returns {Opcode}
      */
-    DecodeOpcode(opcode, address) {
+    DecodeOpcode(opcode, bytes, address) {
         this[_opcode] = opcode;
 
         this[_value] = null;
@@ -58,7 +59,7 @@ export default class InstructionContext {
 
         switch (opcode.AddressingMode) {
             case AddressingModes.Immediate:
-                this[_value] = this.Memory.ReadUint8(address + 1); // TODO: ReadUint16 if bytes == 2?
+                this[_value] = this.Memory.Read(address + 1, bytes - 0x1);
                 break;
             case AddressingModes.Absolute:
                 this[_address] = Memory.ComposeAddress(this.Cpu.Registers.DB, this.Memory.ReadUint16(address + 1));

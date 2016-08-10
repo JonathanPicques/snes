@@ -52,6 +52,18 @@ const Instructions = {
             context.Cpu.Registers.Y = Y;
         }
     },
+    "TCD": (context) => {
+        // Transfer Accumulator C to Direct page
+        if (context.Type !== ContextTypes.Nothing) {
+            throw new UnhandledContextTypeError();
+        }
+        // Writes the accumulator C (16-bit) to the direct page pointer, disregarding the status bit M
+        context.Memory.WriteUint16(context.Cpu.Registers.DP, context.Cpu.Registers.A);
+        // Checks if the accumulator is negative (aka. most significant bit is set)
+        context.Cpu.SetStatusRegister(StatusRegisters.N, (context.Cpu.Registers.A & 0x8000) === 0x0 ? 0x0 : 0x1);
+        // Checks if the accumulator is zero
+        context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.A) === 0x0 ? 0x1 : 0x0);
+    },
     "JMP": (context) => {
         // JuMP
         if (context.Type !== ContextTypes.Address) {
@@ -121,6 +133,10 @@ const Instructions = {
             default:
                 throw new UnhandledContextTypeError();
         }
+        // Checks if the accumulator is negative (aka. most significant bit is set)
+        context.Cpu.SetStatusRegister(StatusRegisters.N, (context.Cpu.Registers.A & 0x8000) === 0x0 ? 0x0 : 0x1);
+        // Checks if the accumulator is zero
+        context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.A) === 0x0 ? 0x1 : 0x0);
     },
     "REP": (context) => {
         // REset Processor status bits

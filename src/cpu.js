@@ -92,9 +92,10 @@ export default class CPU {
         if (typeof opcode === "undefined") {
             throw new Error(`${op.toString(16)} is not a valid opcode`);
         }
-        this[_context].DecodeOpcode(opcode, this.Registers.PC);
+        const bytes = opcode.Bytes.Evaluate(this);
+        this[_context].DecodeOpcode(opcode, bytes, this.Registers.PC);
         this.DebugOpcode(op, opcode);
-        this.Registers.PC += opcode.Bytes.Evaluate(this);
+        this.Registers.PC += bytes;
         this.Cycles += opcode.Cycles.Evaluate(this);
         opcode.Instruction(this[_context]);
     }

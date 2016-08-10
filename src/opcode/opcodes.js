@@ -48,6 +48,12 @@ Opcodes.set(0x40, {
     "Bytes": new OpcodeBytes(1),
     "Cycles": new OpcodeCycles(6)
 });
+Opcodes.set(0x5b, {
+    "Instruction": Instructions.TCD,
+    "AddressingMode": AddressingModes.Implied,
+    "Bytes": new OpcodeBytes(1),
+    "Cycles": new OpcodeCycles(2)
+});
 Opcodes.set(0x5c, {
     "Instruction": Instructions.JMP,
     "AddressingMode": AddressingModes.AbsoluteLong,
@@ -126,4 +132,5 @@ Opcodes.set(0xff, {
     "Bytes": new OpcodeBytes(4),
     "Cycles": new OpcodeCycles(5)
 });
+
 export default Opcodes;
