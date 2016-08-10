@@ -16,7 +16,6 @@ const Instructions = {
             context.Memory.PushStackUint16(context.Cpu.Registers.PC + 2);
             context.Memory.PushStackUint8(context.Cpu.Registers.P);
             context.Cpu.Registers.PC = context.Header.InterruptVectors.NativeMode.BRK;
-            // TODO: select the good program bank
             context.Cpu.Registers.PB = context.Header.InterruptVectors.NativeMode.BRK;
         } else {
             context.Memory.PushStackUint16(context.Cpu.Registers.PC + 2);
@@ -116,7 +115,6 @@ const Instructions = {
             context.Cpu.Registers.SP = context.Cpu.Registers.X;
         } else {
             // In Emulation mode, the high bytes are set
-            // TODO: Implementation?
             context.Cpu.Registers.SP |= context.Cpu.Registers.X << 0x8;
         }
     },
@@ -148,10 +146,10 @@ const Instructions = {
                 throw new UnhandledContextTypeError();
 
         }
-        if (context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) { // TODO: Add helper to write accumulator
+        if (context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) {
             context.Cpu.Registers.A = value; // 16-bit
         } else {
-            context.Cpu.Registers.A = value; // 8-bit
+            context.Cpu.Registers.A = value & 0xf; // 8-bit
         }
         // Checks if the accumulator is negative (aka. most significant bit is set)
         context.Cpu.SetStatusRegister(StatusRegisters.N, (context.Cpu.Registers.A & 0x8000) === 0x0 ? 0x0 : 0x1);
@@ -206,13 +204,10 @@ const Instructions = {
         context.Cpu.Registers.E = Carry;
 
         // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8 bits)
-        // TODO: verify: The accumulator and indexes high bytes are kept (no truncating) ?
         if (context.Cpu.Registers.E === 0x1) {
             context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
             context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
         }
-
-        // TODO: verify: Stack pointer highest bytes sets to $1?
     },
     "SBC": () => {}
 };

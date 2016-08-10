@@ -89,6 +89,7 @@ export default class CPU {
      * Makes this CPU tick
      */
     Tick() {
+        /* eslint-disable no-console */
         console.log("--- Decode opcode ---");
         const op = this[_snes].Memory.ReadUint8(this.Registers.PC);
         const opcode = OpcodesMapping.get(op);
@@ -97,7 +98,6 @@ export default class CPU {
         }
         const bytes = opcode.Bytes.Evaluate(this);
         this[_context].DecodeOpcode(opcode, bytes, this.Registers.PC);
-        /* eslint-disable no-console */
         console.log("--- Current state ---");
         console.log("Cpu", HumanReadableCpuRegister(this));
         console.log("Status", HumanReadableCpuStatusRegister(this));
@@ -113,7 +113,7 @@ export default class CPU {
                 break;
         }
         this.Registers.PC += bytes;
-        this.Registers.PB = BankFromAddress(this.Registers.PC); // TODO: Should PB be always in sync with PC?
+        this.Registers.PB = BankFromAddress(this.Registers.PC);
         this.Cycles += opcode.Cycles.Evaluate(this);
         opcode.Instruction(this[_context]);
         console.log("---");

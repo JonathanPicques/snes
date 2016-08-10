@@ -85,7 +85,7 @@ export const HumanReadableValue = (value) => {
 
 /**
  * Returns an human readable string for the specified address
-  * @param {number} address
+ * @param {number} address
  * @returns {string}
  */
 export const HumanReadableAddress = (address) => {
@@ -95,28 +95,28 @@ export const HumanReadableAddress = (address) => {
 };
 
 /**
- *
+ * Returns an human readable string for the specified memory range
  * @param {Memory} memory
- * @param {number} [from=0]
- * @param {number} [to=from+0x80}
- * @return {string}
+ * @param {number} from
+ * @param {number} to
+ * @returns {string}
  */
 export const HumanReadableMemory = (memory, from, to) => {
     let humanReadableString = "";
+    const hex = (v, l) => {  return ("0".repeat(l) + v.toString(16)).slice(-l); };
     const rows = (to - from) / 0x10;
-    const hexa = (v, l) => {  return ("0".repeat(l) + v.toString(16)).slice(-l); };
     const read = (a) => { try { return memory.ReadUint8(a); } catch (e) { return null; } };
     for (let row = 0x0; row < rows; row++) {
-        let bytes = [];
-        let chars = [];
+        const bytes = [];
+        const chars = [];
         for (let col = 0x0; col < 0x10; col++) {
             if (row + col > to) break;
             const byte = read(from + row * 0x10 + col);
             const char = HumanReadableByte(byte);
-            bytes.push(byte === null ? "??" : hexa(byte, 2));
+            bytes.push(byte === null ? "??" : hex(byte, 2));
             chars.push(char);
         }
-        humanReadableString += `${hexa(from + row * 0x10, 6)} ${bytes.join(" ")} ${chars.join("")}\n`;
+        humanReadableString += `${hex(from + row * 0x10, 6)} ${bytes.join(" ")} ${chars.join("")}\n`;
     }
     return humanReadableString;
 };

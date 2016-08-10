@@ -34,7 +34,9 @@ export default class Memory {
             if (dataView === null) {
                 throw new Error(`Cannot read at address: ${HumanReadableAddress(address + i)}`);
             }
+            /* eslint-disable no-console */
             console.log(`Reading from ${type}`);
+            /* eslint-enable no-console */
             result |= dataView.getUint8(offsetAddress) << (i * 8);
         }
         return result;
@@ -65,6 +67,7 @@ export default class Memory {
     }
     /**
      * Reads the accumulator depending on the accumulator size (8-bit or 16-bit) at the specified address
+     * @param {number} address
      * @returns {number}
      */
     ReadAccumulator(address) {
@@ -89,7 +92,9 @@ export default class Memory {
             if (dataView === null) {
                 throw new Error(`Cannot write at address: ${HumanReadableAddress(address + i)}`);
             }
+            /* eslint-disable no-console */
             console.log(`Writing on ${type}`);
+            /* eslint-enable no-console */
             dataView.setUint8(offsetAddress, (value >> (i * 8)) & 0xff);
         }
     }
@@ -119,6 +124,7 @@ export default class Memory {
     }
     /**
      * Writes the accumulator depending on the accumulator size (8-bit or 16-bit) at the specified address
+     * @param {number} address
      * @returns {number}
      */
     WriteAccumulator(address) {

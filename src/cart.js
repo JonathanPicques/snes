@@ -114,7 +114,6 @@ export default class Cartridge {
      * @returns {Cartridge}
      */
     static CreateFromRom(snes, rom) {
-        // TODO: find if LoROM or HiROM
         const smcHeaderOffset = (rom.byteLength % 0x400) === 0 ? 0x0 : 0x200;
         const offset = smcHeaderOffset + (0x7fc0 || 0x00ffc0 || 0x40ffc0);
         switch (offset) {
@@ -140,10 +139,13 @@ export class CartridgeLoROM extends Cartridge {
      */
     constructor(snes, rom) {
         super(snes, rom, 0x7fc0);
-
-        // TODO: not all LoROM cartridges has SRAM
-        // TODO: this should be in superclass
+        /**
+         * @type {ArrayBuffer}
+         */
         this.SRAM = new ArrayBuffer(0x7fff);
+        /**
+         * @type {DataView}
+         */
         this.SRAMView = new DataView(this.SRAM);
     }
 
