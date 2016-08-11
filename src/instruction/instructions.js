@@ -32,7 +32,7 @@ const Instructions = {
             throw new UnhandledContextTypeError();
         }
         if (context.Cpu.GetStatusRegister(StatusRegisters.N) === 0x0) {
-            context.Cpu.Registers.PC = context.Address;
+            context.Cpu.Registers.PC = context.Address.Absolute;
         }
     },
     "CLC": (context) => {
@@ -84,7 +84,8 @@ const Instructions = {
         if (context.Type !== ContextTypes.Address) {
             throw new UnhandledContextTypeError();
         }
-        context.Cpu.Registers.PC = context.Address;
+        context.Cpu.Registers.PC = context.Address.Absolute;
+        context.Cpu.Registers.PB = context.Address.Bank;
     },
     "ADC": () => {},
     "SEI": (context) => {
@@ -99,7 +100,7 @@ const Instructions = {
         // STore Accumulator
         switch (context.Type) {
             case ContextTypes.Address:
-                context.Memory.WriteAccumulator(context.Address);
+                context.Memory.WriteAccumulator(context.Address.Absolute);
                 break;
             default:
                 throw new UnhandledContextTypeError();
@@ -140,7 +141,7 @@ const Instructions = {
                 value = context.Value;
                 break;
             case ContextTypes.Address:
-                value = context.Memory.ReadAccumulator(context.Address);
+                value = context.Memory.ReadAccumulator(context.Address.Absolute);
                 break;
             default:
                 throw new UnhandledContextTypeError();

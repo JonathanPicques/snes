@@ -1,11 +1,13 @@
+import Address from "../addr";
+
 import {AddressingModes} from "../mem";
-import {AbsoluteAddress} from "../addr";
 
 const _snes = Symbol("snes");
 const _opcode = Symbol("snes");
+const _type = Symbol("type");
 const _value = Symbol("value");
 const _address = Symbol("address");
-const _byteMoved = Symbol("byteMoved");
+const _bytesMoved = Symbol("byteMoved");
 
 /**
  * This class holds the context for a specified opcode
@@ -29,17 +31,21 @@ export default class InstructionContext {
          */
         this[_opcode] = null;
         /**
+         * @param {ContextType}
+         */
+        this[_type] = ContextTypes.Nothing;
+        /**
          * @type {number}
          */
         this[_value] = null;
         /**
          * @type {number}
          */
-        this[_address] = null;
+        this[_address] = new Address(0x0);
         /**
-         * @type {ByteMoved}
+         * @type {BytesMoved}
          */
-        this[_byteMoved] = null;
+        this[_bytesMoved] = null;
     }
 
     /**
@@ -51,28 +57,31 @@ export default class InstructionContext {
      */
     DecodeOpcode(opcode, bytes, address) {
         this[_opcode] = opcode;
-
-        this[_value] = null;
-        this[_address] = null;
-        this[_byteMoved] = null;
-
         switch (opcode.AddressingMode) {
             case AddressingModes.Immediate:
                 this[_value] = this.Memory.Read(address + 1, bytes - 0x1);
+                this[_type] = ContextTypes.Value;
                 break;
             case AddressingModes.Absolute:
-                this[_address] = AbsoluteAddress(this.Cpu.Registers.DB, this.Memory.ReadUint16(address + 1));
+                this[_address].Bank = this.Cpu.Registers.DB;
+                this[_address].Effective = this.Memory.ReadUint16(address + 1);
+                this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.AbsoluteLong:
-                this[_address] = this.Memory.ReadUint24(address + 1);
+                this[_address].Absolute = this.Memory.ReadUint24(address + 1);
+                this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.DirectPage:
-                this[_address] = AbsoluteAddress(0x0, this.Cpu.Registers.DP + this.Memory.ReadUint8(address + 1));
+                this[_address].Bank = this.Cpu.Registers.DB;
+                this[_address].Effective = this.Cpu.Registers.DP;
+                this[_address].AddEffective(this.Memory.ReadUint8(address + 1));
+                this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.Accumulator:
             case AddressingModes.StackPush:
             case AddressingModes.StackPull:
             case AddressingModes.Implied:
+                this[_type] = ContextTypes.Nothing;
                 break;
             default:
                 throw new UnimplementedAddressingModeError(opcode.AddressingMode);
@@ -80,39 +89,28 @@ export default class InstructionContext {
         return opcode;
     }
 
-    /** @returns {Memory} */
-    get Memory() { return this[_snes].Memory; }
-    /** @returns {CPU} */
-    get Cpu() { return this[_snes].Cpu; }
-
-    /** @returns {ContextTypes} */
-    get Type() {
-        if (this[_value] !== null) return ContextTypes.Value;
-        if (this[_address] !== null) return ContextTypes.Address;
-        if (this[_byteMoved] !== null) return ContextTypes.ByteMove;
-        return ContextTypes.Nothing;
-    }
+    /** @returns {ContextType} */
+    get Type() { return this[_type]; }
     /** @returns {number} */
     get Value() {
-        if (this[_value] === null) {
-            throw new Error("This opcode addressing mode does not provide a value");
-        }
+        if (this[_type] !== ContextTypes.Value) throw new Error("This opcode addressing mode does not provide a value");
         return this[_value];
     }
-    /** @returns {number} */
+    /** @returns {Address} */
     get Address() {
-        if (this[_address] === null) {
-            throw new Error("This opcode addressing mode does not provide an address");
-        }
+        if (this[_type] !== ContextTypes.Address) throw new Error("This opcode addressing mode does not provide a value");
         return this[_address];
     }
-    /** @returns {ByteMoved} */
-    get ByteMoved() {
-        if (this[_byteMoved] === null) {
-            throw new Error("This opcode addressing mode does not provide byte move");
-        }
-        return this[_byteMoved];
+    /** @returns {BytesMoved} */
+    get BytesMoved() {
+        if (this[_type] !== ContextTypes.BytesMoved) throw new Error("This opcode addressing mode does not provide a value");
+        return this[_bytesMoved];
     }
+
+    /** @returns {CPU} */
+    get Cpu() { return this[_snes].Cpu; }
+    /** @returns {Memory} */
+    get Memory() { return this[_snes].Memory; }
 
 }
 
@@ -122,7 +120,7 @@ export default class InstructionContext {
 export const ContextTypes = {
     "Value": 0, // The opcode addressing mode resulted in a value
     "Address": 1, // The opcode addressing mode resulted in an address
-    "ByteMove": 2, // The opcode addressing mode resulted in a byte move
+    "BytesMoved": 2, // The opcode addressing mode resulted in bytes moved
     "Nothing": 3, // The opcode addressing mode did not expect a result
 };
 /**
@@ -130,7 +128,7 @@ export const ContextTypes = {
  */
 
 /**
- * @typedef {Object} ByteMoved
+ * @typedef {Object} BytesMoved
  * @property {number} from
  * @property {number} to
  * @property {number} size

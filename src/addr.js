@@ -7,51 +7,66 @@ export default class Address {
 
     /**
      * Constructs an address from the specified absolute address
-     * @param {number} absoluteAddress - 24-bit
+     * @param {number} absolute - 24-bit
      */
-    constructor(absoluteAddress) {
-        if (absoluteAddress < 0 || absoluteAddress > 0xfff) {
-            throw new RangeError();
-        }
-        this[_address] = absoluteAddress & 0xfff;
+    constructor(absolute) {
+        this.Absolute = absolute;
     }
 
     /**
      * Returns the 8 bank bits of this address
      * @returns {number}
      */
-    get Bank() {
-        return (this[_address] >> 0x10) & 0xf;
-    }
+    get Bank() { return (this[_address] >> 0x10) & 0xff; }
     /**
      * Returns the 16 effective bits of this address
      * @returns {number}
      */
-    get Effective() {
-        return this[_address] & 0x0ff;
-    }
+    get Effective() { return this[_address] & 0x0ffff; }
     /**
      * Returns the 24 bits of this address
      * @returns {number}
      */
-    get Absolute() {
-        return this[_address] & 0xfff;
-    }
+    get Absolute() { return this[_address]; }
 
     /**
-     * Returns a new address with the same absolute address
-     * @returns {Address}
+     * Sets the 8 bank bits of this address
+     * @param {number} bank
      */
-    Clone() {
-        return new Address(this[_address]);
+    set Bank(bank) {
+        if (bank < 0 || bank > 0xff) {
+            throw new RangeError();
+        }
+        this[_address] = this.Effective | (bank << 0x10);
     }
+    /**
+     * Sets the 16 effective bits of this address
+     * @param {number} effective
+     */
+    set Effective(effective) {
+        if (effective < 0 || effective > 0xffff) {
+            throw new RangeError();
+        }
+        this[_address] = effective | (this.Bank << 0x10);
+    }
+    /**
+     * Sets the 24 bits of this address
+     * @param {number} absolute
+     */
+    set Absolute(absolute) {
+        if (absolute < 0 || absolute > 0xffffff) {
+            throw new RangeError();
+        }
+        this[_address] = absolute & 0xffffff;
+    }
+
     /**
      * Adds the specified offset to the bank bits
      * @param {number} offset
      * @returns {Address}
      */
     AddBank(offset) {
-        // TODO: implement
+        this.Bank += offset;
         return this;
     }
     /**
@@ -60,7 +75,7 @@ export default class Address {
      * @returns {Address}
      */
     AddEffective(offset) {
-        // TODO: implement
+        this.Effective += offset;
         return this;
     }
     /**
@@ -69,31 +84,8 @@ export default class Address {
      * @returns {Address}
      */
     AddAbsolute(offset) {
-        // TODO: implement
+        this.Absolute += offset;
         return this;
-    }
-    /**
-     * Sets this address bank bits and effective bits
-     * @param {number} bank - 8-bit
-     * @param {number} effective - 16-bit
-     * @returns {Address}
-     */
-    SetBankAndEffective(bank, effective) {
-        if (bank < 0 || bank > 0xff || effective < 0 || effective > 0xffff) {
-            throw new RangeError();
-        }
-        this[_address] = (effective | (bank << 0x10));
-        return this;
-    }
-
-    /**
-     * Constructs an address from the specified bank bits and the specified effective bits
-     * @param {number} bank - 8-bit
-     * @param {number} effective - 16-bit
-     * @returns {Address}
-     */
-    static CreateFromBankAndEffective(bank, effective) {
-        return new Address(0x0).SetBankAndEffective(bank, effective);
     }
 
 }

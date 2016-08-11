@@ -109,7 +109,7 @@ export default class CPU {
                 console.log("Value", HumanReadableValue(this[_context].Value));
                 break;
             case ContextTypes.Address:
-                console.log("Address", HumanReadableAddress(this[_context].Address));
+                console.log("Address", HumanReadableAddress(this[_context].Address.Absolute));
                 break;
         }
         this.Registers.PC += bytes;
