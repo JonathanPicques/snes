@@ -1,6 +1,4 @@
-import {BankFromAddress} from "./addr";
 import {GetStringFromMemory} from "./utils/format";
-import {EffectiveAddressFromAddress} from "./addr";
 
 const _snes = Symbol("snes");
 
@@ -69,11 +67,11 @@ export default class Cartridge {
 
     /**
      * Decodes the specified address and returns the data buffer and the offset address
-     * @param {number} address
+     * @param {Address} address
      * @returns {[DataView, number, string]}
      */
     DecodeAddress(address) {
-        return [null, address, ""];
+        return [null, address.Absolute, ""];
     }
 
     /**
@@ -151,13 +149,13 @@ export class CartridgeLoROM extends Cartridge {
 
     /**
      * Decodes the specified address and returns the data buffer and the offset address
-     * @param {number} address
+     * @param {Address} address
      * @returns {[DataView, number, string]}
      * @override
      */
     DecodeAddress(address) {
-        const bank = BankFromAddress(address);
-        const effectiveAddress = EffectiveAddressFromAddress(address);
+        const bank = address.Bank;
+        const effectiveAddress = address.Effective;
         if (bank >= 0x0 && bank < 0x40) {
             if (effectiveAddress >= 0x0 && effectiveAddress < 0x2000) {
                 return [this[_snes].WRAMView, effectiveAddress, "WRAM"];

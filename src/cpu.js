@@ -3,7 +3,6 @@ import InstructionContext from "./instruction/context";
 
 import {ContextTypes} from "./instruction/context";
 import {EnumeratorName} from "./utils/enum";
-import {BankFromAddress} from "./addr";
 import {AddressingModes} from "./mem";
 import {HumanReadableValue} from "./utils/format";
 import {HumanReadableAddress} from "./utils/format";
@@ -109,11 +108,10 @@ export default class CPU {
                 console.log("Value", HumanReadableValue(this[_context].Value));
                 break;
             case ContextTypes.Address:
-                console.log("Address", HumanReadableAddress(this[_context].Address.Absolute));
+                console.log("Address", HumanReadableAddress(this[_context].Address));
                 break;
         }
         this.Registers.PC += bytes;
-        this.Registers.PB = BankFromAddress(this.Registers.PC);
         this.Cycles += opcode.Cycles.Evaluate(this);
         opcode.Instruction(this[_context]);
         console.log("---");

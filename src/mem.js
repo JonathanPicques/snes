@@ -1,3 +1,5 @@
+import Address from "./addr";
+
 import {StatusRegisters} from "./cpu";
 import {HumanReadableAddress} from "./utils/format";
 
@@ -30,9 +32,10 @@ export default class Memory {
         }
         let result = 0;
         for (let i = 0; i < byteLength; i++) {
-            const [dataView, offsetAddress, type] = this[_snes].Cart.DecodeAddress(address + i);
+            const readAddress = new Address(address + i); // TODO: optimize
+            const [dataView, offsetAddress, type] = this[_snes].Cart.DecodeAddress(readAddress);
             if (dataView === null) {
-                throw new Error(`Cannot read at address: ${HumanReadableAddress(address + i)}`);
+                throw new Error(`Cannot read at address: ${HumanReadableAddress(readAddress)}`);
             }
             /* eslint-disable no-console */
             console.log(`Reading from ${type}`);
@@ -88,9 +91,10 @@ export default class Memory {
             throw new RangeError();
         }
         for (let i = 0; i < byteLength; i++) {
-            const [dataView, offsetAddress, type] = this[_snes].Cart.DecodeAddress(address + i);
+            const writeAddress = new Address(address + i); // TODO: optimize
+            const [dataView, offsetAddress, type] = this[_snes].Cart.DecodeAddress(writeAddress);
             if (dataView === null) {
-                throw new Error(`Cannot write at address: ${HumanReadableAddress(address + i)}`);
+                throw new Error(`Cannot write at address: ${HumanReadableAddress(writeAddress)}`);
             }
             /* eslint-disable no-console */
             console.log(`Writing on ${type}`);

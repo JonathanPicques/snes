@@ -1,6 +1,4 @@
-import {BankFromAddress} from "../addr";
 import {StatusRegisters as SR} from "../cpu";
-import {EffectiveAddressFromAddress} from "../addr";
 
 /**
  * Regex to filter human readable characters
@@ -85,13 +83,11 @@ export const HumanReadableValue = (value) => {
 
 /**
  * Returns an human readable string for the specified address
- * @param {number} address
+ * @param {Address} address
  * @returns {string}
  */
 export const HumanReadableAddress = (address) => {
-    const bank = BankFromAddress(address);
-    const effectiveAddress = EffectiveAddressFromAddress(address);
-    return `$${("00" + bank.toString(16)).slice(-2)}:${("0000" + effectiveAddress.toString(16)).slice(-4)}`;
+    return `$${("00" + address.Bank.toString(16)).slice(-2)}:${("0000" + address.Effective.toString(16)).slice(-4)}`;
 };
 
 /**
