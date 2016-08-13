@@ -115,13 +115,13 @@ export default class CPU {
             throw new Error(`${op.toString(16)} is not a valid opcode`);
         }
         const bytes = opcode.Bytes.Evaluate(this);
-        this[_context].DecodeOpcode(opcode, bytes, this.Registers.PC);
         console.log("--- Current state ---");
         console.log("Cpu", HumanReadableCpuRegister(this));
         console.log("Status", HumanReadableCpuStatusRegister(this));
         console.log("--- Instruction ---");
         console.log(opcode.Instruction.name, `(${op.toString(16)})`, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
             opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
+        this[_context].DecodeOpcode(opcode, bytes, this.Registers.PC);
         switch (this[_context].Type) {
             case ContextTypes.Value:
                 console.log("Value", HumanReadableValue(this[_context].Value));
