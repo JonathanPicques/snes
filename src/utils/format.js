@@ -49,7 +49,13 @@ export const HumanReadableRegisters = (registers, padding) => {
  * @returns {string}
  */
 export const HumanReadableCpuRegister = (cpu) => {
-    return Object.keys(cpu.Registers).reverse().map(bit => `${bit}: $${cpu.Registers[bit].toString(16)}`).join(", ");
+    return Object.keys(cpu.Registers).reverse().map((bit) => {
+        const value = cpu.Registers[bit];
+        if (typeof value === "number") {
+            return `${bit}: ${value.toString(16)}`;
+        }
+        return `${bit}: ${HumanReadableAddress(value)}`;
+    }).join(", ");
 };
 
 /**

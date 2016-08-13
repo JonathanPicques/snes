@@ -118,6 +118,7 @@ export default class CPU {
         console.log("--- Current state ---");
         console.log("Cpu", HumanReadableCpuRegister(this));
         console.log("Status", HumanReadableCpuStatusRegister(this));
+        console.log("Cycles", this.Cycles);
         console.log("--- Instruction ---");
         console.log(opcode.Instruction.name, `(${op.toString(16)})`, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
             opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
