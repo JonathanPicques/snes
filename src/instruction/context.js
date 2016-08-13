@@ -8,7 +8,7 @@ const _lookup = Symbol("lookup");
 const _type = Symbol("type");
 const _value = Symbol("value");
 const _address = Symbol("address");
-const _bytesMoved = Symbol("byteMoved");
+const _bytesMoved = Symbol("bytesMoved");
 
 /**
  * This class holds the context for a specified opcode
@@ -82,6 +82,12 @@ export default class InstructionContext {
                 this[_address].Bank = this.Cpu.Registers.DB;
                 this[_address].Effective = this.Cpu.Registers.DP;
                 this[_address].AddEffective(this.Memory.ReadUint8(this[_lookup]));
+                this[_type] = ContextTypes.Address;
+                break;
+            case AddressingModes.ProgramCounterRelative:
+                this[_address].Bank = this.Cpu.Registers.PB;
+                this[_address].Effective = this.Cpu.Registers.PC.Effective;
+                this[_address].AddEffective(this.Memory.ReadInt8(this[_lookup]));
                 this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.Accumulator:

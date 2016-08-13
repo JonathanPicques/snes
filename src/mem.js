@@ -69,6 +69,15 @@ export default class Memory {
         return this.Read(address, 3);
     }
     /**
+     * Reads the uint8 at the specified address
+     * @param {Address} address
+     * @returns {number}
+     */
+    ReadInt8(address) {
+        const int8 = this.Read(address, 1);
+        return int8 > 0x7f ? int8 - 0xfe : int8;
+    }
+    /**
      * Reads the accumulator depending on the accumulator size (8-bit or 16-bit) at the specified address
      * @param {Address} address
      * @returns {number}
