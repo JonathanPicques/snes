@@ -32,7 +32,8 @@ const Instructions = {
             throw new UnhandledContextTypeError();
         }
         if (context.Cpu.GetStatusRegister(StatusRegisters.N) === 0x0) {
-            context.Cpu.Registers.PC = context.Address.Absolute;
+            context.Cpu.Registers.PC = context.Address.Effective;
+            context.Cpu.Registers.PB = context.Address.Bank;
         }
     },
     "CLC": (context) => {
@@ -72,19 +73,19 @@ const Instructions = {
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
         }
-        // Writes the accumulator C (16-bit) to the direct page pointer, disregarding the status bit M
-        context.Memory.WriteUint16(context.Cpu.Registers.DP, context.Cpu.Registers.A);
+        // Transfers the accumulator C (16-bit) to the direct page pointer, disregarding the status bit M
+        context.Cpu.Registers.DP = context.Cpu.Registers.A;
         // Checks if the accumulator is negative (aka. most significant bit is set)
-        context.Cpu.SetStatusRegister(StatusRegisters.N, (context.Cpu.Registers.A & 0x8000) === 0x0 ? 0x0 : 0x1);
+        context.Cpu.SetStatusRegister(StatusRegisters.N, (context.Cpu.Registers.DP & 0x8000) === 0x0 ? 0x0 : 0x1);
         // Checks if the accumulator is zero
-        context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.A) === 0x0 ? 0x1 : 0x0);
+        context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.DP) === 0x0 ? 0x1 : 0x0);
     },
     "JMP": (context) => {
         // JuMP
         if (context.Type !== ContextTypes.Address) {
             throw new UnhandledContextTypeError();
         }
-        context.Cpu.Registers.PC = context.Address.Absolute;
+        context.Cpu.Registers.PC.Effective = context.Address.Effective;
         context.Cpu.Registers.PB = context.Address.Bank;
     },
     "ADC": () => {},
@@ -100,7 +101,7 @@ const Instructions = {
         // STore Accumulator
         switch (context.Type) {
             case ContextTypes.Address:
-                context.Memory.WriteAccumulator(context.Address.Absolute);
+                context.Memory.WriteAccumulator(context.Address);
                 break;
             default:
                 throw new UnhandledContextTypeError();
@@ -141,7 +142,7 @@ const Instructions = {
                 value = context.Value;
                 break;
             case ContextTypes.Address:
-                value = context.Memory.ReadAccumulator(context.Address.Absolute);
+                value = context.Memory.ReadAccumulator(context.Address);
                 break;
             default:
                 throw new UnhandledContextTypeError();

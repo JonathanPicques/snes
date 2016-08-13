@@ -22,7 +22,7 @@ export default class Memory {
 
     /**
      * Reads the specified byte length from the specified address
-     * @param {number} address
+     * @param {Address} address
      * @param {number} byteLength
      * @returns {number}
      */
@@ -32,7 +32,7 @@ export default class Memory {
         }
         let result = 0;
         for (let i = 0; i < byteLength; i++) {
-            const readAddress = new Address(address + i); // TODO: optimize
+            const readAddress = new Address(address.Absolute).AddEffective(i);
             const [dataView, offsetAddress, type] = this[_snes].Cart.DecodeAddress(readAddress);
             if (dataView === null) {
                 throw new Error(`Cannot read at address: ${HumanReadableAddress(readAddress)}`);
@@ -46,7 +46,7 @@ export default class Memory {
     }
     /**
      * Reads the uint8 at the specified address
-     * @param {number} address
+     * @param {Address} address
      * @returns {number}
      */
     ReadUint8(address) {
@@ -54,7 +54,7 @@ export default class Memory {
     }
     /**
      * Reads the uint16 at the specified address
-     * @param {number} address
+     * @param {Address} address
      * @returns {number}
      */
     ReadUint16(address) {
@@ -62,7 +62,7 @@ export default class Memory {
     }
     /**
      * Reads the uint24 at the specified address
-     * @param {number} address
+     * @param {Address} address
      * @returns {number}
      */
     ReadUint24(address) {
@@ -70,7 +70,7 @@ export default class Memory {
     }
     /**
      * Reads the accumulator depending on the accumulator size (8-bit or 16-bit) at the specified address
-     * @param {number} address
+     * @param {Address} address
      * @returns {number}
      */
     ReadAccumulator(address) {
@@ -82,7 +82,7 @@ export default class Memory {
 
     /**
      * Writes the value of the specified byte length to the specified address
-     * @param {number} address
+     * @param {Address} address
      * @param {number} byteLength
      * @param {number} value
      */
@@ -91,7 +91,7 @@ export default class Memory {
             throw new RangeError();
         }
         for (let i = 0; i < byteLength; i++) {
-            const writeAddress = new Address(address + i); // TODO: optimize
+            const writeAddress = new Address(address.Absolute).AddEffective(i);
             const [dataView, offsetAddress, type] = this[_snes].Cart.DecodeAddress(writeAddress);
             if (dataView === null) {
                 throw new Error(`Cannot write at address: ${HumanReadableAddress(writeAddress)}`);
@@ -104,7 +104,7 @@ export default class Memory {
     }
     /**
      * Writes the specified uint8 at the specified address
-     * @param {number} address
+     * @param {Address} address
      * @param {number} uint8
      */
     WriteUint8(address, uint8) {
@@ -112,23 +112,15 @@ export default class Memory {
     }
     /**
      * Writes the specified uint16 at the specified address
-     * @param {number} address
+     * @param {Address} address
      * @param {number} uint16
      */
     WriteUint16(address, uint16) {
         this.Write(address, 2, uint16);
     }
     /**
-     * Writes the specified uint24 at the specified address
-     * @param {number} address
-     * @param {number} uint24
-     */
-    WriteUint24(address, uint24) {
-        this.Write(address, 3, uint24);
-    }
-    /**
      * Writes the accumulator depending on the accumulator size (8-bit or 16-bit) at the specified address
-     * @param {number} address
+     * @param {Address} address
      * @returns {number}
      */
     WriteAccumulator(address) {

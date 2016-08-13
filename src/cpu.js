@@ -1,3 +1,4 @@
+import Address from "./addr";
 import OpcodesMapping from "./opcode/opcodes";
 import InstructionContext from "./instruction/context";
 
@@ -10,7 +11,8 @@ import {HumanReadableCpuRegister} from "./utils/format";
 import {HumanReadableCpuStatusRegister} from "./utils/format";
 
 const _snes = Symbol("snes");
-const _context = Symbol("InstructionContext");
+const _context = Symbol("context");
+const _counter = Symbol("counter");
 
 /**
  * This class emulates the 65C816 central processing unit of the SNES
@@ -30,6 +32,10 @@ export default class CPU {
          */
         this[_context] = new InstructionContext(snes);
         /**
+         * @type {Address}
+         */
+        this[_counter] = new Address(0x0);
+        /**
          * Number of cycles elapsed
          * @type {number}
          */
@@ -39,19 +45,32 @@ export default class CPU {
          * @type {Object}
          */
         this.Registers = {
-            "P": 0x0, // (Status) 8 bits
-            "A": 0x0, // (Accumulator ) 8 bits if P.M == 0, 16 bits if P.M == 1
-            "X": 0x0, // (Index X) 8 bits if P.X == 0, 16 bits if P.X == 1
-            "Y": 0x0, // (Index Y) 8 bits if P.X == 0, 16 bits if P.X == 1
+            "P": 0x0, // (Status) 8-bit
+            "A": 0x0, // (Accumulator ) 8-bit if P.M == 0, 16-bit if P.M == 1
+            "X": 0x0, // (Index X) 8-bit if P.X == 0, 16-bit if P.X == 1
+            "Y": 0x0, // (Index Y) 8-bit if P.X == 0, 16-bit if P.X == 1
 
-            "SP": 0x0, // (Stack Pointer) 8 bits
-            "DP": 0x0, // (Direct Page) 8 bits
-            "DB": 0x0, // (Data Bank) 8 bits
-            "PC": 0x0, // (Program Counter) 16 bits
-            "PB": 0x0, // (Program Bank) 8 bits
+            "SP": 0x0, // (Stack Pointer) 8-bit
+            "DP": 0x0, // (Direct Page) 16-bit
+            "DB": 0x0, // (Data Bank) 8-bit
+            "PC": 0x0, // (Program Counter) 16-bit: getter/setter defined below
+            "PB": 0x0, // (Program Bank) 8-bit: getter/setter defined below
 
-            "E": 0x0, // (Emulation mode) 8 bits: 0x0 = native, 0x1 = emulation
+            "E": 0x0, // (Emulation mode) 8-bit: 0x0 = native, 0x1 = emulation
         };
+        Object.defineProperties(this.Registers, {
+            "PC": {
+                "configurable": false,
+                "get": () => { return this[_counter]; },
+                "set": (pc) => { this[_counter].Effective = pc; },
+            },
+            "PB": {
+                "configurable": false,
+                "get": () => { return this[_counter].Bank; },
+                "set": (pb) => { this[_counter].Bank = pb; },
+            }
+        });
+
         /**
          * Internal CPU registers
          * @type {ArrayBuffer}
@@ -111,7 +130,7 @@ export default class CPU {
                 console.log("Address", HumanReadableAddress(this[_context].Address));
                 break;
         }
-        this.Registers.PC += bytes;
+        this.Registers.PC.AddEffective(bytes);
         this.Cycles += opcode.Cycles.Evaluate(this);
         opcode.Instruction(this[_context]);
         console.log("---");

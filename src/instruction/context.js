@@ -4,6 +4,7 @@ import {AddressingModes} from "../mem";
 
 const _snes = Symbol("snes");
 const _opcode = Symbol("snes");
+const _lookup = Symbol("lookup");
 const _type = Symbol("type");
 const _value = Symbol("value");
 const _address = Symbol("address");
@@ -31,6 +32,10 @@ export default class InstructionContext {
          */
         this[_opcode] = null;
         /**
+         * @type {Address}
+         */
+        this[_lookup] = new Address(0x0);
+        /**
          * @param {ContextType}
          */
         this[_type] = ContextTypes.Nothing;
@@ -52,29 +57,31 @@ export default class InstructionContext {
      * Decodes the specified opcode and sets the instruction context
      * @param {Opcode} opcode
      * @param {number} bytes
-     * @param {number} address
+     * @param {Address} address
      * @returns {Opcode}
      */
     DecodeOpcode(opcode, bytes, address) {
         this[_opcode] = opcode;
+        this[_lookup].Absolute = address.Absolute;
+        this[_lookup].AddEffective(1);
         switch (opcode.AddressingMode) {
             case AddressingModes.Immediate:
-                this[_value] = this.Memory.Read(address + 1, bytes - 0x1);
+                this[_value] = this.Memory.Read(this[_lookup], bytes - 0x1);
                 this[_type] = ContextTypes.Value;
                 break;
             case AddressingModes.Absolute:
                 this[_address].Bank = this.Cpu.Registers.DB;
-                this[_address].Effective = this.Memory.ReadUint16(address + 1);
+                this[_address].Effective = this.Memory.ReadUint16(this[_lookup]);
                 this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.AbsoluteLong:
-                this[_address].Absolute = this.Memory.ReadUint24(address + 1);
+                this[_address].Absolute = this.Memory.ReadUint24(this[_lookup]);
                 this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.DirectPage:
                 this[_address].Bank = this.Cpu.Registers.DB;
                 this[_address].Effective = this.Cpu.Registers.DP;
-                this[_address].AddEffective(this.Memory.ReadUint8(address + 1));
+                this[_address].AddEffective(this.Memory.ReadUint8(this[_lookup]));
                 this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.Accumulator:

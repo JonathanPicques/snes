@@ -16,17 +16,6 @@ export const HumanReadableByte = (byte) => {
 };
 
 /**
- * Returns the characters read from the memory into a string
- * @param {Uint8Array} memory
- * @param {number} from
- * @param {number} to
- * @returns {string}
- */
-export const GetStringFromMemory = (memory, from, to) => {
-    return Array.prototype.map.call(memory.slice(from, to), byte => String.fromCharCode(byte)).join("");
-};
-
-/**
  * Returns an human readable string for the specified registers
  * @param {Object<string, number>} registers
  * @param {number} [padding=0]
@@ -115,4 +104,15 @@ export const HumanReadableMemory = (memory, from, to) => {
         humanReadableString += `${hex(from + row * 0x10, 6)} ${bytes.join(" ")} ${chars.join("")}\n`;
     }
     return humanReadableString;
+};
+
+/**
+ * Returns the characters read from the memory into a string
+ * @param {Uint8Array} memory
+ * @param {number} from
+ * @param {number} to
+ * @returns {string}
+ */
+export const GetStringFromMemory = (memory, from, to) => {
+    return Array.prototype.map.call(memory.slice(from, to), byte => String.fromCharCode(byte)).join("");
 };
