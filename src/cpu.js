@@ -84,9 +84,9 @@ export default class CPU {
     }
 
     /**
-     * Resets this CPU
+     * Powers on the CPU
      */
-    Reset() {
+    Power() {
         this.Registers.P = 0x0;
         this.Registers.A = 0x0;
         this.Registers.X = 0x0;
@@ -96,17 +96,36 @@ export default class CPU {
         this.Registers.DB = 0x0;
         this.Registers.PC = 0x0;
         this.Registers.PB = 0x0;
-        this.Registers.E = 0x1;
-
-        this.Registers.P = StatusRegisters.I | StatusRegisters.X | StatusRegisters.M;
-        this.Registers.SP = 0x1ff;
-        this.Registers.PC = this[_snes].Cart.Header.InterruptVectors.EmulationMode.RES;
+        this.Registers.E = 0x0;
     }
 
     /**
-     * Makes this CPU tick
+     * Resets this CPU
+     */
+    Reset() {
+        this.Registers.P = StatusRegisters.I | StatusRegisters.X | StatusRegisters.M;
+        this.Registers.SP = 0x100;
+        this.Registers.PC = this[_snes].Cart.Header.InterruptVectors.EmulationMode.RES;
+        this.Registers.E = 0x1;
+    }
+
+    /**
+     * Makes te CPU tick
      */
     Tick() {
+        const op = this[_snes].Memory.ReadUint8(this.Registers.PC);
+        const opcode = OpcodesMapping.get(op);
+        const bytes = opcode.Bytes.Evaluate(this);
+        this[_context].DecodeOpcode(opcode, bytes, this.Registers.PC);
+        this.Registers.PC.AddEffective(bytes);
+        this.Cycles += opcode.Cycles.Evaluate(this);
+        opcode.Instruction(this[_context]);
+    }
+
+    /**
+     * Makes this CPU tick (debug mode)
+     */
+    DebugTick() {
         /* eslint-disable no-console */
         console.log("--- Decode opcode ---");
         const op = this[_snes].Memory.ReadUint8(this.Registers.PC);

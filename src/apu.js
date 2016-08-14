@@ -15,4 +15,14 @@ export default class APU {
         this[_snes] = snes;
     }
 
+    /**
+     * Powers this APU
+     */
+    Power() {}
+
+    /**
+     * Resets this APU
+     */
+    Reset() {}
+
 }

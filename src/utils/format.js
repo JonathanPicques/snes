@@ -52,7 +52,7 @@ export const HumanReadableCpuRegister = (cpu) => {
     return Object.keys(cpu.Registers).reverse().map((bit) => {
         const value = cpu.Registers[bit];
         if (typeof value === "number") {
-            return `${bit}: ${value.toString(16)}`;
+            return `${bit}: $${value.toString(16)}`;
         }
         return `${bit}: ${HumanReadableAddress(value)}`;
     }).join(", ");

@@ -17,6 +17,10 @@ export default class SNES {
      */
     constructor(rom) {
         /**
+         * @type {Cartridge}
+         */
+        this[_cart] = Cartridge.CreateFromRom(this, rom);
+        /**
          * @type {CPU}
          */
         this[_cpu] = new CPU(this);
@@ -33,10 +37,6 @@ export default class SNES {
          */
         this[_mem] = new Memory(this);
         /**
-         * @type {Cartridge}
-         */
-        this[_cart] = Cartridge.CreateFromRom(this, rom);
-        /**
          * @type {ArrayBuffer}
          */
         this.WRAM = new ArrayBuffer(0x1f400);
@@ -44,26 +44,46 @@ export default class SNES {
          * @type {DataView}
          */
         this.WRAMView = new DataView(this.WRAM);
-
-        this.initialize();
     }
 
     /**
-     * Parses the rom into Memory and initializes the CPU, PPU and APU
-     * @private
+     * Powers on the SNES and all sub-components
      */
-    initialize() {
-        this[_cpu].Reset();
+    Power() {
+        this[_cart].Power();
+        this[_cpu].Power();
+        // this[_ppu].Power();
+        // this[_apu].Power();
     }
 
+    /**
+     * Resets on the SNES and all sub-components
+     */
+    Reset() {
+        this[_cart].Reset();
+        this[_cpu].Reset();
+        // this[_ppu].Reset();
+        // this[_apu].Reset();
+        // this[_cart].Reset();
+    }
+
+    /**
+     * Starts the SNES main loop
+     */
+    Run() {
+        while (this[_cpu].Cycles < 0x36) {
+            this[_cpu].DebugTick();
+        }
+    }
+
+    /** @returns {Cartridge} */
+    get Cart() { return this[_cart]; }
     /** @returns {CPU} */
     get Cpu() { return this[_cpu]; }
     /** @returns {PPU} */
     get Ppu() { return this[_ppu]; }
     /** @returns {APU} */
     get Apu() { return this[_apu]; }
-    /** @returns {Cartridge} */
-    get Cart() { return this[_cart]; }
     /** @returns {Memory} */
     get Memory() { return this[_mem]; }
 

@@ -61,9 +61,19 @@ export default class Cartridge {
                 },
             },
         };
+    }
 
+    /**
+     * Powers this cartridge
+     */
+    Power() {
         this.parseHeader();
     }
+
+    /**
+     * Resets this cartridge
+     */
+    Reset() {}
 
     /**
      * Decodes the specified address and returns the data buffer and the offset address
@@ -166,6 +176,10 @@ export class CartridgeLoROM extends Cartridge {
                 return [this.RomView, effectiveAddress - (bank + 1) * 0x8000, "ROM"];
             }
         } else if (bank >= 0x40 && bank < 0x6f) {
+            if (effectiveAddress >= 0x0 && effectiveAddress < 0x7fff) {
+                // TODO: not mapped if decoder is MAD-1
+                return [this.RomView, effectiveAddress, "ROM"];
+            }
             if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {
                 return [this.RomView, effectiveAddress - (bank + 1) * 0x8000, "ROM"];
             }

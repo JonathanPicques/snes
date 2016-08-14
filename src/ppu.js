@@ -15,4 +15,14 @@ export default class PPU {
         this[_snes] = snes;
     }
 
+    /**
+     * Powers this PPU
+     */
+    Power() {}
+
+    /**
+     * Resets this PPU
+     */
+    Reset() {}
+
 }
