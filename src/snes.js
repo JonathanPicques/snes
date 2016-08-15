@@ -71,8 +71,8 @@ export default class SNES {
      * Starts the SNES main loop
      */
     Run() {
-        while (this[_cpu].Cycles < 0x36) {
-            this[_cpu].DebugTick();
+        while (this[_cpu].Cycles < 0xff) { // Arbitrary number
+            this[_cpu].Tick();
         }
     }
 

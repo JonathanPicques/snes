@@ -110,22 +110,9 @@ export default class CPU {
     }
 
     /**
-     * Makes te CPU tick
-     */
-    Tick() {
-        const op = this[_snes].Memory.ReadUint8(this.Registers.PC);
-        const opcode = OpcodesMapping.get(op);
-        const bytes = opcode.Bytes.Evaluate(this);
-        this[_context].DecodeOpcode(opcode, bytes, this.Registers.PC);
-        this.Registers.PC.AddEffective(bytes);
-        this.Cycles += opcode.Cycles.Evaluate(this);
-        opcode.Instruction(this[_context]);
-    }
-
-    /**
      * Makes this CPU tick (debug mode)
      */
-    DebugTick() {
+    Tick() {
         /* eslint-disable no-console */
         console.log("--- Decode opcode ---");
         const op = this[_snes].Memory.ReadUint8(this.Registers.PC);
