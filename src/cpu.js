@@ -121,13 +121,13 @@ export default class CPU {
             throw new Error(`${op.toString(16)} is not a valid opcode`);
         }
         const bytes = opcode.Bytes.Evaluate(this);
+        const cycles = opcode.Cycles.Evaluate(this);
         console.log("--- Current state ---");
         console.log("Cpu", HumanReadableCpuRegister(this));
         console.log("Status", HumanReadableCpuStatusRegister(this));
         console.log("Cycles", this.Cycles);
         console.log("--- Instruction ---");
-        console.log(opcode.Instruction.name, `(${op.toString(16)})`, "with", opcode.Bytes.Evaluate(this), "bytes", "in",
-            opcode.Cycles.Evaluate(this), "cycles", `(${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
+        console.log(`${opcode.Instruction.name} (${op.toString(16)}) with ${bytes} bytes in ${cycles} cycles (${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
         this[_context].DecodeOpcode(opcode, bytes, this.Registers.PC);
         switch (this[_context].Type) {
             case ContextTypes.Value:
@@ -138,7 +138,7 @@ export default class CPU {
                 break;
         }
         this.Registers.PC.AddEffective(bytes);
-        this.Cycles += opcode.Cycles.Evaluate(this);
+        this.Cycles += cycles;
         opcode.Instruction(this[_context]);
         console.log("---");
         console.log("");
