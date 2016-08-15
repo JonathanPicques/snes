@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "author": "Jonathan Picques <jonathan.picques@gmail.com>",
-  "license": "MIT",
+  "license": "None",
   "scripts": {
     "start": "babel-node main.js",
     "test": "mocha --compilers js:babel-core/register test/tests-*.js",
