@@ -58,7 +58,6 @@ export default class InstructionContext {
      * @param {Opcode} opcode
      * @param {number} bytes
      * @param {Address} address
-     * @returns {Opcode}
      */
     DecodeOpcode(opcode, bytes, address) {
         this[_opcode] = opcode;
@@ -99,7 +98,6 @@ export default class InstructionContext {
             default:
                 throw new UnimplementedAddressingModeError(opcode.AddressingMode);
         }
-        return opcode;
     }
 
     /** @returns {ContextType} */
