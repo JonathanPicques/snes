@@ -70,12 +70,17 @@ export default class Address {
         return this;
     }
     /**
-     * Adds the specified offset to the effective bits
+     * Adds the specified offset to the effective bits, wrapping at bank if specified
      * @param {number} offset
+     * @param {boolean} [wrappingAtBank=false]
      * @returns {Address}
      */
-    AddEffective(offset) {
-        this.Effective += offset;
+    AddEffective(offset, wrappingAtBank) {
+        if (wrappingAtBank === true) {
+            this.Effective = (this.Effective + offset) % 0x10000;
+        } else {
+            this.Effective += offset;
+        }
         return this;
     }
     /**

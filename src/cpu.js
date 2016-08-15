@@ -137,7 +137,7 @@ export default class CPU {
                 console.log("Address", HumanReadableAddress(this[_context].Address));
                 break;
         }
-        this.Registers.PC.AddEffective(bytes);
+        this.Registers.PC.AddEffective(bytes, true);
         this.Cycles += cycles;
         opcode.Instruction(this[_context]);
         console.log("---");

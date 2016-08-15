@@ -88,4 +88,29 @@ describe("Addresses", () => {
         expect(address.Effective).to.be.equal(0xfffe);
         expect(address.Absolute).to.be.equal(0xfffffe);
     });
+    it("should test address effective wrapping at bank", () => {
+        const address = new Address(0x20fffe);
+        expect(address.Bank).to.be.equal(0x20);
+        expect(address.Effective).to.be.equal(0xfffe);
+        expect(address.Absolute).to.be.equal(0x20fffe);
+
+        address.AddEffective(0x1, true);
+        expect(address.Bank).to.be.equal(0x20);
+        expect(address.Effective).to.be.equal(0xffff);
+        expect(address.Absolute).to.be.equal(0x20ffff);
+
+        expect(() => {
+            address.AddEffective(0x1, false);
+        }).to.throw();
+
+        address.AddEffective(0x1, true);
+        expect(address.Bank).to.be.equal(0x20);
+        expect(address.Effective).to.be.equal(0x0000);
+        expect(address.Absolute).to.be.equal(0x200000);
+
+        address.AddEffective(0xffff);
+        expect(address.Bank).to.be.equal(0x20);
+        expect(address.Effective).to.be.equal(0xffff);
+        expect(address.Absolute).to.be.equal(0x20ffff);
+    });
 });
