@@ -79,6 +79,7 @@ export default class Cartridge {
      * Decodes the specified address and returns the data buffer and the offset address
      * @param {Address} address
      * @returns {[DataView, number, string]}
+     * @abstract
      */
     DecodeAddress(address) {
         return [null, address.Absolute, ""];
@@ -157,6 +158,7 @@ export class CartridgeLoROM extends Cartridge {
         this.SRAMView = new DataView(this.SRAM);
     }
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Decodes the specified address and returns the data buffer and the offset address
      * @param {Address} address
@@ -171,7 +173,7 @@ export class CartridgeLoROM extends Cartridge {
                 return [this[_snes].WRAMView, effectiveAddress, "WRAM"];
             }
             if (effectiveAddress >= 0x4000 && effectiveAddress < 0x4400) {
-                return [this[_snes].Cpu.InternalRegistersView, effectiveAddress - 0x4000, "CPU Internal"];
+                return [this[_snes].Cpu.InternalRegistersView, effectiveAddress - 0x4000, "Internal CPU registers"];
             } else if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {
                 return [this.RomView, effectiveAddress - (bank + 1) * 0x8000, "ROM"];
             }
@@ -185,6 +187,7 @@ export class CartridgeLoROM extends Cartridge {
             }
         } else if (bank >= 0x80 && bank < 0xff) {
             if (effectiveAddress > 0x0 && effectiveAddress <= 0x7fff) {
+                // TODO: not mapped to SRAM if no SRAM in the cartridge
                 return [this.SRAMView, effectiveAddress, "SRAM"];
             }
             if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {

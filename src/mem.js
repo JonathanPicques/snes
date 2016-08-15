@@ -38,7 +38,7 @@ export default class Memory {
                 throw new Error(`Cannot read at address: ${HumanReadableAddress(readAddress)}`);
             }
             /* eslint-disable no-console */
-            console.log(`Reading from ${type}`);
+            console.log(`Reading from ${type} @${HumanReadableAddress(readAddress)}`);
             /* eslint-enable no-console */
             result |= dataView.getUint8(offsetAddress) << (i * 8);
         }
@@ -106,7 +106,7 @@ export default class Memory {
                 throw new Error(`Cannot write at address: ${HumanReadableAddress(writeAddress)}`);
             }
             /* eslint-disable no-console */
-            console.log(`Writing on ${type}`);
+            console.log(`Writing on ${type} @${HumanReadableAddress(writeAddress)}`);
             /* eslint-enable no-console */
             dataView.setUint8(offsetAddress, (value >> (i * 8)) & 0xff);
         }
