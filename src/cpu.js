@@ -1,10 +1,10 @@
 import Address from "./addr";
-import OpcodesMapping from "./opcode/opcodes";
-import InstructionContext from "./instruction/context";
+import OpcodesMapping from "./cpu/opcodes";
+import InstructionContext from "./cpu/context";
 
-import {ContextTypes} from "./instruction/context";
+import {ContextTypes} from "./cpu/context";
 import {EnumeratorName} from "./utils/enum";
-import {AddressingModes} from "./mem";
+import {AddressingModes} from "./cpu/modes";
 import {HumanReadableValue} from "./utils/format";
 import {HumanReadableAddress} from "./utils/format";
 import {HumanReadableCpuRegister} from "./utils/format";

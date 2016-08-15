@@ -187,7 +187,7 @@ export class CartridgeLoROM extends Cartridge {
             }
         } else if (bank >= 0x80 && bank < 0xff) {
             if (effectiveAddress > 0x0 && effectiveAddress <= 0x7fff) {
-                // TODO: not mapped to SRAM if no SRAM in the cartridge
+                // TODO: not mapped to SRAM if there is no SRAM in the cartridge
                 return [this.SRAMView, effectiveAddress, "SRAM"];
             }
             if (effectiveAddress >= 0x8000 && effectiveAddress <= 0xffff) {

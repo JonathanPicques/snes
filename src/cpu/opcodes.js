@@ -1,19 +1,19 @@
 import OpcodeBytes from "./bytes";
 import OpcodeCycles from "./cycles";
-import Instructions from "../instruction/instructions";
+import Instructions from "./instructions";
 
 import {ByteModifiers} from "./bytes";
 import {CycleModifiers} from "./cycles";
-import {AddressingModes} from "../mem";
+import {AddressingModes} from "./modes";
 
 /**
  * @typedef {Object} Opcode
  * An opcode is the combination of:
- *  - An instruction set, aka the routine to execute
+ *  - An instruction, aka the CPU function to execute
  *  - An addressing mode, aka where the instruction will find its arguments
- *  - A number of bytes, aka from how many the program counter will be incremented
+ *  - A number of bytes, aka the number of arguments the instruction will access
  *  - A number of cycles, aka the number of cycles it will take to run the instruction on the CPU
- * @property {function} Instruction
+ * @property {Instruction} Instruction
  * @property {AddressingMode} AddressingMode
  * @property {OpcodeBytes} Bytes
  * @property {OpcodeCycles} Cycles
@@ -156,5 +156,4 @@ Opcodes.set(0xff, {
     "Bytes": new OpcodeBytes(4),
     "Cycles": new OpcodeCycles(5)
 });
-
 export default Opcodes;

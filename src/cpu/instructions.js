@@ -2,7 +2,7 @@ import {ContextTypes} from "./context";
 import {StatusRegisters} from "../cpu";
 
 /**
- * This enumeration lists all the different instructions
+ * This enumeration lists all the different opcode instructions
  * @enum {Instruction}
  */
 const Instructions = {

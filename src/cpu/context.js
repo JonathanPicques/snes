@@ -1,6 +1,6 @@
 import Address from "../addr";
 
-import {AddressingModes} from "../mem";
+import {AddressingModes} from "./modes";
 
 const _snes = Symbol("snes");
 const _opcode = Symbol("snes");
