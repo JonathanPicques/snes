@@ -3,20 +3,22 @@ import {expect} from "chai";
 import {readFileSync} from "fs";
 import {StatusRegisters} from "../src/cpu";
 
-const defaultRom = readFileSync("./test/snes_lorom.sfc").buffer;
-const firstOpcode = 0x8002; // Address of first opcode in LoROM
+let snes;
 let rom;
 let view;
+let firstOpcode;
+const defaultRom = readFileSync("./test/snes_lorom.sfc").buffer;
+
 describe("Instructions", () => {
     beforeEach(() => {
         rom = defaultRom.slice();
         view = new DataView(rom);
-    });
-    it("should test CPU registers", () => {
-        const snes = new SNES(rom);
+        snes = new SNES(rom);
         snes.Power();
         snes.Reset();
-
+        firstOpcode = snes.Cart.Header.InterruptVectors.EmulationMode.RES;
+    });
+    it("should test CPU registers at reset", () => {
         expect(snes.Cpu.Registers.P).to.be.equal(StatusRegisters.I | StatusRegisters.X | StatusRegisters.M);
         expect(snes.Cpu.Registers.A).to.be.equal(0x0);
         expect(snes.Cpu.Registers.X).to.be.equal(0x0);
@@ -27,7 +29,6 @@ describe("Instructions", () => {
         expect(snes.Cpu.Registers.E).to.be.equal(0x1);
 
         expect(snes.Cpu.Registers.PC.Effective).to.be.equal(snes.Cart.Header.InterruptVectors.EmulationMode.RES);
-        expect(snes.Cpu.Registers.PC.Effective).to.be.equal(firstOpcode);
         expect(snes.Cpu.Registers.PC.Bank).to.be.equal(snes.Cpu.Registers.PB);
         expect(snes.Cpu.Registers.PB).to.be.equal(0x0);
     });
