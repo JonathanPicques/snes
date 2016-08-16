@@ -11,7 +11,6 @@ import {HumanReadableCpuRegister} from "./utils/format";
 import {HumanReadableCpuStatusRegister} from "./utils/format";
 
 const _snes = Symbol("snes");
-const _context = Symbol("context");
 const _counter = Symbol("counter");
 
 /**
@@ -28,13 +27,13 @@ export default class CPU {
          */
         this[_snes] = snes;
         /**
-         * @type {InstructionContext}
-         */
-        this[_context] = new InstructionContext(snes);
-        /**
          * @type {Address}
          */
         this[_counter] = new Address(0x0);
+        /**
+         * @type {OpcodeContext}
+         */
+        this.Context = new InstructionContext(snes);
         /**
          * Number of cycles elapsed
          * @type {number}
@@ -114,32 +113,34 @@ export default class CPU {
      */
     Tick() {
         /* eslint-disable no-console */
+        console.log("--- Current state ---");
+        console.log("Cpu", HumanReadableCpuRegister(this));
+        console.log("Status", HumanReadableCpuStatusRegister(this));
         console.log("--- Decode opcode ---");
         const op = this[_snes].Memory.ReadUint8(this.Registers.PC);
         const opcode = OpcodesMapping.get(op);
         if (typeof opcode === "undefined") {
             throw new Error(`${op.toString(16)} is not a valid opcode`);
         }
-        const bytes = opcode.Bytes.Evaluate(this);
-        const cycles = opcode.Cycles.Evaluate(this);
-        console.log("--- Current state ---");
-        console.log("Cpu", HumanReadableCpuRegister(this));
-        console.log("Status", HumanReadableCpuStatusRegister(this));
-        console.log("Cycles", this.Cycles);
+        console.log(`Opcode is $${op.toString(16)}`);
         console.log("--- Instruction ---");
-        console.log(`${opcode.Instruction.name} (${op.toString(16)}) with ${bytes} bytes in ${cycles} cycles (${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
-        this[_context].DecodeOpcode(opcode, bytes, this.Registers.PC);
-        switch (this[_context].Type) {
+        console.log(`${opcode.Instruction.name} (${op.toString(16)}) (${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
+        this.Context.Opcode = opcode;
+        switch (this.Context.Type) {
+            case ContextTypes.Nothing:
+                console.log("Addressing mode provided nothing");
+                break;
             case ContextTypes.Value:
-                console.log("Value", HumanReadableValue(this[_context].Value));
+                console.log("Addressing mode provided the value", HumanReadableValue(this.Context.Value));
                 break;
             case ContextTypes.Address:
-                console.log("Address", HumanReadableAddress(this[_context].Address));
+                console.log("Addressing mode provided the address", HumanReadableAddress(this.Context.Address));
                 break;
         }
-        this.Registers.PC.AddEffective(bytes, true);
-        this.Cycles += cycles;
-        opcode.Instruction(this[_context]);
+        this.Registers.PC.AddEffective(this.Context.Bytes, true);
+        this.Context.RunOpcode();
+        this.Cycles += this.Context.Cycles;
+        console.log(`Instruction executed with ${this.Context.Bytes} byte(s) in ${this.Context.Cycles} cycle(s)`);
         console.log("---");
         console.log("");
         /* eslint-enable no-console */

@@ -22,16 +22,16 @@ export default class OpcodeBytes {
 
     /**
      * Returns the number of bytes needed to execute a specified opcode
-     * @param {CPU} cpu
+     * @param {OpcodeContext} context
      * @returns {number}
      */
-    Evaluate(cpu) {
+    Evaluate(context) {
         let bytes = this[_bytes];
         if ((this[_modifiers] & ByteModifiers.MIsZero) !== 0) {
-            bytes += cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x1 : 0x0;
+            bytes += context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x1 : 0x0;
         }
         if ((this[_modifiers] & ByteModifiers.XIsZero) !== 0) {
-            bytes += cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 0x1 : 0x0;
+            bytes += context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 0x1 : 0x0;
         }
         return bytes;
     }

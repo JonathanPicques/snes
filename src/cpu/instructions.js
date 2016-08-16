@@ -216,7 +216,7 @@ const Instructions = {
 export default Instructions;
 /**
  * @typedef {function} Instruction
- * @param {InstructionContext} context
+ * @param {OpcodeContext} context
  */
 
 /**

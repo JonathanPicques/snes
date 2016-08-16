@@ -22,28 +22,28 @@ export default class OpcodeCycles {
 
     /**
      * Returns the number of cycles needed to execute a specified opcode
-     * @param {CPU} cpu
+     * @param {OpcodeContext} context
      * @returns {number}
      */
-    Evaluate(cpu) {
+    Evaluate(context) {
         let cycles = this[_cycles];
         if ((this[_modifiers] & CycleModifiers.MIsZero1) !== 0x0) {
-            cycles += cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x1 : 0x0;
+            cycles += context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x1 : 0x0;
         }
         if ((this[_modifiers] & CycleModifiers.DirectPageLowIsNonZero) !== 0x0) {
-            cycles += ((cpu.Registers.DP & 0xf) !== 0x0) ? 0x1 : 0x0;
+            cycles += ((context.Cpu.Registers.DP & 0xf) !== 0x0) ? 0x1 : 0x0;
         }
         if ((this[_modifiers] & CycleModifiers.MIsZero2) !== 0x0) {
-            cycles += cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x2 : 0x0;
-        }
-        if ((this[_modifiers] & CycleModifiers.XIsZero) !== 0x0) {
-            cycles += cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 0x1 : 0x0;
+            cycles += context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x2 : 0x0;
         }
         if ((this[_modifiers] & CycleModifiers.NativeMode) !== 0x0) {
-            cycles += cpu.Registers.E === 0x0 ? 0x1 : 0x0;
+            cycles += context.Cpu.Registers.E === 0x0 ? 0x1 : 0x0;
         }
         if ((this[_modifiers] & CycleModifiers.EmulationMode) !== 0x0) {
-            cycles += cpu.Registers.E === 0x1 ? 0x1 : 0x0;
+            cycles += context.Cpu.Registers.E === 0x1 ? 0x1 : 0x0;
+        }
+        if ((this[_modifiers] & CycleModifiers.XIsZero) !== 0x0) {
+            cycles += context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 0x1 : 0x0;
         }
         return cycles;
     }

@@ -93,4 +93,12 @@ export default class Address {
         return this;
     }
 
+    /**
+     * Clones this address
+     * @returns {Address}
+     */
+    Clone() {
+        return new Address(this[_address]);
+    }
+
 }
