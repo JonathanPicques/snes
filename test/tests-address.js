@@ -1,5 +1,4 @@
 import Address from "../src/addr";
-
 import {expect} from "chai";
 
 describe("Addresses", () => {

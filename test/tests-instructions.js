@@ -51,11 +51,11 @@ describe("Instructions", () => {
         expect(snes.Cpu.Registers.E).to.be.equal(0x0);
         expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x1);
         /**
-        snes.Cpu.Tick(); // SEC
-        snes.Cpu.Tick(); // XCE
+         snes.Cpu.Tick(); // SEC
+         snes.Cpu.Tick(); // XCE
 
-        expect(snes.Cpu.Registers.E).to.be.equal(0x1);
-        expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x0);
+         expect(snes.Cpu.Registers.E).to.be.equal(0x1);
+         expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x0);
          **/
     });
 });
