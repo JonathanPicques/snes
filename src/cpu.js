@@ -125,7 +125,7 @@ export default class CPU {
         console.log(`Opcode is $${op.toString(16)}`);
         console.log("--- Instruction ---");
         console.log(`${opcode.Instruction.name} (${op.toString(16)}) (${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
-        this.Context.Opcode = opcode;
+        const bytes = this.Context.DecodeOpcode(opcode);
         switch (this.Context.Type) {
             case ContextTypes.Nothing:
                 console.log("Addressing mode provided nothing");
@@ -137,10 +137,10 @@ export default class CPU {
                 console.log("Addressing mode provided the address", HumanReadableAddress(this.Context.Address));
                 break;
         }
-        this.Registers.PC.AddEffective(this.Context.Bytes, true);
-        this.Context.RunOpcode();
-        this.Cycles += this.Context.Cycles;
-        console.log(`Instruction executed with ${this.Context.Bytes} byte(s) in ${this.Context.Cycles} cycle(s)`);
+        this.Registers.PC.AddEffective(bytes, true);
+        const cycles = this.Context.RunOpcode();
+        this.Cycles += cycles;
+        console.log(`Instruction executed with ${bytes} byte(s) in ${cycles} cycle(s)`);
         console.log("---");
         console.log("");
         /* eslint-enable no-console */

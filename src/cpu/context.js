@@ -4,8 +4,6 @@ import {AddressingModes} from "./modes";
 
 const _snes = Symbol("snes");
 const _opcode = Symbol("opcode");
-const _opcodeBytes = Symbol("opcodeBytes");
-const _opcodeCycles = Symbol("opcodeCycles");
 const _lookup = Symbol("lookup");
 const _type = Symbol("type");
 const _value = Symbol("value");
@@ -34,14 +32,6 @@ export default class OpcodeContext {
          */
         this[_opcode] = null;
         /**
-         * @type {number}
-         */
-        this[_opcodeBytes] = 0;
-        /**
-         * @type {number}
-         */
-        this[_opcodeCycles] = 0;
-        /**
          * @type {Address}
          */
         this[_lookup] = new Address(0x0);
@@ -64,22 +54,58 @@ export default class OpcodeContext {
     }
 
     /**
-     * Returns this context opcode
+     * Returns the last decoded opcode
      * @returns {Opcode}
      */
     get Opcode() { return this[_opcode]; }
+
+    /** @returns {ContextType} */
+    get Type() { return this[_type]; }
+
+    /** @returns {number} */
+    get Value() {
+        if (this[_type] !== ContextTypes.Value) {
+            throw new Error("This opcode addressing mode does not provide a value");
+        }
+        return this[_value];
+    }
+
+    /** @returns {Address} */
+    get Address() {
+        if (this[_type] !== ContextTypes.Address) {
+            throw new Error("This opcode addressing mode does not provide an address");
+        }
+        return this[_address];
+    }
+
+    /** @returns {BytesMoved} */
+    get BytesMoved() {
+        if (this[_type] !== ContextTypes.BytesMoved) {
+            throw new Error("This opcode addressing mode does not provide bytes moved");
+        }
+        return this[_bytesMoved];
+    }
+
+    /** @returns {CPU} */
+    get Cpu() { return this[_snes].Cpu; }
+
+    /** @returns {Memory} */
+    get Memory() { return this[_snes].Memory; }
+
     /**
-     * Sets this context opcode
+     * Decodes the specified opcode and sets the instruction context accordingly
+     * and returns the number of bytes consumed by the opcode
      * @param {Opcode} opcode
+     * @returns {number}
      */
-    set Opcode(opcode) {
+    DecodeOpcode(opcode) {
+        const bytes = opcode.Bytes.Evaluate(this);
         this[_opcode] = opcode;
-        this[_opcodeBytes] = opcode.Bytes.Evaluate(this);
         this[_lookup].Absolute = this[_snes].Cpu.Registers.PC.Absolute;
         this[_lookup].AddEffective(1);
         switch (opcode.AddressingMode) {
             case AddressingModes.Immediate:
-                this[_value] = this.Memory.Read(this[_lookup], this[_opcodeBytes] - 0x1);
+                this[_value] = this.Memory.Read(this[_lookup], bytes - 0x1);
                 this[_type] = ContextTypes.Value;
                 break;
             case AddressingModes.Absolute:
@@ -112,42 +138,16 @@ export default class OpcodeContext {
             default:
                 throw new UnimplementedAddressingModeError(opcode.AddressingMode);
         }
+        return bytes;
     }
-
-    /** @returns {number} */
-    get Bytes() { return this[_opcodeBytes]; }
-    /** @returns {number} */
-    get Cycles() { return this[_opcodeCycles]; }
-
-    /** @returns {ContextType} */
-    get Type() { return this[_type]; }
-    /** @returns {number} */
-    get Value() {
-        if (this[_type] !== ContextTypes.Value) throw new Error("This opcode addressing mode does not provide a value");
-        return this[_value];
-    }
-    /** @returns {Address} */
-    get Address() {
-        if (this[_type] !== ContextTypes.Address) throw new Error("This opcode addressing mode does not provide a value");
-        return this[_address];
-    }
-    /** @returns {BytesMoved} */
-    get BytesMoved() {
-        if (this[_type] !== ContextTypes.BytesMoved) throw new Error("This opcode addressing mode does not provide a value");
-        return this[_bytesMoved];
-    }
-
-    /** @returns {CPU} */
-    get Cpu() { return this[_snes].Cpu; }
-    /** @returns {Memory} */
-    get Memory() { return this[_snes].Memory; }
 
     /**
-     * Runs the last opcode and computes the number of cycles elapsed
+     * Runs the last decoded opcode and returns the number of cycles elapsed
+     * @returns {number}
      */
     RunOpcode() {
         this[_opcode].Instruction(this);
-        this[_opcodeCycles] = this[_opcode].Cycles.Evaluate(this);
+        return this[_opcode].Cycles.Evaluate(this);
     }
 
 }
