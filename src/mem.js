@@ -1,5 +1,4 @@
 import Address from "./addr";
-
 import {StatusRegisters} from "./cpu";
 import {HumanReadableAddress} from "./utils/format";
 
@@ -44,6 +43,7 @@ export default class Memory {
         }
         return result;
     }
+
     /**
      * Reads the uint8 at the specified address
      * @param {Address} address
@@ -52,6 +52,7 @@ export default class Memory {
     ReadUint8(address) {
         return this.Read(address, 1);
     }
+
     /**
      * Reads the uint16 at the specified address
      * @param {Address} address
@@ -60,6 +61,7 @@ export default class Memory {
     ReadUint16(address) {
         return this.Read(address, 2);
     }
+
     /**
      * Reads the uint24 at the specified address
      * @param {Address} address
@@ -68,6 +70,7 @@ export default class Memory {
     ReadUint24(address) {
         return this.Read(address, 3);
     }
+
     /**
      * Reads the uint8 at the specified address
      * @param {Address} address
@@ -77,6 +80,7 @@ export default class Memory {
         const int8 = this.Read(address, 1);
         return int8 > 0x7f ? int8 - 0xfe : int8;
     }
+
     /**
      * Reads the accumulator depending on the accumulator size (8-bit or 16-bit) at the specified address
      * @param {Address} address
@@ -111,6 +115,7 @@ export default class Memory {
             dataView.setUint8(offsetAddress, (value >> (i * 8)) & 0xff);
         }
     }
+
     /**
      * Writes the specified uint8 at the specified address
      * @param {Address} address
@@ -119,6 +124,7 @@ export default class Memory {
     WriteUint8(address, uint8) {
         this.Write(address, 1, uint8);
     }
+
     /**
      * Writes the specified uint16 at the specified address
      * @param {Address} address
@@ -127,6 +133,7 @@ export default class Memory {
     WriteUint16(address, uint16) {
         this.Write(address, 2, uint16);
     }
+
     /**
      * Writes the accumulator depending on the accumulator size (8-bit or 16-bit) at the specified address
      * @param {Address} address
@@ -151,6 +158,7 @@ export default class Memory {
         this[_snes].Cpu.Registers.SP -= byteLength;
         this.Write(this[_snes].Cpu.Registers.SP, byteLength, value);
     }
+
     /**
      * Pushes the specified uint8 on the stack and moves the CPU stack pointer
      * @param {number} uint8
@@ -158,6 +166,7 @@ export default class Memory {
     PushStackUint8(uint8) {
         this.PushStack(1, uint8);
     }
+
     /**
      * Pushes the specified uint8 on the stack and moves the CPU stack pointer
      * @param {number} uint16
@@ -179,6 +188,7 @@ export default class Memory {
         this[_snes].Cpu.Registers.SP += byteLength;
         return value;
     }
+
     /**
      * Pops the uint8 from the stack and moves the CPU stack pointer
      * @returns {number}
@@ -186,6 +196,7 @@ export default class Memory {
     PopStackUint8() {
         return this.PopStack(1);
     }
+
     /**
      * Pops the uint16 from the stack and moves the CPU stack pointer
      * @returns {number}

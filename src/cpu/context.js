@@ -1,5 +1,4 @@
 import Address from "../addr";
-
 import {AddressingModes} from "./modes";
 
 const _snes = Symbol("snes");
@@ -175,4 +174,5 @@ export const ContextTypes = {
 /**
  * This class represents an unimplemented addressing mode error
  */
-export class UnimplementedAddressingModeError extends Error {}
+export class UnimplementedAddressingModeError extends Error {
+}

@@ -1,14 +1,14 @@
 import Address from "./addr";
 import OpcodesMapping from "./cpu/opcodes";
-import InstructionContext from "./cpu/context";
-
-import {ContextTypes} from "./cpu/context";
+import InstructionContext, {ContextTypes} from "./cpu/context";
 import {EnumeratorName} from "./utils/enum";
 import {AddressingModes} from "./cpu/modes";
-import {HumanReadableValue} from "./utils/format";
-import {HumanReadableAddress} from "./utils/format";
-import {HumanReadableCpuRegister} from "./utils/format";
-import {HumanReadableCpuStatusRegister} from "./utils/format";
+import {
+    HumanReadableValue,
+    HumanReadableAddress,
+    HumanReadableCpuRegister,
+    HumanReadableCpuStatusRegister
+} from "./utils/format";
 
 const _snes = Symbol("snes");
 const _counter = Symbol("counter");

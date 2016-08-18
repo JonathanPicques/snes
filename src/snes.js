@@ -78,12 +78,16 @@ export default class SNES {
 
     /** @returns {Cartridge} */
     get Cart() { return this[_cart]; }
+
     /** @returns {CPU} */
     get Cpu() { return this[_cpu]; }
+
     /** @returns {PPU} */
     get Ppu() { return this[_ppu]; }
+
     /** @returns {APU} */
     get Apu() { return this[_apu]; }
+
     /** @returns {Memory} */
     get Memory() { return this[_mem]; }
 

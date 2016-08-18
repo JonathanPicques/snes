@@ -94,7 +94,7 @@ export const HumanReadableAddress = (address) => {
  */
 export const HumanReadableMemory = (memory, from, to) => {
     let humanReadableString = "";
-    const hex = (v, l) => {  return ("0".repeat(l) + v.toString(16)).slice(-l); };
+    const hex = (v, l) => { return ("0".repeat(l) + v.toString(16)).slice(-l); };
     const rows = (to - from) / 0x10;
     const read = (a) => { try { return memory.ReadUint8(a); } catch (e) { return null; } };
     for (let row = 0x0; row < rows; row++) {

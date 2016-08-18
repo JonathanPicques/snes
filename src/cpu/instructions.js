@@ -222,4 +222,5 @@ export default Instructions;
 /**
  * This class represents an unhandled context type error
  */
-export class UnhandledContextTypeError extends Error {}
+export class UnhandledContextTypeError extends Error {
+}

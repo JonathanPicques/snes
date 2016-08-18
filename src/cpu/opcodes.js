@@ -1,9 +1,6 @@
-import OpcodeBytes from "./bytes";
-import OpcodeCycles from "./cycles";
+import OpcodeBytes, {ByteModifiers} from "./bytes";
+import OpcodeCycles, {CycleModifiers} from "./cycles";
 import Instructions from "./instructions";
-
-import {ByteModifiers} from "./bytes";
-import {CycleModifiers} from "./cycles";
 import {AddressingModes} from "./modes";
 
 /**

@@ -18,11 +18,13 @@ export default class Address {
      * @returns {number}
      */
     get Bank() { return (this[_address] >> 0x10) & 0xff; }
+
     /**
      * Returns the 16 effective bits of this address
      * @returns {number}
      */
     get Effective() { return this[_address] & 0x0ffff; }
+
     /**
      * Returns the 24 bits of this address
      * @returns {number}
@@ -39,6 +41,7 @@ export default class Address {
         }
         this[_address] = this.Effective | (bank << 0x10);
     }
+
     /**
      * Sets the 16 effective bits of this address
      * @param {number} effective
@@ -49,6 +52,7 @@ export default class Address {
         }
         this[_address] = effective | (this.Bank << 0x10);
     }
+
     /**
      * Sets the 24 bits of this address
      * @param {number} absolute
@@ -69,6 +73,7 @@ export default class Address {
         this.Bank += offset;
         return this;
     }
+
     /**
      * Adds the specified offset to the effective bits, wrapping at bank if specified
      * @param {number} offset
@@ -83,6 +88,7 @@ export default class Address {
         }
         return this;
     }
+
     /**
      * Adds the specified offset to the address
      * @param {number} offset
