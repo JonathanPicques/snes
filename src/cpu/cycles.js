@@ -23,9 +23,11 @@ export default class OpcodeCycles {
     /**
      * Returns the number of cycles needed to execute a specified opcode
      * @param {OpcodeContext} context
+     * @param {Address} counter
+     * @param {Address} previousCounter
      * @returns {number}
      */
-    Evaluate(context) {
+    Evaluate(context, counter, previousCounter) {
         let cycles = this[_cycles];
         if ((this[_modifiers] & CycleModifiers.MIsZero1) !== 0x0) {
             cycles += context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x1 : 0x0;
@@ -35,6 +37,9 @@ export default class OpcodeCycles {
         }
         if ((this[_modifiers] & CycleModifiers.MIsZero2) !== 0x0) {
             cycles += context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x2 : 0x0;
+        }
+        if ((this[_modifiers] & CycleModifiers.BranchTaken) !== 0x0) {
+            cycles += counter.Absolute !== previousCounter.Absolute ? 0x1 : 0x0;
         }
         if ((this[_modifiers] & CycleModifiers.NativeMode) !== 0x0) {
             cycles += context.Cpu.Registers.E === 0x0 ? 0x1 : 0x0;

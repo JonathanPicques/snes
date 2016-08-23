@@ -145,8 +145,9 @@ export default class OpcodeContext {
      * @returns {number}
      */
     RunOpcode() {
+        const previousCounter = this[_snes].Cpu.Registers.PC.Clone();
         this[_opcode].Instruction(this);
-        return this[_opcode].Cycles.Evaluate(this);
+        return this[_opcode].Cycles.Evaluate(this, this[_snes].Cpu.Registers.PC, previousCounter);
     }
 
 }
