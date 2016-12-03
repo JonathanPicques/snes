@@ -30,6 +30,9 @@ export default class OpcodeBytes {
         if ((this[_modifiers] & ByteModifiers.XIsZero) !== 0) {
             bytes += context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 0x1 : 0x0;
         }
+        if ((this[_modifiers] & ByteModifiers.OptionalSignature) !== 0) {
+            throw new Error("not yet implemented");
+        }
         return bytes;
     }
 
@@ -42,6 +45,7 @@ export default class OpcodeBytes {
 export const ByteModifiers = {
     "MIsZero": 0x1, // Whether to add a byte if CPU.Status.M is set to zero (16-bit memory/accumulator)
     "XIsZero": 0x2, // Whether to add a byte if CPU.Status.X is set to zero (16-bit index)
+    "OptionalSignature": 0x4, // Whether to add a byte allowing for optional signature byte
 };
 /**
  * @typedef {number} ByteModifier
