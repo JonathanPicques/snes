@@ -45,6 +45,12 @@ Opcodes.set(0x18, {
     "Bytes": new OpcodeBytes(1),
     "Cycles": new OpcodeCycles(2)
 });
+Opcodes.set(0x38, {
+    "Instruction": Instructions.SEC,
+    "AddressingMode": AddressingModes.Implied,
+    "Bytes": new OpcodeBytes(1),
+    "Cycles": new OpcodeCycles(2)
+});
 Opcodes.set(0x40, {
     "Instruction": Instructions.RTI,
     "AddressingMode": AddressingModes.StackReturnFromInterrupt,

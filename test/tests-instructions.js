@@ -1,18 +1,18 @@
-import SNES from "../src/snes";
 import {expect} from "chai";
 import {readFileSync} from "fs";
+
+import SNES from "../src/snes";
+import Address from "../src/addr";
 import {StatusRegisters} from "../src/cpu";
 
 let snes;
 let rom;
-let view;
 let firstOpcode;
 const defaultRom = readFileSync("./test/snes_lorom.sfc").buffer;
 
 describe("Instructions", () => {
     beforeEach(() => {
         rom = defaultRom.slice();
-        view = new DataView(rom);
         snes = new SNES(rom);
         snes.Power();
         snes.Reset();
@@ -33,14 +33,14 @@ describe("Instructions", () => {
         expect(snes.Cpu.Registers.PB).to.be.equal(0x0);
     });
     it("should test XCE", () => {
-        view.setUint8(firstOpcode, 0x18); // CLC
-        view.setUint8(firstOpcode + 0x1, 0xfb); // XCE
-        view.setUint8(firstOpcode + 0x2, 0x18); // SEC
-        view.setUint8(firstOpcode + 0x3, 0xfb); // XCE
-
         const snes = new SNES(rom);
         snes.Power();
         snes.Reset();
+
+        snes.Memory.WriteUint8(new Address(firstOpcode), 0x18); // CLC
+        snes.Memory.WriteUint8(new Address(firstOpcode).AddEffective(0x1), 0xfb); // XCE
+        snes.Memory.WriteUint8(new Address(firstOpcode).AddEffective(0x2), 0x38); // SEC
+        snes.Memory.WriteUint8(new Address(firstOpcode).AddEffective(0x3), 0xfb); // XCE
 
         expect(snes.Cpu.Registers.E).to.be.equal(0x1);
         expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x0);
@@ -50,12 +50,11 @@ describe("Instructions", () => {
 
         expect(snes.Cpu.Registers.E).to.be.equal(0x0);
         expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x1);
-        /**
-         snes.Cpu.Tick(); // SEC
-         snes.Cpu.Tick(); // XCE
 
-         expect(snes.Cpu.Registers.E).to.be.equal(0x1);
-         expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x0);
-         **/
+        snes.Cpu.Tick(); // SEC
+        snes.Cpu.Tick(); // XCE
+
+        expect(snes.Cpu.Registers.E).to.be.equal(0x1);
+        expect(snes.Cpu.GetStatusRegister(StatusRegisters.C)).to.be.equal(0x0);
     });
 });

@@ -14,50 +14,54 @@ export default class Cartridge {
      */
     constructor(snes, rom, offset) {
         /**
+         * Reference to the SNES
          * @type {SNES}
          */
         this[_snes] = snes;
         /**
+         * Rom data
          * @type {Uint8Array}
          */
         this.Rom = new Uint8Array(rom);
         /**
+         * Rom data viewer
          * @type {DataView}
          */
         this.RomView = new DataView(rom);
         /**
+         * Rom header
          * @type {Object}
          */
         this.Header = {
             "Offset": offset,
             "ROM": {
                 "Name": "", // 21 bytes
-                "MapMode": 0x0, // 8 bits
-                "RomType": 0x0, // 8 bits
-                "RomSize": 0x0, // 8 bits
-                "SRAMSize": 0x0, // 8 bits
-                "DestinationCode": 0x0, // 8 bits
-                "FixedValue": 0x0, // 8 bits
-                "Version": 0x0, // 8 bits
-                "ComplementCheck": 0x0, // 8 bits
-                "Checksum": 0x0, // 8 bits
+                "MapMode": 0x0, // 8-bit
+                "RomType": 0x0, // 8-bit
+                "RomSize": 0x0, // 8-bit
+                "SRAMSize": 0x0, // 8-bit
+                "DestinationCode": 0x0, // 8-bit
+                "FixedValue": 0x0, // 8-bit
+                "Version": 0x0, // 8-bit
+                "ComplementCheck": 0x0, // 8-bit
+                "Checksum": 0x0, // 8-bit
             },
             "InterruptVectors": {
                 "NativeMode": {
-                    "COP": 0x0, // 16 bits
-                    "BRK": 0x0, // 16 bits
-                    "ABORT": 0x0, // 16 bits
-                    "NMI": 0x0, // 16 bits
-                    "RESET": 0x0, // 16 bits
-                    "IRQ": 0x0, // 16 bits
+                    "COP": 0x0, // 16-bit
+                    "BRK": 0x0, // 16-bit
+                    "ABORT": 0x0, // 16-bit
+                    "NMI": 0x0, // 16-bit
+                    "RESET": 0x0, // 16-bit
+                    "IRQ": 0x0, // 16-bit
                 },
                 "EmulationMode": {
-                    "COP": 0x0, // 16 bits
-                    "ABORT": 0x0, // 16 bits
-                    "NMI": 0x0, // 16 bits
-                    "RES": 0x0, // 16 bits
-                    "BRK": 0x0, // 16 bits
-                    "IRQ": 0x0, // 16 bits
+                    "COP": 0x0, // 16-bit
+                    "ABORT": 0x0, // 16-bit
+                    "NMI": 0x0, // 16-bit
+                    "RES": 0x0, // 16-bit
+                    "BRK": 0x0, // 16-bit
+                    "IRQ": 0x0, // 16-bit
                 },
             },
         };

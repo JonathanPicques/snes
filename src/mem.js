@@ -14,6 +14,7 @@ export default class Memory {
      */
     constructor(snes) {
         /**
+         * Reference to the SNES
          * @type {SNES}
          */
         this[_snes] = snes;

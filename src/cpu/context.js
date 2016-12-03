@@ -156,10 +156,10 @@ export default class OpcodeContext {
  * @enum {ContextType}
  */
 export const ContextTypes = {
-    "Value": 0, // The opcode addressing mode resulted in a value
-    "Address": 1, // The opcode addressing mode resulted in an address
-    "BytesMoved": 2, // The opcode addressing mode resulted in bytes moved
-    "Nothing": 3, // The opcode addressing mode did not expect a result
+    "Value": 0, // The opcode addressing mode yields a value
+    "Address": 1, // The opcode addressing mode yields an address
+    "BytesMoved": 2, // The opcode addressing mode yields bytes moved
+    "Nothing": 3, // The opcode addressing mode does not yield a result
 };
 /**
  * @typedef {number} ContextType

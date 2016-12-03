@@ -43,6 +43,13 @@ const Instructions = {
         }
         context.Cpu.SetStatusRegister(StatusRegisters.C, 0x0);
     },
+    "SEC": (context) => {
+        // SEt Carry bit
+        if (context.Type !== ContextTypes.Nothing) {
+            throw new UnhandledContextTypeError();
+        }
+        context.Cpu.SetStatusRegister(StatusRegisters.C, 0x1);
+    },
     "RTI": (context) => {
         // ReTurn from Interrupt
         if (context.Type !== ContextTypes.Nothing) {
@@ -205,7 +212,7 @@ const Instructions = {
         context.Cpu.SetStatusRegister(StatusRegisters.C, Emulation);
         context.Cpu.Registers.E = Carry;
 
-        // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8 bits)
+        // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
         if (context.Cpu.Registers.E === 0x1) {
             context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
             context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);

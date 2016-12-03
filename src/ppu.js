@@ -10,6 +10,7 @@ export default class PPU {
      */
     constructor(snes) {
         /**
+         * Reference to the SNES
          * @type {SNES}
          */
         this[_snes] = snes;

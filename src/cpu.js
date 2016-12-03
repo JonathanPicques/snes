@@ -1,14 +1,8 @@
 import Address from "./addr";
 import OpcodesMapping from "./cpu/opcodes";
-import InstructionContext, {ContextTypes} from "./cpu/context";
-import {EnumeratorName} from "./utils/enum";
-import {AddressingModes} from "./cpu/modes";
-import {
-    HumanReadableValue,
-    HumanReadableAddress,
-    HumanReadableCpuRegister,
-    HumanReadableCpuStatusRegister
-} from "./utils/format";
+import OpcodeContext, {ContextTypes} from "./cpu/context";
+import {AddressingModeName} from "./cpu/modes";
+import {HumanReadableValue, HumanReadableAddress, HumanReadableCpuRegister, HumanReadableCpuStatusRegister} from "./utils/format";
 
 const _snes = Symbol("snes");
 const _counter = Symbol("counter");
@@ -23,17 +17,20 @@ export default class CPU {
      */
     constructor(snes) {
         /**
+         * Reference to the SNES
          * @type {SNES}
          */
         this[_snes] = snes;
         /**
+         * Program counter
          * @type {Address}
          */
         this[_counter] = new Address(0x0);
         /**
+         * The next opcode execution context
          * @type {OpcodeContext}
          */
-        this.Context = new InstructionContext(snes);
+        this.Context = new OpcodeContext(snes);
         /**
          * Number of cycles elapsed
          * @type {number}
@@ -124,8 +121,8 @@ export default class CPU {
         }
         console.log(`Opcode is $${op.toString(16)}`);
         console.log("--- Instruction ---");
-        console.log(`${opcode.Instruction.name} (${op.toString(16)}) (${EnumeratorName(AddressingModes, opcode.AddressingMode)})`);
-        const bytes = this.Context.DecodeOpcode(opcode);
+        console.log(`${opcode.Instruction.name} (${op.toString(16)}) (${AddressingModeName(opcode.AddressingMode)})`);
+        const consumedBytes = this.Context.DecodeOpcode(opcode);
         switch (this.Context.Type) {
             case ContextTypes.Nothing:
                 console.log("Addressing mode provided nothing");
@@ -137,10 +134,10 @@ export default class CPU {
                 console.log("Addressing mode provided the address", HumanReadableAddress(this.Context.Address));
                 break;
         }
-        this.Registers.PC.AddEffective(bytes, true);
-        const cycles = this.Context.RunOpcode();
-        this.Cycles += cycles;
-        console.log(`Instruction executed with ${bytes} byte(s) in ${cycles} cycle(s)`);
+        this.Registers.PC.AddEffective(consumedBytes, true);
+        const consumedCycles = this.Context.RunOpcode();
+        this.Cycles += consumedCycles;
+        console.log(`Instruction executed with ${consumedBytes} byte(s) in ${consumedCycles} cycle(s)`);
         console.log("---");
         console.log("");
         /* eslint-enable no-console */
@@ -175,8 +172,8 @@ export const StatusRegisters = {
     "Z": 0x2, // Zero
     "I": 0x4, // IRQ Disable
     "D": 0x8, // Decimal
-    "X": 0x10, // Index register size: 0x0 = 16 bits, 0x1 = 8 bits
-    "M": 0x20, // Accumulator register size: 0x0 = 16 bits, 0x1 = 8 bits
+    "X": 0x10, // Index register size: 0x0 = 16-bit, 0x1 = 8-bit
+    "M": 0x20, // Accumulator register size: 0x0 = 16-bit, 0x1 = 8-bit
     "V": 0x40, // Overflow
     "N": 0x80, // Negative
 };

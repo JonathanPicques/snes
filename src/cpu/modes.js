@@ -41,3 +41,16 @@ export const AddressingModes = {
 /**
  * @typedef {number} AddressingMode
  */
+
+/**
+ * Returns the addressing mode name for the specified addressing mode
+ * @param {AddressingMode} index - specifies the addressing mode
+ * @returns {string}
+ */
+export const AddressingModeName = (index) => {
+    const enumeratorName = Object.keys(AddressingModes).find(enumerationName => AddressingModes[enumerationName] === index);
+    if (typeof enumeratorName === "undefined") {
+        throw new Error("Addressing mode unknown");
+    }
+    return enumeratorName;
+};
