@@ -14,10 +14,7 @@ export default class OpcodeBytes {
      */
     constructor(bytes, ...modifiers) {
         this[_bytes] = bytes;
-        this[_modifiers] = 0;
-        for (const modifier of modifiers) {
-            this[_modifiers] |= modifier;
-        }
+        this[_modifiers] = modifiers.reduce((a, modifier) => a | modifier, 0);
     }
 
     /**

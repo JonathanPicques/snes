@@ -14,10 +14,7 @@ export default class OpcodeCycles {
      */
     constructor(cycles, ...modifiers) {
         this[_cycles] = cycles;
-        this[_modifiers] = 0;
-        for (const modifier of modifiers) {
-            this[_modifiers] |= modifier;
-        }
+        this[_modifiers] = modifiers.reduce((a, modifier) => a | modifier, 0);
     }
 
     /**
