@@ -414,8 +414,7 @@ Opcodes.set(0x41, {
 });
 Opcodes.set(0x42, {
     "Instruction": Instructions.WDM,
-    "AddressingMode": AddressingModes.None
-    ,
+    "AddressingMode": AddressingModes.Immediate, // TODO
     "Bytes": new OpcodeBytes(2 | 16), // TODO
     "Cycles": new OpcodeCycles(0) // TODO
 });

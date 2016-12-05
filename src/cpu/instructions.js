@@ -6,7 +6,7 @@ import {StatusRegisters} from "../cpu";
  * @enum {Instruction}
  */
 const Instructions = {
-    "BRK": (context) => {
+    "BRK": context => {
         // BReaK
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
@@ -25,8 +25,31 @@ const Instructions = {
         context.Cpu.SetStatusRegister(StatusRegisters.I, 0x1);
         context.Cpu.SetStatusRegister(StatusRegisters.D, 0x0);
     },
-    "ASL": () => {},
-    "BPL": (context) => {
+    "ORA": context => {
+        // ORA
+        throw new Error("not yet implemented", context);
+    },
+    "COP": context => {
+        // COP
+        throw new Error("not yet implemented", context);
+    },
+    "TSB": context => {
+        // TSB
+        throw new Error("not yet implemented", context);
+    },
+    "ASL": context => {
+        // ASL
+        throw new Error("not yet implemented", context);
+    },
+    "PHP": context => {
+        // PHP
+        throw new Error("not yet implemented", context);
+    },
+    "PHD": context => {
+        // PHD
+        throw new Error("not yet implemented", context);
+    },
+    "BPL": context => {
         // Branch on PLus
         if (context.Type !== ContextTypes.Address) {
             throw new UnhandledContextTypeError();
@@ -36,21 +59,69 @@ const Instructions = {
             context.Cpu.Registers.PB = context.Address.Bank;
         }
     },
-    "CLC": (context) => {
+    "TRB": context => {
+        // TRB
+        throw new Error("not yet implemented", context);
+    },
+    "CLC": context => {
         // CLear Carry bit
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
         }
         context.Cpu.SetStatusRegister(StatusRegisters.C, 0x0);
     },
-    "SEC": (context) => {
+    "INC": context => {
+        // INC
+        throw new Error("not yet implemented", context);
+    },
+    "TCS": context => {
+        // TCS
+        throw new Error("not yet implemented", context);
+    },
+    "JSR": context => {
+        // JSR
+        throw new Error("not yet implemented", context);
+    },
+    "AND": context => {
+        // AND
+        throw new Error("not yet implemented", context);
+    },
+    "BIT": context => {
+        // BIT
+        throw new Error("not yet implemented", context);
+    },
+    "ROL": context => {
+        // ROL
+        throw new Error("not yet implemented", context);
+    },
+    "PLP": context => {
+        // PLP
+        throw new Error("not yet implemented", context);
+    },
+    "PLD": context => {
+        // PLD
+        throw new Error("not yet implemented", context);
+    },
+    "BMI": context => {
+        // BMI
+        throw new Error("not yet implemented", context);
+    },
+    "SEC": context => {
         // SEt Carry bit
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
         }
         context.Cpu.SetStatusRegister(StatusRegisters.C, 0x1);
     },
-    "RTI": (context) => {
+    "DEC": context => {
+        // DEC
+        throw new Error("not yet implemented", context);
+    },
+    "TSC": context => {
+        // TSC
+        throw new Error("not yet implemented", context);
+    },
+    "RTI": context => {
         // ReTurn from Interrupt
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
@@ -68,14 +139,58 @@ const Instructions = {
             context.Cpu.Registers.Y = Y;
         }
     },
-    "PHK": (context) => {
+    "EOR": context => {
+        // EOR
+        throw new Error("not yet implemented", context);
+    },
+    "WDM": context => {
+        // WDM
+        throw new Error("not yet implemented", context);
+    },
+    "MVP": context => {
+        // MVP
+        throw new Error("not yet implemented", context);
+    },
+    "LSR": context => {
+        // LSR
+        throw new Error("not yet implemented", context);
+    },
+    "PHA": context => {
+        // PHA
+        throw new Error("not yet implemented", context);
+    },
+    "PHK": context => {
         // PusH the program banK on the stacK
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
         }
         context.Memory.PushStackUint8(context.Cpu.Registers.PB);
     },
-    "TCD": (context) => {
+    "JMP": context => {
+        // JuMP
+        if (context.Type !== ContextTypes.Address) {
+            throw new UnhandledContextTypeError();
+        }
+        context.Cpu.Registers.PC.Effective = context.Address.Effective;
+        context.Cpu.Registers.PB = context.Address.Bank;
+    },
+    "BVC": context => {
+        // BVC
+        throw new Error("not yet implemented", context);
+    },
+    "MVN": context => {
+        // MVN
+        throw new Error("not yet implemented", context);
+    },
+    "CLI": context => {
+        // CLI
+        throw new Error("not yet implemented", context);
+    },
+    "PHY": context => {
+        // PHY
+        throw new Error("not yet implemented", context);
+    },
+    "TCD": context => {
         // Transfer Accumulator C to Direct page
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
@@ -87,24 +202,58 @@ const Instructions = {
         // Checks if the accumulator is zero
         context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.DP) === 0x0 ? 0x1 : 0x0);
     },
-    "JMP": (context) => {
-        // JuMP
-        if (context.Type !== ContextTypes.Address) {
-            throw new UnhandledContextTypeError();
-        }
-        context.Cpu.Registers.PC.Effective = context.Address.Effective;
-        context.Cpu.Registers.PB = context.Address.Bank;
+    "RTS": context => {
+        // RTS
+        throw new Error("not yet implemented", context);
     },
-    "ADC": () => {},
-    "SEI": (context) => {
+    "ADC": context => {
+        // ADC
+        throw new Error("not yet implemented", context);
+    },
+    "PER": context => {
+        // PER
+        throw new Error("not yet implemented", context);
+    },
+    "STZ": context => {
+        // STZ
+        throw new Error("not yet implemented", context);
+    },
+    "ROR": context => {
+        // ROR
+        throw new Error("not yet implemented", context);
+    },
+    "PLA": context => {
+        // PLA
+        throw new Error("not yet implemented", context);
+    },
+    "RTL": context => {
+        // RTL
+        throw new Error("not yet implemented", context);
+    },
+    "BVS": context => {
+        // BVS
+        throw new Error("not yet implemented", context);
+    },
+    "SEI": context => {
         // SEts Interrupt disable
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
         }
         context.Cpu.SetStatusRegister(StatusRegisters.I, 0x1);
     },
-    "BRA": () => {},
-    "STA": (context) => {
+    "PLY": context => {
+        // PLY
+        throw new Error("not yet implemented", context);
+    },
+    "TDC": context => {
+        // TDC
+        throw new Error("not yet implemented", context);
+    },
+    "BRA": context => {
+        // BRA
+        throw new Error("not yet implemented", context);
+    },
+    "STA": context => {
         // STore Accumulator
         switch (context.Type) {
             case ContextTypes.Address:
@@ -114,7 +263,39 @@ const Instructions = {
                 throw new UnhandledContextTypeError();
         }
     },
-    "TXS": (context) => {
+    "BRL": context => {
+        // BRL
+        throw new Error("not yet implemented", context);
+    },
+    "STY": context => {
+        // STY
+        throw new Error("not yet implemented", context);
+    },
+    "STX": context => {
+        // STX
+        throw new Error("not yet implemented", context);
+    },
+    "DEY": context => {
+        // DEY
+        throw new Error("not yet implemented", context);
+    },
+    "TXA": context => {
+        // TXA
+        throw new Error("not yet implemented", context);
+    },
+    "PHB": context => {
+        // PHB
+        throw new Error("not yet implemented", context);
+    },
+    "BCC": context => {
+        // BCC
+        throw new Error("not yet implemented", context);
+    },
+    "TYA": context => {
+        // TYA
+        throw new Error("not yet implemented", context);
+    },
+    "TXS": context => {
         // Transfer X to Stack pointer
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
@@ -127,21 +308,15 @@ const Instructions = {
             context.Cpu.Registers.SP |= context.Cpu.Registers.X << 0x8;
         }
     },
-    "LDX": (context) => {
-        // LoaD X
-        switch (context.Type) {
-            case ContextTypes.Value:
-                if (context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0) {
-                    context.Cpu.Registers.X = context.Value; // 16-bit
-                } else {
-                    context.Cpu.Registers.X = context.Value & 0xf; // 8-bit
-                }
-                break;
-            default:
-                throw new UnhandledContextTypeError();
-        }
+    "TXY": context => {
+        // TXY
+        throw new Error("not yet implemented", context);
     },
-    "LDA": (context) => {
+    "LDY": context => {
+        // LDY
+        throw new Error("not yet implemented", context);
+    },
+    "LDA": context => {
         // LoaD Accumulator
         let value = 0;
         switch (context.Type) {
@@ -165,7 +340,29 @@ const Instructions = {
         // Checks if the accumulator is zero
         context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.A) === 0x0 ? 0x1 : 0x0);
     },
-    "PLB": (context) => {
+    "LDX": context => {
+        // LoaD X
+        switch (context.Type) {
+            case ContextTypes.Value:
+                if (context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0) {
+                    context.Cpu.Registers.X = context.Value; // 16-bit
+                } else {
+                    context.Cpu.Registers.X = context.Value & 0xf; // 8-bit
+                }
+                break;
+            default:
+                throw new UnhandledContextTypeError();
+        }
+    },
+    "TAY": context => {
+        // TAY
+        throw new Error("not yet implemented", context);
+    },
+    "TAX": context => {
+        // TAX
+        throw new Error("not yet implemented", context);
+    },
+    "PLB": context => {
         // PuLL data Bank register
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
@@ -176,7 +373,31 @@ const Instructions = {
         // Checks if the data bank is zero
         context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.DB) === 0x0 ? 0x1 : 0x0);
     },
-    "REP": (context) => {
+    "BCS": context => {
+        // BCS
+        throw new Error("not yet implemented", context);
+    },
+    "CLV": context => {
+        // CLV
+        throw new Error("not yet implemented", context);
+    },
+    "TSX": context => {
+        // TSX
+        throw new Error("not yet implemented", context);
+    },
+    "TYX": context => {
+        // TYX
+        throw new Error("not yet implemented", context);
+    },
+    "CPY": context => {
+        // CPY
+        throw new Error("not yet implemented", context);
+    },
+    "CMP": context => {
+        // CMP
+        throw new Error("not yet implemented", context);
+    },
+    "REP": context => {
         // REset Processor status bits
         if (context.Type !== ContextTypes.Value) {
             throw new UnhandledContextTypeError();
@@ -188,7 +409,47 @@ const Instructions = {
             context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
         }
     },
-    "SEP": (context) => {
+    "INY": context => {
+        // INY
+        throw new Error("not yet implemented", context);
+    },
+    "DEX": context => {
+        // DEX
+        throw new Error("not yet implemented", context);
+    },
+    "WAI": context => {
+        // WAI
+        throw new Error("not yet implemented", context);
+    },
+    "BNE": context => {
+        // BNE
+        throw new Error("not yet implemented", context);
+    },
+    "PEI": context => {
+        // PEI
+        throw new Error("not yet implemented", context);
+    },
+    "CLD": context => {
+        // CLD
+        throw new Error("not yet implemented", context);
+    },
+    "PHX": context => {
+        // PHX
+        throw new Error("not yet implemented", context);
+    },
+    "STP": context => {
+        // STP
+        throw new Error("not yet implemented", context);
+    },
+    "CPX": context => {
+        // CPX
+        throw new Error("not yet implemented", context);
+    },
+    "SBC": context => {
+        // SBC
+        throw new Error("not yet implemented", context);
+    },
+    "SEP": context => {
         // SEt Processor status bits
         if (context.Type !== ContextTypes.Value) {
             throw new UnhandledContextTypeError();
@@ -200,7 +461,35 @@ const Instructions = {
             context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
         }
     },
-    "XCE": (context) => {
+    "INX": context => {
+        // INX
+        throw new Error("not yet implemented", context);
+    },
+    "NOP": context => {
+        // NOP
+        throw new Error("not yet implemented", context);
+    },
+    "XBA": context => {
+        // XBA
+        throw new Error("not yet implemented", context);
+    },
+    "BEQ": context => {
+        // BEQ
+        throw new Error("not yet implemented", context);
+    },
+    "PEA": context => {
+        // PEA
+        throw new Error("not yet implemented", context);
+    },
+    "SED": context => {
+        // SED
+        throw new Error("not yet implemented", context);
+    },
+    "PLX": context => {
+        // PLX
+        throw new Error("not yet implemented", context);
+    },
+    "XCE": context => {
         // eXchange Carry bit and Emulation bit
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
@@ -217,8 +506,7 @@ const Instructions = {
             context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
             context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
         }
-    },
-    "SBC": () => {}
+    }
 };
 export default Instructions;
 /**
