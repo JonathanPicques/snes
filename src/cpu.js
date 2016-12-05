@@ -135,7 +135,7 @@ export default class CPU {
                 break;
         }
         this.Registers.PC.AddEffective(consumedBytes, true);
-        const consumedCycles = this.Context.RunOpcode();
+        const consumedCycles = this.Context.ExecuteInstruction();
         this.Cycles += consumedCycles;
         console.log(`Instruction executed with ${consumedBytes} byte(s) in ${consumedCycles} cycle(s)`);
         console.log("---");

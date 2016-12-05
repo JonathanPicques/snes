@@ -3,15 +3,20 @@ import {AddressingModes} from "./modes";
 
 const _snes = Symbol("snes");
 const _opcode = Symbol("opcode");
-const _lookup = Symbol("lookup");
 const _type = Symbol("type");
 const _value = Symbol("value");
 const _address = Symbol("address");
 const _bytesMoved = Symbol("bytesMoved");
 
 /**
- * This class holds the context for a specified opcode
- * Depending on the addressing mode of the opcode, the context will provide one of the following for an instruction:
+ * Temporary address used for reading memory for addressing modes
+ * addressPC will be set at CPU's PC + 1 in DecodeOpcode
+ * @type {Address}
+ */
+const addressPC = new Address(0x0);
+
+/**
+ * This class turns an opcode into an executable instruction, providing data depending on the addressing mode:
  * - Value (eg. if addressing mode is Immediate)
  * - Address (eg. if addressing mode is Absolute, AbsoluteLong, DirectPage, ...)
  * - ByteMove (eg. if addressing mode is BlockMove, for opcodes MVP and MVN)
@@ -23,39 +28,44 @@ export default class OpcodeContext {
      */
     constructor(snes) {
         /**
+         * Reference to the SNES
          * @type {SNES}
          */
         this[_snes] = snes;
         /**
+         * Reference to the opcode
          * @type {Opcode}
          */
         this[_opcode] = null;
         /**
-         * @type {Address}
-         */
-        this[_lookup] = new Address(0x0);
-        /**
+         * Type of data this context will hand to the instruction
          * @param {ContextType}
          */
         this[_type] = ContextTypes.Nothing;
         /**
+         * The data value if type is ContextTypes.Value, null otherwise
          * @type {number}
          */
         this[_value] = null;
         /**
+         * The data address if type is ContextTypes.Address, null otherwise
          * @type {number}
          */
         this[_address] = new Address(0x0);
         /**
+         * The data bytes moved if type is ContextTypes.BytesMoved, null otherwise
          * @type {BytesMoved}
          */
         this[_bytesMoved] = null;
     }
 
-    /**
-     * Returns the last decoded opcode
-     * @returns {Opcode}
-     */
+    /** @returns {CPU} */
+    get Cpu() { return this[_snes].Cpu; }
+
+    /** @returns {Memory} */
+    get Memory() { return this[_snes].Memory; }
+
+    /** @returns {Opcode} */
     get Opcode() { return this[_opcode]; }
 
     /** @returns {ContextType} */
@@ -85,47 +95,40 @@ export default class OpcodeContext {
         return this[_bytesMoved];
     }
 
-    /** @returns {CPU} */
-    get Cpu() { return this[_snes].Cpu; }
-
-    /** @returns {Memory} */
-    get Memory() { return this[_snes].Memory; }
-
     /**
-     * Decodes the specified opcode and sets the instruction context accordingly
-     * and returns the number of bytes consumed by the opcode
+     * Turns the specified opcode into an executable instruction and returns the number of bytes consumed
      * @param {Opcode} opcode
      * @returns {number}
      */
     DecodeOpcode(opcode) {
         const bytes = opcode.Bytes.Evaluate(this);
         this[_opcode] = opcode;
-        this[_lookup].Absolute = this[_snes].Cpu.Registers.PC.Absolute;
-        this[_lookup].AddEffective(1);
+        addressPC.Absolute = this[_snes].Cpu.Registers.PC.Absolute;
+        addressPC.AddEffective(0x1);
         switch (opcode.AddressingMode) {
             case AddressingModes.Immediate:
-                this[_value] = this.Memory.Read(this[_lookup], bytes - 0x1);
+                this[_value] = this.Memory.Read(addressPC, bytes - 0x1);
                 this[_type] = ContextTypes.Value;
                 break;
             case AddressingModes.Absolute:
                 this[_address].Bank = this.Cpu.Registers.DB;
-                this[_address].Effective = this.Memory.ReadUint16(this[_lookup]);
+                this[_address].Effective = this.Memory.ReadUint16(addressPC);
                 this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.AbsoluteLong:
-                this[_address].Absolute = this.Memory.ReadUint24(this[_lookup]);
+                this[_address].Absolute = this.Memory.ReadUint24(addressPC);
                 this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.DirectPage:
                 this[_address].Bank = this.Cpu.Registers.DB;
                 this[_address].Effective = this.Cpu.Registers.DP;
-                this[_address].AddEffective(this.Memory.ReadUint8(this[_lookup]));
+                this[_address].AddEffective(this.Memory.ReadUint8(addressPC));
                 this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.ProgramCounterRelative:
                 this[_address].Bank = this.Cpu.Registers.PB;
                 this[_address].Effective = this.Cpu.Registers.PC.Effective;
-                this[_address].AddEffective(this.Memory.ReadInt8(this[_lookup]));
+                this[_address].AddEffective(this.Memory.ReadInt8(addressPC));
                 this[_type] = ContextTypes.Address;
                 break;
             case AddressingModes.Accumulator:
@@ -141,10 +144,10 @@ export default class OpcodeContext {
     }
 
     /**
-     * Runs the last decoded opcode and returns the number of cycles elapsed
+     * Executes the instruction and returns the number of cycles elapsed
      * @returns {number}
      */
-    RunOpcode() {
+    ExecuteInstruction() {
         const previousCounter = this[_snes].Cpu.Registers.PC.Clone();
         this[_opcode].Instruction(this);
         return this[_opcode].Cycles.Evaluate(this, this[_snes].Cpu.Registers.PC, previousCounter);
