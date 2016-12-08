@@ -7,6 +7,7 @@ const _type = Symbol("type");
 const _value = Symbol("value");
 const _address = Symbol("address");
 const _bytesMoved = Symbol("bytesMoved");
+const _branchTakenCrossesPageBoundary = Symbol("branchTakenCrossesPageBoundary");
 
 /**
  * Temporary address used for reading memory for addressing modes
@@ -57,6 +58,11 @@ export default class OpcodeContext {
          * @type {BytesMoved}
          */
         this[_bytesMoved] = null;
+        /**
+         * Whether the instruction took a branch that crosses a page boundary
+         * @type {boolean}
+         */
+        this[_branchTakenCrossesPageBoundary] = false;
     }
 
     /** @returns {CPU} */
@@ -94,6 +100,9 @@ export default class OpcodeContext {
         }
         return this[_bytesMoved];
     }
+
+    /** @returns {boolean} */
+    get BranchTakenCrossesPageBoundary() { return this[_branchTakenCrossesPageBoundary]; }
 
     /**
      * Turns the specified opcode into an executable instruction and returns the number of bytes consumed

@@ -116,7 +116,7 @@ Opcodes.set(0x10, {
     "Instruction": Instructions.BPL,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.BranchTakenCrossesPageBoundary)
+    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.EmulationBranchTakenCrossesPageBoundary)
 });
 Opcodes.set(0x11, {
     "Instruction": Instructions.ORA,
@@ -200,7 +200,7 @@ Opcodes.set(0x1e, {
     "Instruction": Instructions.ASL,
     "AddressingMode": AddressingModes.AbsoluteIndexedX,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.NESAndPageBoundaryNotCrossed)
+    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.EmulationNoPageBoundaryCrossed)
 });
 Opcodes.set(0x1f, {
     "Instruction": Instructions.ORA,
@@ -308,7 +308,7 @@ Opcodes.set(0x30, {
     "Instruction": Instructions.BMI,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.BranchTakenCrossesPageBoundary)
+    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.EmulationBranchTakenCrossesPageBoundary)
 });
 Opcodes.set(0x31, {
     "Instruction": Instructions.AND,
@@ -392,7 +392,7 @@ Opcodes.set(0x3e, {
     "Instruction": Instructions.ROL,
     "AddressingMode": AddressingModes.AbsoluteIndexedX,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.NESAndPageBoundaryNotCrossed)
+    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.EmulationNoPageBoundaryCrossed)
 });
 Opcodes.set(0x3f, {
     "Instruction": Instructions.AND,
@@ -500,7 +500,7 @@ Opcodes.set(0x50, {
     "Instruction": Instructions.BVC,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.BranchTakenCrossesPageBoundary)
+    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.EmulationBranchTakenCrossesPageBoundary)
 });
 Opcodes.set(0x51, {
     "Instruction": Instructions.EOR,
@@ -584,7 +584,7 @@ Opcodes.set(0x5e, {
     "Instruction": Instructions.LSR,
     "AddressingMode": AddressingModes.AbsoluteIndexedX,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.NESAndPageBoundaryNotCrossed)
+    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.EmulationNoPageBoundaryCrossed)
 });
 Opcodes.set(0x5f, {
     "Instruction": Instructions.EOR,
@@ -602,7 +602,7 @@ Opcodes.set(0x61, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.DirectPageIndexedIndirectX,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x62, {
     "Instruction": Instructions.PER,
@@ -614,7 +614,7 @@ Opcodes.set(0x63, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.StackRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x64, {
     "Instruction": Instructions.STZ,
@@ -626,7 +626,7 @@ Opcodes.set(0x65, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.DirectPage,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(3, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(3, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x66, {
     "Instruction": Instructions.ROR,
@@ -638,7 +638,7 @@ Opcodes.set(0x67, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.DirectPageIndirectLong,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x68, {
     "Instruction": Instructions.PLA,
@@ -650,7 +650,7 @@ Opcodes.set(0x69, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.Immediate,
     "Bytes": new OpcodeBytes(2, ByteModifiers.MIsZero),
-    "Cycles": new OpcodeCycles(2, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(2, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x6a, {
     "Instruction": Instructions.ROR,
@@ -668,13 +668,13 @@ Opcodes.set(0x6c, {
     "Instruction": Instructions.JMP,
     "AddressingMode": AddressingModes.AbsoluteIndirect,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(5, CycleModifiers.NES, CycleModifiers.UnusedOne)
+    "Cycles": new OpcodeCycles(5, CycleModifiers.Is65C02, CycleModifiers.UnusedOne)
 });
 Opcodes.set(0x6d, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.Absolute,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x6e, {
     "Instruction": Instructions.ROR,
@@ -686,31 +686,31 @@ Opcodes.set(0x6f, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.AbsoluteLong,
     "Bytes": new OpcodeBytes(4),
-    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x70, {
     "Instruction": Instructions.BVS,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.BranchTakenCrossesPageBoundary)
+    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.EmulationBranchTakenCrossesPageBoundary)
 });
 Opcodes.set(0x71, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.DirectPageIndexedIndirectY,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x72, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.DirectPageIndirect,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x73, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.StackRelativeIndexedY, // TODO
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x74, {
     "Instruction": Instructions.STZ,
@@ -722,7 +722,7 @@ Opcodes.set(0x75, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.DirectPageIndexedX,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x76, {
     "Instruction": Instructions.ROR,
@@ -734,7 +734,7 @@ Opcodes.set(0x77, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.DirectPageIndirectLongIndexedY,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x78, {
     "Instruction": Instructions.SEI,
@@ -746,7 +746,7 @@ Opcodes.set(0x79, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.AbsoluteIndexedY,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x7a, {
     "Instruction": Instructions.PLY,
@@ -770,25 +770,25 @@ Opcodes.set(0x7d, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.AbsoluteIndexedX,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x7e, {
     "Instruction": Instructions.ROR,
     "AddressingMode": AddressingModes.AbsoluteIndexedX,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.NESAndPageBoundaryNotCrossed)
+    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.EmulationNoPageBoundaryCrossed)
 });
 Opcodes.set(0x7f, {
     "Instruction": Instructions.ADC,
     "AddressingMode": AddressingModes.AbsoluteLongIndexedX,
     "Bytes": new OpcodeBytes(4),
-    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0x80, {
     "Instruction": Instructions.BRA,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(3, CycleModifiers.BranchTakenCrossesPageBoundary)
+    "Cycles": new OpcodeCycles(3, CycleModifiers.EmulationBranchTakenCrossesPageBoundary)
 });
 Opcodes.set(0x81, {
     "Instruction": Instructions.STA,
@@ -884,7 +884,7 @@ Opcodes.set(0x90, {
     "Instruction": Instructions.BCC,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.BranchTakenCrossesPageBoundary)
+    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.EmulationBranchTakenCrossesPageBoundary)
 });
 Opcodes.set(0x91, {
     "Instruction": Instructions.STA,
@@ -1076,7 +1076,7 @@ Opcodes.set(0xb0, {
     "Instruction": Instructions.BCS,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.BranchTakenCrossesPageBoundary)
+    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.EmulationBranchTakenCrossesPageBoundary)
 });
 Opcodes.set(0xb1, {
     "Instruction": Instructions.LDA,
@@ -1268,7 +1268,7 @@ Opcodes.set(0xd0, {
     "Instruction": Instructions.BNE,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.BranchTakenCrossesPageBoundary)
+    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.EmulationBranchTakenCrossesPageBoundary)
 });
 Opcodes.set(0xd1, {
     "Instruction": Instructions.CMP,
@@ -1352,7 +1352,7 @@ Opcodes.set(0xde, {
     "Instruction": Instructions.DEC,
     "AddressingMode": AddressingModes.AbsoluteIndexedX,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.NESAndPageBoundaryNotCrossed)
+    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.EmulationNoPageBoundaryCrossed)
 });
 Opcodes.set(0xdf, {
     "Instruction": Instructions.CMP,
@@ -1370,7 +1370,7 @@ Opcodes.set(0xe1, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.DirectPageIndexedIndirectX,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xe2, {
     "Instruction": Instructions.SEP,
@@ -1382,7 +1382,7 @@ Opcodes.set(0xe3, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.StackRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xe4, {
     "Instruction": Instructions.CPX,
@@ -1394,7 +1394,7 @@ Opcodes.set(0xe5, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.DirectPage,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(3, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(3, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xe6, {
     "Instruction": Instructions.INC,
@@ -1406,7 +1406,7 @@ Opcodes.set(0xe7, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.DirectPageIndirectLong,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xe8, {
     "Instruction": Instructions.INX,
@@ -1442,7 +1442,7 @@ Opcodes.set(0xed, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.Absolute,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xee, {
     "Instruction": Instructions.INC,
@@ -1454,31 +1454,31 @@ Opcodes.set(0xef, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.AbsoluteLong,
     "Bytes": new OpcodeBytes(4),
-    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xf0, {
     "Instruction": Instructions.BEQ,
     "AddressingMode": AddressingModes.ProgramCounterRelative,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.BranchTakenCrossesPageBoundary)
+    "Cycles": new OpcodeCycles(2, CycleModifiers.BranchTaken, CycleModifiers.EmulationBranchTakenCrossesPageBoundary)
 });
 Opcodes.set(0xf1, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.DirectPageIndexedIndirectY,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xf2, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.DirectPageIndirect,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xf3, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.StackRelativeIndexedY, // TODO
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xf4, {
     "Instruction": Instructions.PEA,
@@ -1490,7 +1490,7 @@ Opcodes.set(0xf5, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.DirectPageIndexedX,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xf6, {
     "Instruction": Instructions.INC,
@@ -1502,7 +1502,7 @@ Opcodes.set(0xf7, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.DirectPageIndirectLongIndexedY,
     "Bytes": new OpcodeBytes(2),
-    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(6, CycleModifiers.MIsZeroOne, CycleModifiers.DirectPageLowIsNonZero, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xf8, {
     "Instruction": Instructions.SED,
@@ -1514,7 +1514,7 @@ Opcodes.set(0xf9, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.AbsoluteIndexedY,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xfa, {
     "Instruction": Instructions.PLX,
@@ -1538,18 +1538,18 @@ Opcodes.set(0xfd, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.AbsoluteIndexedX,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(4, CycleModifiers.MIsZeroOne, CycleModifiers.IndexCrossesPageBoundary, CycleModifiers.Decimal65C02)
 });
 Opcodes.set(0xfe, {
     "Instruction": Instructions.INC,
     "AddressingMode": AddressingModes.AbsoluteIndexedX,
     "Bytes": new OpcodeBytes(3),
-    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.NESAndPageBoundaryNotCrossed)
+    "Cycles": new OpcodeCycles(7, CycleModifiers.MIsZeroTwo, CycleModifiers.EmulationNoPageBoundaryCrossed)
 });
 Opcodes.set(0xff, {
     "Instruction": Instructions.SBC,
     "AddressingMode": AddressingModes.AbsoluteLongIndexedX,
     "Bytes": new OpcodeBytes(4),
-    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.NESAndDecimal)
+    "Cycles": new OpcodeCycles(5, CycleModifiers.MIsZeroOne, CycleModifiers.Decimal65C02)
 });
 export default Opcodes;

@@ -35,26 +35,29 @@ export default class OpcodeCycles {
         if ((this[_modifiers] & CycleModifiers.IndexCrossesPageBoundary) !== 0x0) {
             throw new Error("not yet implemented");
         }
+        if ((this[_modifiers] & CycleModifiers.Decimal65C02) !== 0x0) {
+            // no-op (CPU is not a 65C02)
+        }
         if ((this[_modifiers] & CycleModifiers.MIsZeroTwo) !== 0x0) {
             cycles += context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x2 : 0x0;
         }
-        if ((this[_modifiers] & CycleModifiers.NESAndPageBoundaryNotCrossed) !== 0x0) {
+        if ((this[_modifiers] & CycleModifiers.EmulationNoPageBoundaryCrossed) !== 0x0) {
             throw new Error("not yet implemented");
         }
         if ((this[_modifiers] & CycleModifiers.BranchTaken) !== 0x0) {
             cycles += counter.Absolute !== previousCounter.Absolute ? 0x1 : 0x0;
         }
-        if ((this[_modifiers] & CycleModifiers.BranchTakenCrossesPageBoundary) !== 0x0) {
-            throw new Error("not yet implemented");
+        if ((this[_modifiers] & CycleModifiers.EmulationBranchTakenCrossesPageBoundary) !== 0x0) {
+            cycles += context.BranchTakenCrossesPageBoundary && context.Cpu.Registers.E === 0x1 ? 0x1 : 0x0;
         }
         if ((this[_modifiers] & CycleModifiers.NativeMode) !== 0x0) {
             cycles += context.Cpu.Registers.E === 0x0 ? 0x1 : 0x0;
         }
-        if ((this[_modifiers] & CycleModifiers.EmulationMode) !== 0x0) {
-            cycles += context.Cpu.Registers.E === 0x1 ? 0x1 : 0x0;
-        }
         if ((this[_modifiers] & CycleModifiers.XIsZero) !== 0x0) {
             cycles += context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 0x1 : 0x0;
+        }
+        if ((this[_modifiers] & CycleModifiers.Is65C02) !== 0x0) {
+            // no-op (CPU is not a 65C02)
         }
         if ((this[_modifiers] & CycleModifiers.SevenCyclesPerByteMoved) !== 0x0) {
             throw new Error("not yet implemented");
@@ -72,16 +75,16 @@ export const CycleModifiers = {
     "MIsZeroOne": 0x1, // Whether to add a cycle if CPU.Status.M is set to zero (16-bit memory/accumulator)
     "DirectPageLowIsNonZero": 0x2, // Whether to add a cycle if the lowest bits of CPU.Registers.DP are non-zero
     "IndexCrossesPageBoundary": 0x4, // Whether to add a cycle if the index crosses a page boundary
-    "NESAndDecimal": 0x8, // Whether to add a cycle if the CPU is 65C02 in decimal mode
+    "Decimal65C02": 0x8, // Whether to add a cycle if the CPU is 65C02 and in decimal mode
     "MIsZeroTwo": 0x10, // Whether to add two cycles if CPU.Status.M is set to zero (16-bit memory/accumulator)
-    "NESAndPageBoundaryNotCrossed": 0x20, // Whether to remove a cycle if the CPU is 65C02 and no page boundary are crossed
+    "EmulationNoPageBoundaryCrossed": 0x20, // Whether to remove a cycle in emulation mode if no page boundary are crossed
     "BranchTaken": 0x40, // Whether to add a cycle if a branch was took
-    "BranchTakenCrossesPageBoundary": 0x80, // Whether to add a cycle if the branch taken crosses page boundary on 6502 or in emulation mode
-    "NativeMode": 0x100, // Whether to add a cycle if CPU is in native mode,
+    "EmulationBranchTakenCrossesPageBoundary": 0x80, // Whether to add a cycle if the branch taken crosses page boundary in emulation mode
+    "NativeMode": 0x100, // Whether to add a cycle in native mode
     "XIsZero": 0x200, // Whether to add a cycle if CPU.Status.X is set to zero (16-bit index)
-    "NES": 0x400, // Whether to add a cycle if the CPU is 65C02
+    "Is65C02": 0x400, // Whether to add a cycle if the CPU is 65C02
     "UnusedOne": 0x800,
-    "SevenCyclesPerByteMoved": 0x1000, // Whether to add seven cycles per byte moved,
+    "SevenCyclesPerByteMoved": 0x1000, // Whether to add seven cycles per byte moved
     "UnusedTwo": 0x2000,
     "UnusedThree": 0x4000,
     "UnusedFour": 0x8000,
