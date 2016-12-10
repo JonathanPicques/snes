@@ -1,5 +1,5 @@
 import Address from "./addr";
-import {StatusRegisters} from "./cpu";
+import {StatusFlags} from "./cpu";
 import {HumanReadableAddress} from "./utils/format";
 
 const _snes = Symbol("snes");
@@ -88,7 +88,7 @@ export default class Memory {
      * @returns {number}
      */
     ReadAccumulator(address) {
-        if (this[_snes].Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) {
+        if (this[_snes].Cpu.GetStatusFlag(StatusFlags.M) === 0x0) {
             return this.ReadUint16(address); // 16-bit
         }
         return this.ReadUint8(address); // 8-bit
@@ -141,7 +141,7 @@ export default class Memory {
      * @returns {number}
      */
     WriteAccumulator(address) {
-        if (this[_snes].Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) {
+        if (this[_snes].Cpu.GetStatusFlag(StatusFlags.M) === 0x0) {
             return this.WriteUint16(address, this[_snes].Cpu.Registers.A); // 16-bit
         }
         return this.WriteUint8(address, this[_snes].Cpu.Registers.A); // 8-bit

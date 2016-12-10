@@ -99,7 +99,7 @@ export default class CPU {
      * Resets this CPU
      */
     Reset() {
-        this.Registers.P = StatusRegisters.I | StatusRegisters.X | StatusRegisters.M;
+        this.Registers.P = StatusFlags.I | StatusFlags.X | StatusFlags.M;
         this.Registers.SP = 0x100;
         this.Registers.PC = this[_snes].Cart.Header.InterruptVectors.EmulationMode.RES;
         this.Registers.E = 0x1;
@@ -144,30 +144,30 @@ export default class CPU {
     }
 
     /**
-     * Returns the state of the specified bit in the status register
-     * @param {StatusRegister} bit
+     * Returns the state of the specified flag in the status register
+     * @param {StatusRegister} flag
      * @returns {number}
      */
-    GetStatusRegister(bit) {
-        return (this.Registers.P & bit) === bit ? 0x1 : 0x0;
+    GetStatusFlag(flag) {
+        return (this.Registers.P & flag) === flag ? 0x1 : 0x0;
     }
 
     /**
-     * Sets the state of the specified bit in the status register
-     * @param {StatusRegister} bit
+     * Sets the state of the specified flag in the status register
+     * @param {StatusRegister} flag
      * @param {number} value
      */
-    SetStatusRegister(bit, value) {
-        this.Registers.P = value === 0x1 ? this.Registers.P | bit : this.Registers.P & ~bit;
+    SetStatusFlag(flag, value) {
+        this.Registers.P = value === 0x1 ? this.Registers.P | flag : this.Registers.P & ~flag;
     }
 
 }
 
 /**
- * Enumerates the bitfields of the Status register (P)
+ * Enumerates the flags of the Status register (P)
  * @enum {StatusRegister}
  */
-export const StatusRegisters = {
+export const StatusFlags = {
     "C": 0x1, // Carry (native)
     "Z": 0x2, // Zero
     "I": 0x4, // IRQ Disable

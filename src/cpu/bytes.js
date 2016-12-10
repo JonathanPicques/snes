@@ -1,4 +1,4 @@
-import {StatusRegisters} from "../cpu";
+import {StatusFlags} from "../cpu";
 
 const _bytes = Symbol("bytes");
 const _modifiers = Symbol("modifiers");
@@ -25,10 +25,10 @@ export default class OpcodeBytes {
     Evaluate(context) {
         let bytes = this[_bytes];
         if ((this[_modifiers] & ByteModifiers.MIsZero) !== 0) {
-            bytes += context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x1 : 0x0;
+            bytes += context.Cpu.GetStatusFlag(StatusFlags.M) === 0x0 ? 0x1 : 0x0;
         }
         if ((this[_modifiers] & ByteModifiers.XIsZero) !== 0) {
-            bytes += context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 0x1 : 0x0;
+            bytes += context.Cpu.GetStatusFlag(StatusFlags.X) === 0x0 ? 0x1 : 0x0;
         }
         if ((this[_modifiers] & ByteModifiers.OptionalSignature) !== 0) {
             throw new Error("not yet implemented");

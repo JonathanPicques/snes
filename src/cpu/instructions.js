@@ -1,5 +1,5 @@
 import {ContextTypes} from "./context";
-import {StatusRegisters} from "../cpu";
+import {StatusFlags} from "../cpu";
 
 /**
  * This enumeration lists all the different opcode instructions
@@ -22,8 +22,8 @@ const Instructions = {
             context.Memory.PushStackUint8(context.Cpu.Registers.P);
             context.Cpu.Registers.PC = context.Header.InterruptVectors.EmulationMode.BRK;
         }
-        context.Cpu.SetStatusRegister(StatusRegisters.I, 0x1);
-        context.Cpu.SetStatusRegister(StatusRegisters.D, 0x0);
+        context.Cpu.SetStatusFlag(StatusFlags.I, 0x1);
+        context.Cpu.SetStatusFlag(StatusFlags.D, 0x0);
     },
     "ORA": context => {
         // ORA
@@ -54,7 +54,7 @@ const Instructions = {
         if (context.Type !== ContextTypes.Address) {
             throw new UnhandledContextTypeError();
         }
-        if (context.Cpu.GetStatusRegister(StatusRegisters.N) === 0x0) {
+        if (context.Cpu.GetStatusFlag(StatusFlags.N) === 0x0) {
             context.Cpu.Registers.PC = context.Address.Effective;
             context.Cpu.Registers.PB = context.Address.Bank;
         }
@@ -68,7 +68,7 @@ const Instructions = {
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
         }
-        context.Cpu.SetStatusRegister(StatusRegisters.C, 0x0);
+        context.Cpu.SetStatusFlag(StatusFlags.C, 0x0);
     },
     "INC": context => {
         // INC
@@ -111,7 +111,7 @@ const Instructions = {
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
         }
-        context.Cpu.SetStatusRegister(StatusRegisters.C, 0x1);
+        context.Cpu.SetStatusFlag(StatusFlags.C, 0x1);
     },
     "DEC": context => {
         // DEC
@@ -198,9 +198,9 @@ const Instructions = {
         // Transfers the accumulator C (16-bit) to the direct page pointer, disregarding the status bit M
         context.Cpu.Registers.DP = context.Cpu.Registers.A;
         // Checks if the accumulator is negative (aka. most significant bit is set)
-        context.Cpu.SetStatusRegister(StatusRegisters.N, (context.Cpu.Registers.DP & 0x8000) === 0x0 ? 0x0 : 0x1);
+        context.Cpu.SetStatusFlag(StatusFlags.N, (context.Cpu.Registers.DP & 0x8000) === 0x0 ? 0x0 : 0x1);
         // Checks if the accumulator is zero
-        context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.DP) === 0x0 ? 0x1 : 0x0);
+        context.Cpu.SetStatusFlag(StatusFlags.Z, (context.Cpu.Registers.DP) === 0x0 ? 0x1 : 0x0);
     },
     "RTS": context => {
         // RTS
@@ -239,7 +239,7 @@ const Instructions = {
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
         }
-        context.Cpu.SetStatusRegister(StatusRegisters.I, 0x1);
+        context.Cpu.SetStatusFlag(StatusFlags.I, 0x1);
     },
     "PLY": context => {
         // PLY
@@ -330,21 +330,21 @@ const Instructions = {
                 throw new UnhandledContextTypeError();
 
         }
-        if (context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0) {
+        if (context.Cpu.GetStatusFlag(StatusFlags.M) === 0x0) {
             context.Cpu.Registers.A = value; // 16-bit
         } else {
             context.Cpu.Registers.A = value & 0xf; // 8-bit
         }
         // Checks if the accumulator is negative (aka. most significant bit is set)
-        context.Cpu.SetStatusRegister(StatusRegisters.N, (context.Cpu.Registers.A & 0x8000) === 0x0 ? 0x0 : 0x1);
+        context.Cpu.SetStatusFlag(StatusFlags.N, (context.Cpu.Registers.A & 0x8000) === 0x0 ? 0x0 : 0x1);
         // Checks if the accumulator is zero
-        context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.A) === 0x0 ? 0x1 : 0x0);
+        context.Cpu.SetStatusFlag(StatusFlags.Z, (context.Cpu.Registers.A) === 0x0 ? 0x1 : 0x0);
     },
     "LDX": context => {
         // LoaD X
         switch (context.Type) {
             case ContextTypes.Value:
-                if (context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0) {
+                if (context.Cpu.GetStatusFlag(StatusFlags.X) === 0x0) {
                     context.Cpu.Registers.X = context.Value; // 16-bit
                 } else {
                     context.Cpu.Registers.X = context.Value & 0xf; // 8-bit
@@ -369,9 +369,9 @@ const Instructions = {
         }
         context.Cpu.Registers.DB = context.Memory.PopStackUint8();
         // Checks if the data bank is negative (aka. most significant bit is set)
-        context.Cpu.SetStatusRegister(StatusRegisters.N, (context.Cpu.Registers.DB & 0x80) === 0x0 ? 0x0 : 0x1);
+        context.Cpu.SetStatusFlag(StatusFlags.N, (context.Cpu.Registers.DB & 0x80) === 0x0 ? 0x0 : 0x1);
         // Checks if the data bank is zero
-        context.Cpu.SetStatusRegister(StatusRegisters.Z, (context.Cpu.Registers.DB) === 0x0 ? 0x1 : 0x0);
+        context.Cpu.SetStatusFlag(StatusFlags.Z, (context.Cpu.Registers.DB) === 0x0 ? 0x1 : 0x0);
     },
     "BCS": context => {
         // BCS
@@ -405,8 +405,8 @@ const Instructions = {
         context.Cpu.Registers.P &= ~context.Value;
         // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
         if (context.Cpu.Registers.E === 0x1) {
-            context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
-            context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
+            context.Cpu.SetStatusFlag(StatusFlags.M, 0x1);
+            context.Cpu.SetStatusFlag(StatusFlags.X, 0x1);
         }
     },
     "INY": context => {
@@ -457,8 +457,8 @@ const Instructions = {
         context.Cpu.Registers.P |= context.Value;
         // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
         if (context.Cpu.Registers.E === 0x1) {
-            context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
-            context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
+            context.Cpu.SetStatusFlag(StatusFlags.M, 0x1);
+            context.Cpu.SetStatusFlag(StatusFlags.X, 0x1);
         }
     },
     "INX": context => {
@@ -494,17 +494,17 @@ const Instructions = {
         if (context.Type !== ContextTypes.Nothing) {
             throw new UnhandledContextTypeError();
         }
-        const Carry = context.Cpu.GetStatusRegister(StatusRegisters.C);
+        const Carry = context.Cpu.GetStatusFlag(StatusFlags.C);
         const Emulation = context.Cpu.Registers.E;
 
         // Exchanges the Carry Bit with the Emulation bit
-        context.Cpu.SetStatusRegister(StatusRegisters.C, Emulation);
+        context.Cpu.SetStatusFlag(StatusFlags.C, Emulation);
         context.Cpu.Registers.E = Carry;
 
         // In Emulation mode, Status register (P) bits M and X are forced to 0x1 (8-bit)
         if (context.Cpu.Registers.E === 0x1) {
-            context.Cpu.SetStatusRegister(StatusRegisters.M, 0x1);
-            context.Cpu.SetStatusRegister(StatusRegisters.X, 0x1);
+            context.Cpu.SetStatusFlag(StatusFlags.M, 0x1);
+            context.Cpu.SetStatusFlag(StatusFlags.X, 0x1);
         }
     }
 };

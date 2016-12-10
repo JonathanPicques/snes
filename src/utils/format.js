@@ -1,4 +1,4 @@
-import {StatusRegisters as SR} from "../cpu";
+import {StatusFlags as SR} from "../cpu";
 
 /**
  * Regex to filter human readable characters
@@ -64,7 +64,7 @@ export const HumanReadableCpuRegister = (cpu) => {
  * @returns {string}
  */
 export const HumanReadableCpuStatusRegister = (cpu) => {
-    return Object.keys(SR).reverse().map(bit => `${bit}: ${cpu.GetStatusRegister(SR[bit])}`).join(", ");
+    return Object.keys(SR).reverse().map(bit => `${bit}: ${cpu.GetStatusFlag(SR[bit])}`).join(", ");
 };
 
 /**
