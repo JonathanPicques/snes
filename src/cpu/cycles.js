@@ -35,9 +35,7 @@ export default class OpcodeCycles {
         if ((this[_modifiers] & CycleModifiers.IndexCrossesPageBoundary) !== 0x0) {
             throw new Error("not yet implemented");
         }
-        if ((this[_modifiers] & CycleModifiers.Decimal65C02) !== 0x0) {
-            // no-op (CPU is not a 65C02)
-        }
+        // CycleModifiers.Decimal65C02: no-op (CPU is not a 65C02)
         if ((this[_modifiers] & CycleModifiers.MIsZeroTwo) !== 0x0) {
             cycles += context.Cpu.GetStatusRegister(StatusRegisters.M) === 0x0 ? 0x2 : 0x0;
         }
@@ -56,9 +54,7 @@ export default class OpcodeCycles {
         if ((this[_modifiers] & CycleModifiers.XIsZero) !== 0x0) {
             cycles += context.Cpu.GetStatusRegister(StatusRegisters.X) === 0x0 ? 0x1 : 0x0;
         }
-        if ((this[_modifiers] & CycleModifiers.Is65C02) !== 0x0) {
-            // no-op (CPU is not a 65C02)
-        }
+        // CycleModifiers.Is65C02: no-op (CPU is not a 65C02)
         if ((this[_modifiers] & CycleModifiers.SevenCyclesPerByteMoved) !== 0x0) {
             throw new Error("not yet implemented");
         }
