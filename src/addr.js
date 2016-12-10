@@ -6,8 +6,8 @@ const _address = Symbol("address");
 export default class Address {
 
     /**
-     * Constructs an address from the specified absolute address
-     * @param {number} absolute - 24-bit
+     * Constructs an address from the specified absolute address (24-bit)
+     * @param {number} absolute
      */
     constructor(absolute) {
         this.Absolute = absolute;
@@ -77,10 +77,10 @@ export default class Address {
     /**
      * Adds the specified offset to the effective bits, wrapping at bank if specified
      * @param {number} offset
-     * @param {boolean} [wrappingAtBank=false]
+     * @param {boolean} wrappingAtBank
      * @returns {Address}
      */
-    AddEffective(offset, wrappingAtBank) {
+    AddEffective(offset, wrappingAtBank = false) {
         if (wrappingAtBank === true) {
             this.Effective = (this.Effective + offset) % 0x10000;
         } else {

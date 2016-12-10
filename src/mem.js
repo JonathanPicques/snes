@@ -33,13 +33,10 @@ export default class Memory {
         let result = 0;
         for (let i = 0; i < byteLength; i++) {
             const readAddress = new Address(address.Absolute).AddEffective(i);
-            const [dataView, offsetAddress, type] = this[_snes].Cart.DecodeAddress(readAddress);
+            const [dataView, offsetAddress,] = this[_snes].Cart.DecodeAddress(readAddress);
             if (dataView === null) {
                 throw new Error(`Cannot read at address: ${HumanReadableAddress(readAddress)}`);
             }
-            /* eslint-disable no-console */
-            console.log(`Reading from ${type} @${HumanReadableAddress(readAddress)}`);
-            /* eslint-enable no-console */
             result |= dataView.getUint8(offsetAddress) << (i * 8);
         }
         return result;
@@ -106,13 +103,10 @@ export default class Memory {
         }
         for (let i = 0; i < byteLength; i++) {
             const writeAddress = new Address(address.Absolute).AddEffective(i);
-            const [dataView, offsetAddress, type] = this[_snes].Cart.DecodeAddress(writeAddress);
+            const [dataView, offsetAddress,] = this[_snes].Cart.DecodeAddress(writeAddress);
             if (dataView === null) {
                 throw new Error(`Cannot write at address: ${HumanReadableAddress(writeAddress)}`);
             }
-            /* eslint-disable no-console */
-            console.log(`Writing on ${type} @${HumanReadableAddress(writeAddress)}`);
-            /* eslint-enable no-console */
             dataView.setUint8(offsetAddress, (value >> (i * 8)) & 0xff);
         }
     }

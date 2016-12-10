@@ -1,4 +1,6 @@
-import {StatusFlags as SR} from "../cpu";
+import {StatusFlags} from "../cpu";
+import {ContextTypes} from "../cpu/context";
+import {AddressingModeName} from "../cpu/modes";
 
 /**
  * Regex to filter human readable characters
@@ -64,7 +66,7 @@ export const HumanReadableCpuRegister = (cpu) => {
  * @returns {string}
  */
 export const HumanReadableCpuStatusRegister = (cpu) => {
-    return Object.keys(SR).reverse().map(bit => `${bit}: ${cpu.GetStatusFlag(SR[bit])}`).join(", ");
+    return Object.keys(StatusFlags).reverse().map(bit => `${bit}: ${cpu.GetStatusFlag(StatusFlags[bit])}`).join(", ");
 };
 
 /**
@@ -85,6 +87,7 @@ export const HumanReadableAddress = (address) => {
     return `$${("00" + address.Bank.toString(16)).slice(-2)}:${("0000" + address.Effective.toString(16)).slice(-4)}`;
 };
 
+//noinspection JSUnusedGlobalSymbols
 /**
  * Returns an human readable string for the specified memory range
  * @param {Memory} memory
@@ -113,6 +116,26 @@ export const HumanReadableMemory = (memory, from, to) => {
 };
 
 /**
+ * Returns an human readable string for the specified op, opcode and context
+ * @param {number} op
+ * @param {Opcode} opcode
+ * @param {OpcodeContext} context
+ * @returns {string}
+ */
+export const HumanReadableInstruction = (op, opcode, context) => {
+    let humanReadableInstruction = `${opcode.Instruction.name} $${op.toString(16)} (${AddressingModeName(opcode.AddressingMode)})`;
+    switch (context.Type) {
+        case ContextTypes.Value:
+            humanReadableInstruction += ` [${HumanReadableValue(context.Value)}]`;
+            break;
+        case ContextTypes.Address:
+            humanReadableInstruction += ` [${HumanReadableAddress(context.Address)}]`;
+            break;
+    }
+    return humanReadableInstruction;
+};
+
+/**
  * Returns the characters read from the memory into a string
  * @param {Uint8Array} memory
  * @param {number} from
@@ -120,5 +143,6 @@ export const HumanReadableMemory = (memory, from, to) => {
  * @returns {string}
  */
 export const GetStringFromMemory = (memory, from, to) => {
+    //noinspection JSUnresolvedFunction Uint8Array.slice
     return Array.prototype.map.call(memory.slice(from, to), byte => String.fromCharCode(byte)).join("");
 };

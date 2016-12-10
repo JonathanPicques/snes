@@ -1,8 +1,7 @@
 import Address from "./addr";
+import OpcodeContext from "./cpu/context";
 import OpcodesMapping from "./cpu/opcodes";
-import OpcodeContext, {ContextTypes} from "./cpu/context";
-import {AddressingModeName} from "./cpu/modes";
-import {HumanReadableValue, HumanReadableAddress, HumanReadableCpuRegister, HumanReadableCpuStatusRegister} from "./utils/format";
+import {HumanReadableCpuRegister, HumanReadableCpuStatusRegister, HumanReadableInstruction} from "./utils/format";
 
 const _snes = Symbol("snes");
 const _counter = Symbol("counter");
@@ -113,27 +112,14 @@ export default class CPU {
         console.log("--- Current state ---");
         console.log("Cpu", HumanReadableCpuRegister(this));
         console.log("Status", HumanReadableCpuStatusRegister(this));
-        console.log("--- Decode opcode ---");
         const op = this[_snes].Memory.ReadUint8(this.Registers.PC);
         const opcode = OpcodesMapping.get(op);
         if (typeof opcode === "undefined") {
             throw new Error(`${op.toString(16)} is not a valid opcode`);
         }
-        console.log(`Opcode is $${op.toString(16)}`);
         console.log("--- Instruction ---");
-        console.log(`${opcode.Instruction.name} (${op.toString(16)}) (${AddressingModeName(opcode.AddressingMode)})`);
+        console.log(HumanReadableInstruction(op, opcode, this.Context));
         const consumedBytes = this.Context.DecodeOpcode(opcode);
-        switch (this.Context.Type) {
-            case ContextTypes.Nothing:
-                console.log("Addressing mode provided nothing");
-                break;
-            case ContextTypes.Value:
-                console.log("Addressing mode provided the value", HumanReadableValue(this.Context.Value));
-                break;
-            case ContextTypes.Address:
-                console.log("Addressing mode provided the address", HumanReadableAddress(this.Context.Address));
-                break;
-        }
         this.Registers.PC.AddEffective(consumedBytes, true);
         const consumedCycles = this.Context.ExecuteInstruction();
         this.Cycles += consumedCycles;
