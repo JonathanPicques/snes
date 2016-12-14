@@ -32,15 +32,31 @@ describe("Instructions", () => {
         expect(snes.Cpu.Registers.PC.Bank).to.be.equal(snes.Cpu.Registers.PB);
         expect(snes.Cpu.Registers.PB).to.be.equal(0x0);
     });
-    it("should test XCE", () => {
+    it("should test CLC/SEC", () => {
         const snes = new SNES(rom);
+        const addr = new Address(firstOpcode);
         snes.Power();
         snes.Reset();
 
-        snes.Memory.WriteUint8(new Address(firstOpcode), 0x18); // CLC
-        snes.Memory.WriteUint8(new Address(firstOpcode).AddEffective(0x1), 0xfb); // XCE
-        snes.Memory.WriteUint8(new Address(firstOpcode).AddEffective(0x2), 0x38); // SEC
-        snes.Memory.WriteUint8(new Address(firstOpcode).AddEffective(0x3), 0xfb); // XCE
+        snes.Memory.WriteUint8(addr, 0x38); // SEC
+        snes.Memory.WriteUint8(addr.AddEffective(0x1), 0x18); // CLC
+
+        expect(snes.Cpu.GetStatusFlag(StatusFlags.C)).to.be.equal(0x0); // Carry should be clear
+        snes.Cpu.Tick(); // SEC
+        expect(snes.Cpu.GetStatusFlag(StatusFlags.C)).to.be.equal(0x1);
+        snes.Cpu.Tick(); // CLC
+        expect(snes.Cpu.GetStatusFlag(StatusFlags.C)).to.be.equal(0x0);
+    });
+    it("should test XCE", () => {
+        const snes = new SNES(rom);
+        const addr = new Address(firstOpcode);
+        snes.Power();
+        snes.Reset();
+
+        snes.Memory.WriteUint8(addr, 0x18); // CLC
+        snes.Memory.WriteUint8(addr.AddEffective(0x1), 0xfb); // XCE
+        snes.Memory.WriteUint8(addr.AddEffective(0x1), 0x38); // SEC
+        snes.Memory.WriteUint8(addr.AddEffective(0x1), 0xfb); // XCE
 
         expect(snes.Cpu.Registers.E).to.be.equal(0x1);
         expect(snes.Cpu.GetStatusFlag(StatusFlags.C)).to.be.equal(0x0);
