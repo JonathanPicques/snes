@@ -506,7 +506,7 @@ const Instructions = {
             context.Cpu.SetStatusFlag(StatusFlags.M, 0x1);
             context.Cpu.SetStatusFlag(StatusFlags.X, 0x1);
         }
-    }
+    },
 };
 export default Instructions;
 /**

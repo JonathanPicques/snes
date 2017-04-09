@@ -63,7 +63,7 @@ export default class CPU {
                 "configurable": false,
                 "get": () => { return this[_counter].Bank; },
                 "set": (pb) => { this[_counter].Bank = pb; },
-            }
+            },
         });
 
         /**
