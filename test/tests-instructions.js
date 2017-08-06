@@ -1,5 +1,6 @@
 import {expect} from "chai";
 import {readFileSync} from "fs";
+import {describe, it, beforeEach} from "mocha";
 
 import SNES from "../src/snes";
 import Address from "../src/addr";

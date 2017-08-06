@@ -188,4 +188,12 @@ export const ContextTypes = {
  * This class represents an unimplemented addressing mode error
  */
 export class UnimplementedAddressingModeError extends Error {
+
+    /**
+     * @param {Object} message
+     */
+    constructor(message) {
+        super(message);
+    }
+
 }

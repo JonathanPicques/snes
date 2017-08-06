@@ -1,5 +1,7 @@
-import Address from "../src/addr";
 import {expect} from "chai";
+import {describe, it} from "mocha";
+
+import Address from "../src/addr";
 
 describe("Addresses", () => {
     it("should test addresses", () => {
@@ -44,12 +46,24 @@ describe("Addresses", () => {
         expect(address.Effective).to.be.equal(0xffff);
         expect(address.Absolute).to.be.equal(0xffffff);
 
-        expect(() => { address.Bank = 0x100; }).to.throw();
-        expect(() => { address.Bank = -0x01; }).to.throw();
-        expect(() => { address.Effective = 0x10000; }).to.throw();
-        expect(() => { address.Effective = -0x01; }).to.throw();
-        expect(() => { address.Absolute = -0x01; }).to.throw();
-        expect(() => { address.Absolute = 0x1000000; }).to.throw();
+        expect(() => {
+            address.Bank = 0x100;
+        }).to.throw();
+        expect(() => {
+            address.Bank = -0x01;
+        }).to.throw();
+        expect(() => {
+            address.Effective = 0x10000;
+        }).to.throw();
+        expect(() => {
+            address.Effective = -0x01;
+        }).to.throw();
+        expect(() => {
+            address.Absolute = -0x01;
+        }).to.throw();
+        expect(() => {
+            address.Absolute = 0x1000000;
+        }).to.throw();
     });
     it("should test addresses arithmetic", () => {
         const address = new Address(0x201234);
